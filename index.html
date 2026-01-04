@@ -10,86 +10,55 @@
 
 <style>
 :root{
-  --bg:#050b16;
-  --card:#0b1b33;
+  --bg:#050b18;
+  --card:#0b1530;
   --neon:#00ffd5;
-  --green:#25d366;
-  --text:#eaf6ff;
+  --text:#e8f9ff;
+  --muted:#8fb6c7;
+  --accent:#00ff88;
 }
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:radial-gradient(circle at top,#061a3a,#020714);color:var(--text)}
 
-body{
-  margin:0;
-  background:radial-gradient(circle at top, #0a2a4d, #020612);
-  font-family:system-ui,Segoe UI;
-  color:var(--text);
-}
-
-/* HEADER */
 header{
+  padding:60px 20px;
   text-align:center;
-  padding:50px 20px;
+  background:linear-gradient(180deg,#062a55,#020714);
 }
-header h1{
-  color:var(--neon);
-  font-size:38px;
-  text-shadow:0 0 20px var(--neon);
-}
+header h1{color:var(--neon);font-size:2.5rem;margin:0}
 header p{opacity:.8}
 
-/* MENU */
-#menu{
+.controls{
   display:flex;
-  justify-content:center;
+  flex-wrap:wrap;
   gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
-}
-.menu-btn{
-  padding:10px 18px;
-  border:1px solid var(--neon);
-  border-radius:20px;
-  background:transparent;
-  color:var(--neon);
-  cursor:pointer;
-}
-.menu-btn.active{
-  background:var(--neon);
-  color:#000;
-}
-
-/* SUBMENU */
-#submenu{
-  display:flex;
   justify-content:center;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:30px;
-}
-.sub-btn{
-  padding:6px 14px;
-  border-radius:14px;
-  background:#112a44;
-  cursor:pointer;
-  font-size:13px;
+  margin:20px;
 }
 
-/* GRID */
-#productos{
+select,input{
+  padding:10px 14px;
+  border-radius:20px;
+  border:none;
+  background:#0c1e3a;
+  color:white;
+}
+
+.grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
   padding:20px;
 }
 
-/* CARD */
 .card{
-  background:linear-gradient(180deg,#0b1b33,#050b16);
+  background:linear-gradient(180deg,#0c1e3a,#050b18);
   border-radius:16px;
   padding:15px;
-  box-shadow:0 0 20px #000;
-  animation:fade .4s;
+  box-shadow:0 0 20px #00ffd522;
+  transition:.3s;
 }
-@keyframes fade{from{opacity:0;transform:scale(.96)}}
+.card:hover{transform:translateY(-6px)}
 
 .card img{
   width:100%;
@@ -103,55 +72,55 @@ header p{opacity:.8}
   background:gold;
   color:#000;
   padding:4px 10px;
-  border-radius:10px;
+  border-radius:12px;
   font-size:12px;
+  font-weight:bold;
 }
 
-.price{color:#7CFF00;font-weight:bold}
-.stock{font-size:13px;opacity:.8}
+.card h3{margin:10px 0 5px}
+.price{color:#00ff88;font-weight:bold}
+.stock{font-size:12px;opacity:.7}
 
-.desc{
-  font-size:13px;
-  margin:8px 0;
-  white-space:pre-line;
-}
+.desc{font-size:13px;line-height:1.4;margin:8px 0;color:#cdefff}
 
 .actions a{
   display:block;
   text-align:center;
-  margin-top:6px;
-  padding:10px;
+  padding:12px;
+  margin-top:8px;
   border-radius:12px;
-  text-decoration:none;
   font-weight:bold;
+  text-decoration:none;
 }
 
 .whatsapp{
-  background:var(--green);
+  background:#25D366;
   color:#000;
 }
-.agotado{
-  background:#ffaa00;
-  color:#000;
+
+.disabled{
+  background:#444;
+  color:#ccc;
 }
 
 .video{
+  display:flex;
+  gap:10px;
   margin-top:6px;
-  background:#111;
-  color:#fff;
 }
+.video a{color:white}
 
-/* FLOAT WHATSAPP */
-#float{
+.floating{
   position:fixed;
-  bottom:20px;
   right:20px;
-  background:var(--green);
-  color:#000;
+  bottom:20px;
+  background:#25D366;
+  color:black;
   padding:14px 18px;
-  border-radius:30px;
+  border-radius:50px;
   font-weight:bold;
   text-decoration:none;
+  box-shadow:0 0 20px #25D366;
 }
 </style>
 </head>
@@ -160,66 +129,101 @@ header p{opacity:.8}
 
 <header>
 <h1>Soluciones Digitales Comayagua</h1>
-<p>Catálogo Gamer • PC • Móvil • Streaming</p>
+<p>Catálogo Gamer · PC · Móvil · Streaming</p>
 </header>
 
-<div id="menu"></div>
-<div id="submenu"></div>
-<div id="productos"></div>
+<div class="controls">
+<select id="catFilter"><option value="">Categorías</option></select>
+<select id="subFilter"><option value="">Subcategorías</option></select>
+<input id="search" placeholder="Buscar producto...">
+<select id="order">
+  <option value="">Ordenar</option>
+  <option value="asc">Precio ↑</option>
+  <option value="desc">Precio ↓</option>
+</select>
+</div>
 
-<a id="float" href="https://wa.me/50432429490" target="_blank">
+<div class="grid" id="products"></div>
+
+<a class="floating" target="_blank" href="https://wa.me/50432429490">
 <i class="fab fa-whatsapp"></i> ESCRÍBENOS
 </a>
 
 <script>
-const SHEET_URL="https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
+const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const WHATSAPP_NUMBER="50432429490";
+const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-let data=[],cat="",sub="";
+let data=[];
 
-fetch(SHEET_URL).then(r=>r.text()).then(t=>{
-  const json=JSON.parse(t.substr(47).slice(0,-2));
-  data=json.table.rows.map(r=>r.c.map(c=>c?c.v:""));
-  buildMenu();
+fetch(URL)
+.then(r=>r.text())
+.then(t=>{
+  const json=JSON.parse(t.substring(47).slice(0,-2));
+  const cols=json.table.cols.map(c=>c.label.toLowerCase());
+  data=json.table.rows.map(r=>{
+    let o={};
+    cols.forEach((c,i)=>o[c]=r.c[i]?.v||"");
+    return o;
+  });
+  init();
 });
 
-function buildMenu(){
-  const cats=[...new Set(data.map(d=>d[0]))];
-  menu.innerHTML=cats.map(c=>`<button class="menu-btn" onclick="selectCat('${c}')">${c.toUpperCase()}</button>`).join("");
-}
-
-function selectCat(c){
-  cat=c; sub="";
-  document.querySelectorAll(".menu-btn").forEach(b=>b.classList.remove("active"));
-  event.target.classList.add("active");
-  const subs=[...new Set(data.filter(d=>d[0]==c).map(d=>d[6]))];
-  submenu.innerHTML=subs.map(s=>`<div class="sub-btn" onclick="selectSub('${s}')">${s}</div>`).join("");
+function init(){
+  buildFilters();
   render();
 }
 
-function selectSub(s){sub=s; render();}
+function buildFilters(){
+  const cats=[...new Set(data.map(d=>d.categoria))];
+  cats.forEach(c=>{
+    catFilter.innerHTML+=`<option>${c}</option>`;
+  });
+}
+
+catFilter.onchange=()=>{
+  subFilter.innerHTML="<option value=''>Subcategorías</option>";
+  [...new Set(data.filter(d=>!catFilter.value||d.categoria==catFilter.value).map(d=>d.subcategoria))]
+  .forEach(s=>subFilter.innerHTML+=`<option>${s}</option>`);
+  render();
+};
+
+[subFilter,search,order].forEach(e=>e.oninput=render);
 
 function render(){
-  productos.innerHTML=data.filter(d=>{
-    return d[0]==cat && (!sub || d[6]==sub);
-  }).map(d=>{
-    const video=d[9]?`<a class="actions video" href="${d[9]}" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>`
-    : d[10]?`<a class="actions video" href="${d[10]}" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>`:"";
+  let f=data.filter(d=>
+    (!catFilter.value||d.categoria==catFilter.value)&&
+    (!subFilter.value||d.subcategoria==subFilter.value)&&
+    d.nombre.toLowerCase().includes(search.value.toLowerCase())
+  );
 
-    return `
-    <div class="card">
-      <img src="${d[4]}">
-      <h3>${d[1]}</h3>
-      <div class="price">Lps. ${d[2]}</div>
-      <div class="stock">Stock: ${d[3]}</div>
-      <div class="desc">${d[7]}</div>
-      ${video}
-      ${d[3]>0?
-      `<a class="actions whatsapp" href="https://wa.me/50432429490?text=${encodeURIComponent(d[8])}" target="_blank">🛒 PEDIR POR WHATSAPP</a>`:
-      `<div class="actions agotado">Consultar disponibilidad</div>`}
-    </div>`;
-  }).join("");
+  if(order.value){
+    f.sort((a,b)=>order.value=="asc"?a.precio-b.precio:b.precio-a.precio);
+  }
+
+  products.innerHTML=f.map(p=>`
+  <div class="card">
+    ${p.destacado?`<div class="badge">⭐ DESTACADO</div>`:""}
+    <img src="${p.imagen}">
+    <h3>${p.nombre}</h3>
+    <div class="price">Lps. ${p.precio}</div>
+    <div class="stock">Stock: ${p.stock}</div>
+    <div class="desc">${(p.descripcion||"").replace(/\n/g,"<br>")}</div>
+
+    <div class="video">
+      ${p.tiktok?`<a target="_blank" href="${p.tiktok}"><i class="fab fa-tiktok"></i></a>`:""}
+      ${p.youtube?`<a target="_blank" href="${p.youtube}"><i class="fab fa-youtube"></i></a>`:""}
+    </div>
+
+    <div class="actions">
+      ${p.estado=="activo"
+      ?`<a class="whatsapp" target="_blank" href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(p.whatsapp)}">
+        🟢 PEDIR POR WHATSAPP
+      </a>`
+      :`<div class="disabled">Consultar Disponibilidad</div>`}
+    </div>
+  </div>`).join("");
 }
 </script>
-
 </body>
 </html>
