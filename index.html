@@ -10,117 +10,117 @@
 
 <style>
 :root{
-  --bg:#050b18;
-  --card:#0b1530;
-  --neon:#00ffd5;
-  --text:#e8f9ff;
-  --muted:#8fb6c7;
-  --accent:#00ff88;
+  --bg:#071426;
+  --card:#0e223a;
+  --neon:#00f7ff;
+  --green:#25D366;
+  --text:#eafcff;
 }
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:radial-gradient(circle at top,#061a3a,#020714);color:var(--text)}
+*{box-sizing:border-box;font-family:system-ui;}
+body{margin:0;background:radial-gradient(circle at top,#0a2a4a,#020b18);color:var(--text)}
 
-header{
-  padding:60px 20px;
-  text-align:center;
-  background:linear-gradient(180deg,#062a55,#020714);
-}
-header h1{color:var(--neon);font-size:2.5rem;margin:0}
+header{text-align:center;padding:50px 15px}
+header h1{color:var(--neon);text-shadow:0 0 20px var(--neon)}
 header p{opacity:.8}
 
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-  margin:20px;
+#categoryBar,#subBar{
+display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px}
+
+.btn{
+padding:10px 18px;
+border-radius:30px;
+border:1px solid var(--neon);
+background:transparent;
+color:var(--neon);
+cursor:pointer;
+transition:.3s;
+}
+.btn.active,.btn:hover{
+background:var(--neon);
+color:#000;
+box-shadow:0 0 20px var(--neon)
 }
 
-select,input{
-  padding:10px 14px;
-  border-radius:20px;
-  border:none;
-  background:#0c1e3a;
-  color:white;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
-  padding:20px;
+#products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+padding:30px;
+max-width:1400px;
+margin:auto;
 }
 
 .card{
-  background:linear-gradient(180deg,#0c1e3a,#050b18);
-  border-radius:16px;
-  padding:15px;
-  box-shadow:0 0 20px #00ffd522;
-  transition:.3s;
+background:linear-gradient(180deg,#0e223a,#071426);
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 0 30px #000;
+transition:.3s;
+animation:fade .6s ease;
 }
 .card:hover{transform:translateY(-6px)}
 
-.card img{
-  width:100%;
-  height:200px;
-  object-fit:cover;
-  border-radius:12px;
-}
+.card img{width:100%;height:220px;object-fit:cover}
 
-.badge{
-  position:absolute;
-  background:gold;
-  color:#000;
-  padding:4px 10px;
-  border-radius:12px;
-  font-size:12px;
-  font-weight:bold;
-}
+.card .content{padding:15px}
 
-.card h3{margin:10px 0 5px}
 .price{color:#00ff88;font-weight:bold}
-.stock{font-size:12px;opacity:.7}
+.stock{font-size:13px;opacity:.8}
 
-.desc{font-size:13px;line-height:1.4;margin:8px 0;color:#cdefff}
+.desc{
+font-size:14px;
+margin:10px 0;
+line-height:1.5
+}
 
 .actions a{
-  display:block;
-  text-align:center;
-  padding:12px;
-  margin-top:8px;
-  border-radius:12px;
-  font-weight:bold;
-  text-decoration:none;
+display:block;
+margin-top:8px;
+padding:12px;
+border-radius:30px;
+text-align:center;
+font-weight:bold;
+text-decoration:none;
 }
 
-.whatsapp{
-  background:#25D366;
-  color:#000;
-}
-
-.disabled{
-  background:#444;
-  color:#ccc;
-}
+.whatsapp{background:var(--green);color:#000}
+.consultar{background:#ffaa00;color:#000}
 
 .video{
-  display:flex;
-  gap:10px;
-  margin-top:6px;
+display:flex;
+gap:8px;
+margin-top:10px
 }
-.video a{color:white}
+.video a{
+flex:1;
+padding:10px;
+border-radius:20px;
+text-align:center;
+font-size:14px;
+color:#fff;
+}
+.tiktok{background:#000}
+.youtube{background:#ff0000}
 
-.floating{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  background:#25D366;
-  color:black;
-  padding:14px 18px;
-  border-radius:50px;
-  font-weight:bold;
-  text-decoration:none;
-  box-shadow:0 0 20px #25D366;
+#floatWA{
+position:fixed;
+bottom:20px;
+right:20px;
+background:var(--green);
+color:#000;
+padding:14px 18px;
+border-radius:40px;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:8px;
+text-decoration:none;
+box-shadow:0 0 25px var(--green)
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1}
 }
 </style>
 </head>
@@ -132,98 +132,102 @@ select,input{
 <p>Catálogo Gamer · PC · Móvil · Streaming</p>
 </header>
 
-<div class="controls">
-<select id="catFilter"><option value="">Categorías</option></select>
-<select id="subFilter"><option value="">Subcategorías</option></select>
-<input id="search" placeholder="Buscar producto...">
-<select id="order">
-  <option value="">Ordenar</option>
-  <option value="asc">Precio ↑</option>
-  <option value="desc">Precio ↓</option>
-</select>
-</div>
+<div id="categoryBar"></div>
+<div id="subBar"></div>
 
-<div class="grid" id="products"></div>
+<div id="products"></div>
 
-<a class="floating" target="_blank" href="https://wa.me/50432429490">
+<a id="floatWA" target="_blank">
 <i class="fab fa-whatsapp"></i> ESCRÍBENOS
 </a>
 
 <script>
 const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const WHATSAPP_NUMBER="50432429490";
 const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-let data=[];
+let data=[],cat="",sub="";
 
 fetch(URL)
 .then(r=>r.text())
 .then(t=>{
-  const json=JSON.parse(t.substring(47).slice(0,-2));
-  const cols=json.table.cols.map(c=>c.label.toLowerCase());
-  data=json.table.rows.map(r=>{
-    let o={};
-    cols.forEach((c,i)=>o[c]=r.c[i]?.v||"");
-    return o;
-  });
-  init();
+const json=JSON.parse(t.substr(47).slice(0,-2));
+const headers=json.table.cols.map(c=>c.label);
+data=json.table.rows.map(r=>{
+let o={};
+headers.forEach((h,i)=>o[h]=r.c[i]?.v||"");
+return o;
+});
+init();
 });
 
 function init(){
-  buildFilters();
-  render();
+buildCategories();
+selectCategory([...new Set(data.map(d=>d.categoria))][0]);
 }
 
-function buildFilters(){
-  const cats=[...new Set(data.map(d=>d.categoria))];
-  cats.forEach(c=>{
-    catFilter.innerHTML+=`<option>${c}</option>`;
-  });
+function buildCategories(){
+const bar=document.getElementById("categoryBar");
+bar.innerHTML="";
+[...new Set(data.map(d=>d.categoria))].forEach(c=>{
+const b=document.createElement("button");
+b.className="btn";
+b.textContent=c.toUpperCase();
+b.onclick=()=>selectCategory(c);
+bar.appendChild(b);
+});
 }
 
-catFilter.onchange=()=>{
-  subFilter.innerHTML="<option value=''>Subcategorías</option>";
-  [...new Set(data.filter(d=>!catFilter.value||d.categoria==catFilter.value).map(d=>d.subcategoria))]
-  .forEach(s=>subFilter.innerHTML+=`<option>${s}</option>`);
-  render();
-};
+function selectCategory(c){
+cat=c;sub="";
+[...document.querySelectorAll("#categoryBar .btn")].forEach(b=>{
+b.classList.toggle("active",b.textContent.toLowerCase()==c);
+});
+buildSub();
+render();
+}
 
-[subFilter,search,order].forEach(e=>e.oninput=render);
+function buildSub(){
+const bar=document.getElementById("subBar");
+bar.innerHTML="";
+[...new Set(data.filter(d=>d.categoria==cat).map(d=>d.subcategoria))].forEach(s=>{
+const b=document.createElement("button");
+b.className="btn";
+b.textContent=s;
+b.onclick=()=>{sub=s;render()};
+bar.appendChild(b);
+});
+}
 
 function render(){
-  let f=data.filter(d=>
-    (!catFilter.value||d.categoria==catFilter.value)&&
-    (!subFilter.value||d.subcategoria==subFilter.value)&&
-    d.nombre.toLowerCase().includes(search.value.toLowerCase())
-  );
+const box=document.getElementById("products");
+box.innerHTML="";
+data.filter(d=>d.categoria==cat && (!sub || d.subcategoria==sub)).forEach(p=>{
+box.innerHTML+=`
+<div class="card">
+<img src="${p.imagen}">
+<div class="content">
+<h3>${p.nombre}</h3>
+<div class="price">Lps. ${p.precio}</div>
+<div class="stock">Stock: ${p.stock}</div>
+<div class="desc">${(p.descripcion||"").replace(/\n/g,"<br>")}</div>
 
-  if(order.value){
-    f.sort((a,b)=>order.value=="asc"?a.precio-b.precio:b.precio-a.precio);
-  }
+<div class="video">
+${p.tiktok?`<a class="tiktok" href="${p.tiktok}" target="_blank"><i class="fab fa-tiktok"></i></a>`:""}
+${p.youtube?`<a class="youtube" href="${p.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:""}
+</div>
 
-  products.innerHTML=f.map(p=>`
-  <div class="card">
-    ${p.destacado?`<div class="badge">⭐ DESTACADO</div>`:""}
-    <img src="${p.imagen}">
-    <h3>${p.nombre}</h3>
-    <div class="price">Lps. ${p.precio}</div>
-    <div class="stock">Stock: ${p.stock}</div>
-    <div class="desc">${(p.descripcion||"").replace(/\n/g,"<br>")}</div>
-
-    <div class="video">
-      ${p.tiktok?`<a target="_blank" href="${p.tiktok}"><i class="fab fa-tiktok"></i></a>`:""}
-      ${p.youtube?`<a target="_blank" href="${p.youtube}"><i class="fab fa-youtube"></i></a>`:""}
-    </div>
-
-    <div class="actions">
-      ${p.estado=="activo"
-      ?`<a class="whatsapp" target="_blank" href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(p.whatsapp)}">
-        🟢 PEDIR POR WHATSAPP
-      </a>`
-      :`<div class="disabled">Consultar Disponibilidad</div>`}
-    </div>
-  </div>`).join("");
+<div class="actions">
+${p.stock>0
+?`<a class="whatsapp" target="_blank" href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp)}">🟢 PEDIR POR WHATSAPP</a>`
+:`<div class="consultar">🟡 CONSULTAR DISPONIBILIDAD</div>`
+}
+</div>
+</div>
+</div>`;
+});
+document.getElementById("floatWA").href="https://wa.me/50432429490";
 }
 </script>
+
 </body>
 </html>
