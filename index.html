@@ -1,189 +1,225 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Soluciones Digitales Comayagua</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Soluciones Digitales Comayagua</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    :root{
-      --bg:#070b12;
-      --card:#0e1624;
-      --neon:#00f7ff;
-      --text:#e6f1ff;
-      --muted:#8aa0c8;
-      --ok:#00ff9c;
-    }
-
-    *{box-sizing:border-box;font-family:Segoe UI,Roboto,Arial}
-
-    body{
-      margin:0;
-      background:radial-gradient(circle at top,#0a1a33,#05080f);
-      color:var(--text);
-    }
-
-    header{
-      padding:60px 20px;
-      text-align:center;
-      background:linear-gradient(135deg,#001a33,#003a66,#001a33);
-      box-shadow:0 0 40px rgba(0,247,255,.25);
-    }
-
-    header h1{
-      margin:0;
-      font-size:clamp(28px,5vw,46px);
-      color:var(--neon);
-      text-shadow:0 0 20px rgba(0,247,255,.6);
-    }
-
-    header p{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:16px;
-    }
-
-    .container{
-      max-width:1300px;
-      margin:auto;
-      padding:40px 20px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:25px;
-    }
-
-    .card{
-      background:linear-gradient(180deg,#0e1624,#0b1220);
-      border:1px solid rgba(0,247,255,.2);
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:0 0 25px rgba(0,0,0,.7);
-      transition:.3s;
-    }
-
-    .card:hover{
-      transform:translateY(-6px);
-      box-shadow:0 0 35px rgba(0,247,255,.35);
-    }
-
-    .card img{
-      width:100%;
-      height:220px;
-      object-fit:cover;
-      background:#000;
-    }
-
-    .card-body{
-      padding:18px;
-    }
-
-    .title{
-      font-size:18px;
-      margin:0 0 6px;
-      color:var(--neon);
-    }
-
-    .price{
-      font-size:20px;
-      color:var(--ok);
-      margin:6px 0;
-      font-weight:bold;
-    }
-
-    .stock{
-      font-size:14px;
-      color:var(--muted);
-      margin-bottom:12px;
-    }
-
-    .btn{
-      display:block;
-      text-align:center;
-      padding:12px;
-      border-radius:10px;
-      background:linear-gradient(135deg,#00f7ff,#00b3ff);
-      color:#001018;
-      font-weight:700;
-      text-decoration:none;
-      transition:.3s;
-      box-shadow:0 0 15px rgba(0,247,255,.6);
-    }
-
-    .btn:hover{
-      box-shadow:0 0 25px rgba(0,247,255,1);
-      transform:scale(1.03);
-    }
-
-    footer{
-      text-align:center;
-      padding:30px;
-      color:#6b7fa6;
-      font-size:14px;
-    }
-  </style>
+<style>
+:root{
+  --bg:#060b13;
+  --card:#0c1424;
+  --neon:#00f7ff;
+  --accent:#7cff00;
+  --text:#e8f1ff;
+  --muted:#8aa4c6;
+  --danger:#ff3b3b;
+}
+*{box-sizing:border-box;font-family:Segoe UI,Roboto,Arial}
+body{
+  margin:0;
+  background:radial-gradient(circle at top,#0b1d38,#04070c);
+  color:var(--text);
+}
+header{
+  padding:60px 20px;
+  text-align:center;
+  background:linear-gradient(135deg,#00152b,#003b6f,#00152b);
+  box-shadow:0 0 40px rgba(0,247,255,.35);
+}
+header h1{
+  margin:0;
+  font-size:clamp(28px,5vw,46px);
+  color:var(--neon);
+  text-shadow:0 0 25px rgba(0,247,255,.8);
+}
+header p{color:var(--muted)}
+nav{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  padding:15px;
+  background:#050a14;
+}
+nav button{
+  background:#0c1b33;
+  color:var(--neon);
+  border:1px solid rgba(0,247,255,.3);
+  padding:8px 16px;
+  border-radius:20px;
+  cursor:pointer;
+}
+nav button.active{
+  background:var(--neon);
+  color:#000;
+}
+.search{
+  max-width:400px;
+  margin:20px auto;
+}
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:30px;
+  border:none;
+  outline:none;
+  background:#0c1424;
+  color:#fff;
+}
+.container{
+  max-width:1300px;
+  margin:auto;
+  padding:20px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:25px;
+}
+.card{
+  background:linear-gradient(180deg,#0c1424,#090f1e);
+  border-radius:14px;
+  border:1px solid rgba(0,247,255,.2);
+  box-shadow:0 0 25px rgba(0,0,0,.7);
+  overflow:hidden;
+  transition:.3s;
+}
+.card:hover{
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:0 0 40px rgba(0,247,255,.45);
+}
+.card img{
+  width:100%;
+  height:210px;
+  object-fit:cover;
+}
+.card-body{padding:18px}
+.card h3{
+  margin:0 0 6px;
+  color:var(--neon);
+}
+.price{
+  color:var(--accent);
+  font-size:20px;
+  font-weight:bold;
+}
+.stock{font-size:14px;color:var(--muted)}
+.agotado{
+  color:var(--danger);
+  font-weight:bold;
+}
+.btn{
+  margin-top:12px;
+  display:block;
+  text-align:center;
+  padding:12px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#00f7ff,#00b3ff);
+  color:#001018;
+  font-weight:800;
+  text-decoration:none;
+}
+.btn.disabled{
+  background:#444;
+  color:#aaa;
+  pointer-events:none;
+}
+footer{
+  text-align:center;
+  padding:30px;
+  color:#6b7fa6;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo Gamer · Móvil · Streaming · Precios en Lempiras</p>
+<h1>Soluciones Digitales Comayagua</h1>
+<p>Catálogo Gamer · Móvil · Streaming · Honduras</p>
 </header>
 
+<nav id="categorias"></nav>
+
+<div class="search">
+  <input type="text" id="buscador" placeholder="Buscar producto...">
+</div>
+
 <div class="container">
-  <div id="productos" class="grid">
-    Cargando catálogo...
-  </div>
+  <div id="productos" class="grid">Cargando catálogo…</div>
 </div>
 
 <footer>
-  © 2026 Soluciones Digitales Comayagua · Comayagua, Honduras
+© 2026 Soluciones Digitales Comayagua
 </footer>
 
 <script>
-const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-const WHATSAPP = "50432429490";
+const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const WHATSAPP="50432429490";
 
-fetch(SHEET_URL)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    const rows = json.table.rows;
-    let html = "";
+let DATA=[];
+let CAT="TODOS";
 
-    rows.forEach(r => {
-      const nombre = r.c[0]?.v || "";
-      const precio = r.c[1]?.v || "";
-      const stock = r.c[2]?.v || "";
-      const imagen = r.c[3]?.v || "";
-      const mensaje = r.c[4]?.v || nombre;
+fetch(URL)
+.then(r=>r.text())
+.then(t=>{
+  const json=JSON.parse(t.substring(47).slice(0,-2));
+  DATA=json.table.rows.map(r=>({
+    categoria:r.c[0]?.v||"",
+    producto:r.c[1]?.v||"",
+    precio:r.c[2]?.v||"",
+    stock:r.c[3]?.v||0,
+    imagen:r.c[4]?.v||"",
+    mensaje:r.c[5]?.v||""
+  }));
+  renderCategorias();
+  render();
+});
 
-      const waMsg = encodeURIComponent(mensaje);
-      const waLink = `https://wa.me/${WHATSAPP}?text=${waMsg}`;
+function renderCategorias(){
+  const nav=document.getElementById("categorias");
+  const cats=["TODOS",...new Set(DATA.map(d=>d.categoria))];
+  nav.innerHTML=cats.map(c=>`<button onclick="setCat('${c}',this)">${c}</button>`).join("");
+}
 
-      html += `
-        <div class="card">
-          <img src="${imagen}" alt="${nombre}">
-          <div class="card-body">
-            <h3 class="title">${nombre}</h3>
-            <div class="price">Lps. ${precio}</div>
-            <div class="stock">Stock: ${stock}</div>
-            <a class="btn" href="${waLink}" target="_blank">PEDIR POR WHATSAPP</a>
-          </div>
+function setCat(c,el){
+  CAT=c;
+  [...el.parentNode.children].forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+  render();
+}
+
+document.getElementById("buscador").addEventListener("input",render);
+
+function render(){
+  const q=document.getElementById("buscador").value.toLowerCase();
+  const cont=document.getElementById("productos");
+  cont.innerHTML="";
+  DATA.filter(d=>
+    (CAT==="TODOS"||d.categoria===CAT) &&
+    d.producto.toLowerCase().includes(q)
+  ).forEach(d=>{
+    const agotado=d.stock<=0;
+    cont.innerHTML+=`
+    <div class="card">
+      <img src="${d.imagen}">
+      <div class="card-body">
+        <h3>${d.producto}</h3>
+        <div class="price">Lps. ${d.precio}</div>
+        <div class="stock ${agotado?"agotado":""}">
+          ${agotado?"AGOTADO":"Stock: "+d.stock}
         </div>
-      `;
-    });
-
-    document.getElementById("productos").innerHTML = html;
-  })
-  .catch(() => {
-    document.getElementById("productos").innerHTML =
-      "Error al cargar el catálogo.";
+        <a class="btn ${agotado?"disabled":""}"
+           href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(d.mensaje)}"
+           target="_blank">
+           ${agotado?"NO DISPONIBLE":"PEDIR POR WHATSAPP"}
+        </a>
+      </div>
+    </div>`;
   });
+}
 </script>
 
 </body>
