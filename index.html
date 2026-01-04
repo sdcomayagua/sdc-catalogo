@@ -7,7 +7,7 @@
 
   <meta name="description" content="Catálogo digital de accesorios Gamer, PC, Móvil y Streaming en Comayagua. Pedidos por WhatsApp." />
   
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
@@ -153,7 +153,7 @@
     .card-img-container {
       width: 100%; 
       aspect-ratio: 1/1; 
-      background: #fff; /* Fondo blanco para que la imagen resalte */
+      background: #fff; /* Fondo blanco */
       padding: 0; /* SIN RELLENO PARA QUE LLENE TODO */
       display: flex; align-items: center; justify-content: center;
       position: relative;
@@ -170,23 +170,27 @@
     /* ESTILOS DE AGOTADO */
     .card.agotado .card-img-container img {
         filter: grayscale(100%); /* Blanco y negro */
-        opacity: 0.6;
+        opacity: 0.5;
     }
 
+    /* CINTA DE AGOTADO - GRANDE Y VISIBLE */
     .ribbon {
         position: absolute;
-        top: 20px; left: -35px;
-        width: 120px;
-        background: #ef4444; /* Rojo */
+        top: 35px;        /* Bajamos un poco más la cinta */
+        left: -60px;      /* La movemos a la izquierda para centrarla al rotar */
+        width: 200px;     /* Mucho más ancha para que cubra bien */
+        background: #ef4444; /* Rojo intenso */
         color: white;
         text-align: center;
-        font-size: 10px;
-        font-weight: 800;
-        padding: 5px 0;
-        transform: rotate(-45deg);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        font-size: 14px;  /* Letra más grande */
+        font-weight: 800; /* Letra extra gruesa */
+        padding: 8px 0;   /* Cinta más gorda */
+        transform: rotate(-45deg); /* Diagonal exacta */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         z-index: 10;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border: 2px solid white; /* Borde blanco para resaltar */
     }
 
     .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; gap: 6px; }
@@ -210,11 +214,12 @@
     .btn-ws:hover { transform: scale(0.98); opacity: 0.9; }
 
     .btn-consultar {
-      background: #475569; /* Gris */
-      color: #cbd5e1;
+      background: #334155; /* Gris Oscuro */
+      color: #e2e8f0;
       font-size: 11px;
+      border: 1px solid #475569;
     }
-    .btn-consultar:hover { background: #334155; color: #fff; }
+    .btn-consultar:hover { background: #1e293b; color: #fff; }
 
     /* LOADING */
     #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: var(--primary); }
@@ -268,7 +273,7 @@
 <script>
 /* ================= CONFIGURACIÓN ================= */
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const CONFIG_GID = "1488858707"; // TU CONFIG GID ACTUAL
+const CONFIG_GID = "1488858707"; 
 const MY_PHONE = "50432429490"; 
 
 /* ================= LÓGICA ================= */
@@ -334,7 +339,7 @@ function initCategories() {
   cats.forEach((c, i) => {
     const btn = document.createElement('div');
     btn.className = 'chip' + (i === 0 ? ' active' : '');
-    // El CSS se encarga de las mayúsculas
+    // El CSS se encarga de las mayúsculas (text-transform: uppercase)
     btn.innerHTML = `${getIconForCategory(c)} ${c}`; 
     btn.onclick = () => {
       currentCategory = c;
@@ -399,22 +404,18 @@ function render() {
   }
 
   filtered.forEach(p => {
-    // LÓGICA DE STOCK
     const isAgotado = p.stock <= 0;
     
-    // Configuración del botón y mensaje
     let btnText = "PEDIR AHORA 🚀";
     let btnClass = "btn-ws";
     let waMsg = "";
     
-    // Si tienes un mensaje personalizado en Excel, úsalo, si no usa el default
     if(p.whatsapp && p.whatsapp.length > 5) {
         waMsg = p.whatsapp;
     } else {
         waMsg = `Hola SDC, me interesa: *${p.nombre}*`;
     }
 
-    // SI ESTÁ AGOTADO
     if (isAgotado) {
         btnText = "PREGUNTAR DISPONIBILIDAD";
         btnClass = "btn-ws btn-consultar";
@@ -422,11 +423,10 @@ function render() {
     }
 
     const waLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
-
     const card = document.createElement('div');
     card.className = isAgotado ? 'card agotado' : 'card';
     
-    // Ribbon de Agotado
+    // CINTA VISIBLE
     const ribbonHTML = isAgotado ? `<div class="ribbon">AGOTADO</div>` : '';
 
     card.innerHTML = `
