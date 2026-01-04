@@ -1,218 +1,376 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soluciones Digitales Comayagua | Catálogo</title>
 
-<title>Soluciones Digitales Comayagua | Catálogo</title>
-<meta name="description" content="Catálogo Gamer, PC, Móvil y Streaming en Comayagua. Pedidos por WhatsApp.">
+  <!-- SEO básico -->
+  <meta name="description" content="Catálogo digital de accesorios Gamer, PC, Móvil y Streaming en Comayagua. Pedidos por WhatsApp." />
+  <meta name="keywords" content="Gamer, accesorios móvil, PC, streaming, Comayagua" />
 
-<style>
-:root{
---bg:#0b1220;
---card:#121c33;
---text:#e6f1ff;
---accent:#00f0ff;
---btn:#25D366;
---muted:#9fb3c8;
-}
-.light{
---bg:#f4f6fb;
---card:#ffffff;
---text:#0b1220;
---muted:#555;
-}
+  <!-- Icons -->
+  <link rel="icon" href="logo.png" />
 
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-/* HEADER */
-header{
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:15px 20px;
-background:linear-gradient(180deg,#0e1d36,transparent);
-}
-header img{height:45px}
-header h1{font-size:18px;margin:0;color:var(--accent)}
+  <style>
+    :root{
+      --bg:#071629;
+      --bg-card:#0b223d;
+      --primary:#00f2ff;
+      --accent:#35e07d;
+      --text:#e9f1ff;
+      --muted:#9fb3c8;
+    }
 
-/* TOP BUTTONS */
-.top-btns{display:flex;gap:10px}
-.icon-btn{
-background:var(--card);
-border-radius:50%;
-padding:10px;
-cursor:pointer;
-}
+    [data-theme="light"]{
+      --bg:#f4f6fb;
+      --bg-card:#ffffff;
+      --primary:#007bff;
+      --accent:#28c76f;
+      --text:#1e2a3a;
+      --muted:#5f6c7b;
+    }
 
-/* CATEGORY DRAWER */
-.drawer{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.7);
-display:none;
-z-index:10;
-}
-.drawer-content{
-background:var(--card);
-width:85%;max-width:360px;
-height:100%;
-padding:20px;
-overflow:auto;
-}
-.drawer h2{margin-top:0;color:var(--accent)}
-.group{margin-bottom:20px}
-.group-title{
-font-weight:bold;
-margin-bottom:8px;
-}
-.subcat{
-padding:10px;
-border-radius:12px;
-background:rgba(255,255,255,.05);
-margin-bottom:8px;
-cursor:pointer;
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Poppins,system-ui;
+      background:radial-gradient(1200px 600px at top, #0c2a4d, var(--bg));
+      color:var(--text);
+    }
 
-/* PRODUCTS */
-.products{padding:20px}
-.card{
-background:var(--card);
-border-radius:18px;
-padding:15px;
-margin-bottom:20px;
-}
-.card img{
-width:100%;
-height:auto;
-border-radius:14px;
-background:#000;
-}
-.card h3{margin:10px 0 5px}
-.price{color:#3cff7a;font-size:18px}
-.stock{font-size:14px;color:var(--muted)}
-.desc{white-space:pre-line;font-size:14px;margin:10px 0}
+    header{
+      padding:24px 16px 16px;
+      text-align:center;
+      position:relative;
+    }
 
-.btn{
-display:block;
-padding:14px;
-border-radius:30px;
-background:var(--btn);
-color:#000;
-text-align:center;
-text-decoration:none;
-font-weight:bold;
-margin-top:10px;
-}
-.btn.gray{background:#999}
+    header img{
+      height:56px;
+      margin-bottom:8px;
+    }
 
-/* FLOAT WHATSAPP */
-.float{
-position:fixed;
-bottom:20px;right:20px;
-background:#25D366;
-padding:15px 20px;
-border-radius:40px;
-font-weight:bold;
-text-decoration:none;
-color:#000;
-z-index:5;
-}
-</style>
+    header h1{
+      margin:0;
+      font-size:28px;
+      color:var(--primary);
+    }
+
+    header p{
+      margin:6px 0 16px;
+      color:var(--muted);
+    }
+
+    .theme-toggle{
+      position:absolute;
+      right:16px;
+      top:16px;
+      font-size:20px;
+      cursor:pointer;
+      color:var(--primary);
+    }
+
+    .search{
+      max-width:720px;
+      margin:0 auto 20px;
+      padding:0 16px;
+    }
+
+    .search input{
+      width:100%;
+      padding:14px 16px;
+      border-radius:999px;
+      border:none;
+      outline:none;
+      background:var(--bg-card);
+      color:var(--text);
+      font-size:16px;
+    }
+
+    /* MENU CATEGORÍAS */
+    .category-bar{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      padding:8px 16px 16px;
+      scrollbar-width:none;
+    }
+
+    .category-bar::-webkit-scrollbar{display:none}
+
+    .cat-btn{
+      flex:0 0 auto;
+      padding:10px 18px;
+      border-radius:999px;
+      border:1px solid var(--primary);
+      background:transparent;
+      color:var(--primary);
+      font-weight:600;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .cat-btn.active{
+      background:var(--primary);
+      color:#000;
+      box-shadow:0 0 15px rgba(0,242,255,.6);
+    }
+
+    /* SUBCATEGORÍAS */
+    .sub-bar{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding:0 16px 16px;
+    }
+
+    .sub-btn{
+      padding:6px 14px;
+      border-radius:999px;
+      background:var(--bg-card);
+      border:1px solid #1c3a5c;
+      color:var(--text);
+      font-size:13px;
+      cursor:pointer;
+    }
+
+    .sub-btn.active{
+      background:var(--accent);
+      color:#000;
+    }
+
+    /* GRID */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:16px;
+      padding:0 16px 120px;
+      max-width:1200px;
+      margin:0 auto;
+    }
+
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+      background-color:var(--bg-card);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .card img{
+      width:100%;
+      height:auto;
+      object-fit:contain;
+      background:#000;
+    }
+
+    .card-body{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .card h3{
+      margin:0;
+      font-size:16px;
+    }
+
+    .price{color:var(--accent);font-weight:700}
+    .stock{font-size:13px;color:var(--muted)}
+
+    .desc{
+      font-size:13px;
+      line-height:1.4;
+      color:var(--text);
+      white-space:pre-line;
+    }
+
+    .video-links a{
+      margin-right:10px;
+      font-size:20px;
+      color:var(--primary);
+    }
+
+    .btn-whatsapp{
+      margin-top:10px;
+      width:100%;
+      border:none;
+      border-radius:999px;
+      padding:12px;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--accent);
+      color:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .btn-disabled{
+      background:#555;
+      color:#ccc;
+      cursor:not-allowed;
+    }
+
+    /* FLOATING WHATSAPP */
+    .float-ws{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      background:#25D366;
+      color:#000;
+      border-radius:999px;
+      padding:14px 18px;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      box-shadow:0 10px 30px rgba(0,0,0,.4);
+      text-decoration:none;
+      z-index:50;
+    }
+
+    @media(max-width:600px){
+      header h1{font-size:22px}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- CONFIG -->
-<script>
-const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const WHATSAPP_NUMBER = "50432429490";
-const LOGO_URL = "logo.png";
-</script>
-
 <header>
-<img id="logo">
-<h1>Soluciones Digitales</h1>
-<div class="top-btns">
-<div class="icon-btn" onclick="openDrawer()">☰</div>
-<div class="icon-btn" onclick="toggleMode()">🌙</div>
-</div>
+  <!-- LOGO -->
+  <img src="logo.png" alt="Soluciones Digitales Comayagua">
+  <h1>Soluciones Digitales Comayagua</h1>
+  <p>Catálogo Gamer · PC · Móvil · Streaming</p>
+  <div class="theme-toggle" id="themeToggle"><i class="fa-solid fa-moon"></i></div>
 </header>
 
-<div class="drawer" id="drawer" onclick="closeDrawer(event)">
-<div class="drawer-content" id="drawerContent"></div>
+<div class="search">
+  <input id="searchInput" type="text" placeholder="Buscar producto..." />
 </div>
 
-<div class="products" id="products"></div>
+<div class="category-bar" id="categoryBar"></div>
+<div class="sub-bar" id="subBar"></div>
 
-<a class="float" target="_blank" id="floatWa">💬 ESCRÍBENOS</a>
+<div class="grid" id="productGrid"></div>
+
+<a class="float-ws" href="https://wa.me/50432429490" target="_blank">
+  <i class="fa-brands fa-whatsapp"></i> ESCRÍBENOS
+</a>
 
 <script>
-document.getElementById("logo").src = LOGO_URL;
-document.getElementById("floatWa").href = `https://wa.me/${WHATSAPP_NUMBER}`;
+/* ================= CONFIG ================= */
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
 
-const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-let all=[];
+let products=[];
+let currentCategory="";
+let currentSub="";
 
-fetch(URL).then(r=>r.text()).then(t=>{
-const json=JSON.parse(t.substr(47).slice(0,-2));
-const headers=json.table.cols.map(c=>c.label);
-all=json.table.rows.map(r=>{
-let o={};r.c.forEach((c,i)=>o[headers[i]]=c?.v||"");return o;
-}).filter(p=>p.nombre);
-buildMenu();
-renderProducts(all);
-});
+fetch(SHEET_URL)
+  .then(r=>r.text())
+  .then(t=>JSON.parse(t.substring(47,t.length-2)))
+  .then(json=>{
+    const cols=json.table.cols.map(c=>c.label.toLowerCase());
+    json.table.rows.forEach(r=>{
+      let obj={};
+      r.c.forEach((c,i)=>obj[cols[i]]=c?c.v:"");
+      products.push(obj);
+    });
+    initCategories();
+    render();
+  });
 
-function buildMenu(){
-const groups={};
-all.forEach(p=>{
-if(!groups[p.categoria_grupo]) groups[p.categoria_grupo]={};
-if(!groups[p.categoria_grupo][p.subcategoria]) groups[p.categoria_grupo][p.subcategoria]=[];
-groups[p.categoria_grupo][p.subcategoria].push(p);
-});
-const d=document.getElementById("drawerContent");
-d.innerHTML=`<h2>Categorías</h2>`+
-Object.keys(groups).map(g=>`
-<div class="group">
-<div class="group-title">📦 ${g}</div>
-${Object.keys(groups[g]).map(s=>`
-<div class="subcat" onclick="showSub('${g}','${s}')">▶ ${s}</div>
-`).join("")}
-</div>
-`).join("");
+function initCategories(){
+  const cats=[...new Set(products.map(p=>p.categoria))];
+  const bar=document.getElementById('categoryBar');
+  bar.innerHTML="";
+  cats.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='cat-btn'+(i==0?' active':'');
+    b.textContent=c.toUpperCase();
+    b.onclick=()=>{currentCategory=c;currentSub="";updateSubs();render();setActive(b)};
+    bar.appendChild(b);
+    if(i==0) currentCategory=c;
+  });
+  updateSubs();
 }
 
-function renderProducts(list){
-document.getElementById("products").innerHTML=list.map(p=>`
-<div class="card">
-<img src="${p.imagen}">
-<h3>${p.nombre}</h3>
-<div class="price">Lps. ${p.precio}</div>
-<div class="stock">Stock: ${p.stock}</div>
-<div class="desc">${p.descripcion||""}</div>
-
-${p.tiktok?`<a class="btn gray" target="_blank" href="${p.tiktok}">🎵 Ver en TikTok</a>`:""}
-${p.youtube?`<a class="btn gray" target="_blank" href="${p.youtube}">▶ Ver en YouTube</a>`:""}
-
-<a class="btn" target="_blank"
-href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(p.whatsapp||'Hola, me interesa '+p.nombre)}">
-📲 PEDIR POR WHATSAPP
-</a>
-</div>
-`).join("");
+function updateSubs(){
+  const subs=[...new Set(products.filter(p=>p.categoria==currentCategory).map(p=>p.subcategoria).filter(Boolean))];
+  const bar=document.getElementById('subBar');
+  bar.innerHTML="";
+  subs.forEach(s=>{
+    const b=document.createElement('button');
+    b.className='sub-btn';
+    b.textContent=s;
+    b.onclick=()=>{currentSub=s;render();setActiveSub(b)};
+    bar.appendChild(b);
+  });
 }
 
-function showSub(g,s){
-renderProducts(all.filter(p=>p.categoria_grupo===g && p.subcategoria===s));
-closeDrawer();
+function render(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const grid=document.getElementById('productGrid');
+  grid.innerHTML="";
+
+  products.filter(p=>
+    p.categoria==currentCategory &&
+    (!currentSub || p.subcategoria==currentSub) &&
+    p.nombre.toLowerCase().includes(q)
+  ).forEach(p=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <img src="${p.imagen}" alt="${p.nombre}">
+      <div class="card-body">
+        <h3>${p.nombre}</h3>
+        <div class="price">Lps. ${p.precio}</div>
+        <div class="stock">Stock: ${p.stock}</div>
+        <div class="desc">${p.descripcion||""}</div>
+        <div class="video-links">
+          ${p.tiktok?`<a href="${p.tiktok}" target="_blank"><i class="fa-brands fa-tiktok"></i></a>`:""}
+          ${p.youtube?`<a href="${p.youtube}" target="_blank"><i class="fa-brands fa-youtube"></i></a>`:""}
+        </div>
+        ${p.estado=="activo" && p.stock>0 ?
+          `<button class="btn-whatsapp" onclick="window.open('https://wa.me/50432429490?text='+encodeURIComponent(p.whatsapp),'_blank')"><i class="fa-brands fa-whatsapp"></i> PEDIR POR WHATSAPP</button>`
+          :`<button class="btn-whatsapp btn-disabled">Consultar disponibilidad</button>`}
+      </div>`;
+    grid.appendChild(card);
+  });
 }
 
-function openDrawer(){document.getElementById("drawer").style.display="block";}
-function closeDrawer(e){if(!e||e.target.id==="drawer")document.getElementById("drawer").style.display="none";}
-function toggleMode(){document.body.classList.toggle("light");}
+function setActive(btn){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setActiveSub(btn){
+  document.querySelectorAll('.sub-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// SEARCH
+document.getElementById('searchInput').addEventListener('input',render);
+
+// THEME
+const toggle=document.getElementById('themeToggle');
+let dark=true;
+toggle.onclick=()=>{
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  toggle.innerHTML=dark?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
+};
 </script>
 
 </body>
