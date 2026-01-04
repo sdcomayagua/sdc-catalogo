@@ -206,10 +206,35 @@ footer{
 <footer>© 2026 Soluciones Digitales Comayagua</footer>
 
 <script>
-const URL="https://opensheet.elk.sh/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/Catalogo%20SDC";
-let DATA=[],CAT="gamer",SUB="ALL";
+const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 
-fetch(URL).then(r=>r.json()).then(j=>{DATA=j;render();});
+const SHEETS = [
+  "gamer",
+  "pc",
+  "movil",
+  "streaming",
+  "cobertores",
+  "power"
+];
+
+let DATA = [];
+let CAT = "gamer";
+let SUB = "ALL";
+
+async function loadAllSheets(){
+  let all = [];
+  for(const sheet of SHEETS){
+    const url = `https://opensheet.elk.sh/${SHEET_ID}/${sheet}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    data.forEach(p => p.categoria = sheet); // seguridad
+    all = all.concat(data);
+  }
+  DATA = all;
+  render();
+}
+
+loadAllSheets();
 
 function setCat(c,el){
  CAT=c; SUB="ALL";
@@ -219,33 +244,35 @@ function setCat(c,el){
 }
 
 function render(){
- const f=DATA.filter(p=>p.categoria===CAT);
- const subs=[...new Set(f.map(p=>p.subcategoria))];
- submenu.innerHTML=`<button onclick="setSub('ALL')">Todos</button>`+
- subs.map(s=>`<button onclick="setSub('${s}')">${s}</button>`).join("");
+ const f = DATA.filter(p=>p.categoria===CAT);
+ const subs = [...new Set(f.map(p=>p.subcategoria).filter(Boolean))];
+
+ submenu.innerHTML =
+  `<button onclick="setSub('ALL')">Todos</button>` +
+  subs.map(s=>`<button onclick="setSub('${s}')">${s}</button>`).join("");
+
  draw();
 }
 
-function setSub(s){SUB=s;draw();}
+function setSub(s){ SUB=s; draw(); }
 
 function draw(){
- let list=DATA.filter(p=>
+ let list = DATA.filter(p =>
   p.categoria===CAT &&
-  (SUB==="ALL"||p.subcategoria===SUB) &&
+  (SUB==="ALL" || p.subcategoria===SUB) &&
   p.nombre.toLowerCase().includes(search.value.toLowerCase())
  );
 
- if(order.value==="price-asc")list.sort((a,b)=>a.precio-b.precio);
- if(order.value==="price-desc")list.sort((a,b)=>b.precio-a.precio);
- if(order.value==="stock-desc")list.sort((a,b)=>b.stock-a.stock);
+ if(order.value==="price-asc") list.sort((a,b)=>a.precio-b.precio);
+ if(order.value==="price-desc") list.sort((a,b)=>b.precio-a.precio);
+ if(order.value==="stock-desc") list.sort((a,b)=>b.stock-a.stock);
 
- products.innerHTML=list.map(p=>{
-  const agotado=p.stock<=0||p.estado==="agotado";
-  const destacado=p.subcategoria && p.subcategoria.length>0;
+ products.innerHTML = list.map(p=>{
+  const agotado = p.stock<=0 || p.estado==="agotado";
   return `
-  <div class="card ${destacado?'destacado':''}">
-   ${destacado?`<div class="badge">${p.subcategoria}</div>`:''}
-   ${agotado?'<div class="badge agotado">AGOTADO</div>':''}
+  <div class="card ${p.subcategoria?'destacado':''}">
+   ${p.subcategoria?`<div class="badge">${p.subcategoria}</div>`:''}
+   ${agotado?`<div class="badge agotado">AGOTADO</div>`:''}
    <img src="${p.imagen}">
    <h3>${p.nombre}</h3>
    <div class="price">Lps. ${p.precio}</div>
@@ -258,8 +285,9 @@ function draw(){
  }).join("");
 }
 
-search.oninput=order.onchange=draw;
+search.oninput = order.onchange = draw;
 </script>
+
 
 </body>
 </html>
