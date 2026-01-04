@@ -8,69 +8,100 @@
 <style>
 body{
   margin:0;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background:#050b12;
-  color:#e6f1ff;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#050b14;
+  color:#fff;
 }
+
+/* HEADER */
 header{
-  background:linear-gradient(135deg,#00f2ff,#003cff);
-  padding:60px 20px;
+  padding:40px 20px;
   text-align:center;
+  background:linear-gradient(135deg,#001a33,#00ffe1);
 }
 header h1{
   margin:0;
-  font-size:38px;
+  color:#00ffe1;
 }
 header p{
-  margin-top:10px;
   opacity:.9;
 }
-button{
-  background:#00f2ff;
-  border:none;
-  color:#000;
-  padding:12px 22px;
-  font-weight:bold;
-  border-radius:6px;
-  cursor:pointer;
+
+/* MENU */
+nav{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:15px;
+  background:#020611;
 }
-#catalogo{
+nav button{
+  background:#0b1a2f;
+  color:#00ffe1;
+  border:1px solid #00ffe1;
+  padding:10px 20px;
+  cursor:pointer;
+  border-radius:20px;
+}
+nav button.active{
+  background:#00ffe1;
+  color:#000;
+}
+
+/* SEARCH */
+.search{
+  text-align:center;
+  padding:20px;
+}
+.search input{
+  width:90%;
+  max-width:400px;
+  padding:12px;
+  border-radius:20px;
+  border:none;
+}
+
+/* GRID */
+.products{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
   gap:20px;
-  padding:40px;
+  padding:20px;
 }
 .card{
-  background:#0b1522;
-  border:1px solid #00f2ff30;
-  border-radius:10px;
+  background:#0b1220;
+  border-radius:15px;
   padding:15px;
-  box-shadow:0 0 20px #00f2ff20;
+  box-shadow:0 0 15px #000;
 }
 .card img{
   width:100%;
-  border-radius:8px;
+  border-radius:10px;
 }
-.precio{
-  color:#00ff9c;
+.card h3{
+  color:#00ffe1;
+}
+.price{
+  color:#00ff6a;
   font-size:20px;
-  font-weight:bold;
 }
 .stock{
-  font-size:13px;
+  font-size:14px;
   opacity:.8;
 }
-.whatsapp{
+.card button{
   margin-top:10px;
-  display:block;
-  text-align:center;
-  background:#25D366;
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#00ffe1;
   color:#000;
-  padding:10px;
-  border-radius:6px;
-  text-decoration:none;
   font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
 }
+
+/* FOOTER */
 footer{
   text-align:center;
   padding:20px;
@@ -83,56 +114,85 @@ footer{
 
 <header>
   <h1>Soluciones Digitales Comayagua</h1>
-  <p>Accesorios Gamer • Móvil • Streaming</p>
-  <button onclick="cargarCatalogo()">VER PRODUCTOS</button>
+  <p>Catálogo Gamer · Móvil · Streaming</p>
 </header>
 
-<section id="catalogo"></section>
+<nav>
+  <button class="active" onclick="setCategory('todos',this)">TODOS</button>
+  <button onclick="setCategory('gamer',this)">GAMER</button>
+  <button onclick="setCategory('movil',this)">MÓVIL</button>
+  <button onclick="setCategory('stream',this)">STREAM</button>
+</nav>
+
+<div class="search">
+  <input type="text" id="search" placeholder="Buscar producto...">
+</div>
+
+<div class="products" id="products"></div>
 
 <footer>
-© 2026 Soluciones Digitales Comayagua
+  © 2026 Soluciones Digitales Comayagua
 </footer>
 
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
-const WHATSAPP_NUM = "50432429490";
+const WHATSAPP_NUMBER = "50432429490";
 
-function cargarCatalogo(){
-  fetch(SHEET_URL)
-    .then(res => res.text())
-    .then(text => {
-      const json = JSON.parse(text.substring(47).slice(0,-2));
-      const rows = json.table.rows;
-      const contenedor = document.getElementById("catalogo");
-      contenedor.innerHTML = "";
+let allProducts = [];
+let currentCategory = "todos";
 
-      rows.forEach(r => {
-        if(!r.c[0]) return;
+fetch(SHEET_URL)
+.then(res => res.text())
+.then(text => {
+  const json = JSON.parse(text.substring(47).slice(0,-2));
+  allProducts = json.table.rows.map(r => ({
+    categoria: r.c[0]?.v?.toLowerCase() || "",
+    nombre: r.c[1]?.v || "",
+    precio: r.c[2]?.v || "",
+    stock: r.c[3]?.v || "",
+    imagen: r.c[4]?.v || "",
+    estado: r.c[5]?.v || "",
+    destacado: r.c[6]?.v || "",
+    whatsapp: r.c[7]?.v || ""
+  }));
+  render();
+});
 
-        const nombre = r.c[1]?.v || "";
-        const precio = r.c[2]?.v || "";
-        const stock = r.c[3]?.v || "";
-        const imagen = r.c[4]?.v || "";
-        const estado = r.c[5]?.v || "";
-        const whatsappMsg = r.c[7]?.v || "";
+function setCategory(cat,btn){
+  currentCategory = cat;
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  render();
+}
 
-        if(estado !== "activo") return;
+document.getElementById("search").addEventListener("input",render);
 
-        const linkWA = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(whatsappMsg)}`;
+function render(){
+  const q = document.getElementById("search").value.toLowerCase();
+  const container = document.getElementById("products");
+  container.innerHTML = "";
 
-        contenedor.innerHTML += `
-          <div class="card">
-            <img src="${imagen}" alt="${nombre}">
-            <h3>${nombre}</h3>
-            <div class="precio">Lps. ${precio}</div>
-            <div class="stock">Stock: ${stock}</div>
-            <a class="whatsapp" href="${linkWA}" target="_blank">
-              Pedir por WhatsApp
-            </a>
-          </div>
-        `;
-      });
-    });
+  allProducts
+  .filter(p =>
+    (currentCategory==="todos" || p.categoria===currentCategory) &&
+    p.nombre.toLowerCase().includes(q)
+  )
+  .forEach(p=>{
+    const msg = encodeURIComponent(p.whatsapp);
+    const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+
+    container.innerHTML += `
+      <div class="card">
+        <img src="${p.imagen}" alt="">
+        <h3>${p.nombre}</h3>
+        <div class="price">Lps. ${p.precio}</div>
+        <div class="stock">Stock: ${p.stock}</div>
+        <button onclick="window.open('${link}','_blank')">
+          PEDIR POR WHATSAPP
+        </button>
+      </div>
+    `;
+  });
 }
 </script>
 
