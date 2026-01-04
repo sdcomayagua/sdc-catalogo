@@ -3,166 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Soluciones Digitales Comayagua</title>
+
+<title>Soluciones Digitales Comayagua | Catálogo</title>
+<meta name="description" content="Catálogo Gamer, PC, Móvil y Streaming en Comayagua. Pedidos por WhatsApp.">
 
 <style>
 :root{
-  --bg:#0b1220;
-  --card:#121c33;
-  --text:#e6f1ff;
-  --accent:#00f0ff;
-  --btn:#25D366;
+--bg:#0b1220;
+--card:#121c33;
+--text:#e6f1ff;
+--accent:#00f0ff;
+--btn:#25D366;
+--muted:#9fb3c8;
 }
 .light{
-  --bg:#f4f6fb;
-  --card:#ffffff;
-  --text:#0b1220;
+--bg:#f4f6fb;
+--card:#ffffff;
+--text:#0b1220;
+--muted:#555;
 }
 
 *{box-sizing:border-box;font-family:system-ui}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-}
+body{margin:0;background:var(--bg);color:var(--text);transition:.3s}
+
+/* HEADER */
 header{
-  padding:25px;text-align:center;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px 20px;
+background:linear-gradient(180deg,#0e1d36,transparent);
 }
-h1{color:var(--accent);margin:0}
-.toggle{
-  position:fixed;top:15px;right:15px;
-  background:var(--card);border-radius:50px;
-  padding:8px 12px;cursor:pointer;
+header img{height:45px}
+header h1{font-size:18px;margin:0;color:var(--accent)}
+
+/* TOP BUTTONS */
+.top-btns{display:flex;gap:10px}
+.icon-btn{
+background:var(--card);
+border-radius:50%;
+padding:10px;
+cursor:pointer;
 }
 
-.search{
-  padding:0 20px;
+/* CATEGORY DRAWER */
+.drawer{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.7);
+display:none;
+z-index:10;
 }
-.search input{
-  width:100%;padding:14px;
-  border-radius:30px;border:none;
+.drawer-content{
+background:var(--card);
+width:85%;max-width:360px;
+height:100%;
+padding:20px;
+overflow:auto;
+}
+.drawer h2{margin-top:0;color:var(--accent)}
+.group{margin-bottom:20px}
+.group-title{
+font-weight:bold;
+margin-bottom:8px;
+}
+.subcat{
+padding:10px;
+border-radius:12px;
+background:rgba(255,255,255,.05);
+margin-bottom:8px;
+cursor:pointer;
 }
 
-.categories{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:15px;padding:20px;
+/* PRODUCTS */
+.products{padding:20px}
+.card{
+background:var(--card);
+border-radius:18px;
+padding:15px;
+margin-bottom:20px;
 }
-.cat{
-  background:var(--card);
-  padding:20px;border-radius:16px;
-  text-align:center;cursor:pointer;
+.card img{
+width:100%;
+height:auto;
+border-radius:14px;
+background:#000;
 }
-.cat:hover{outline:2px solid var(--accent)}
-
-.products{
-  padding:20px;
-}
-.product{
-  background:var(--card);
-  border-radius:18px;
-  padding:15px;
-  margin-bottom:20px;
-}
-.product img{
-  width:100%;
-  height:auto;
-  border-radius:12px;
-}
+.card h3{margin:10px 0 5px}
 .price{color:#3cff7a;font-size:18px}
-.desc{opacity:.9;margin:8px 0}
-.btn{
-  display:block;
-  margin-top:10px;
-  background:var(--btn);
-  color:#000;
-  text-align:center;
-  padding:14px;
-  border-radius:30px;
-  text-decoration:none;
-  font-weight:bold;
-}
+.stock{font-size:14px;color:var(--muted)}
+.desc{white-space:pre-line;font-size:14px;margin:10px 0}
 
-.floating{
-  position:fixed;bottom:20px;right:20px;
-  background:var(--btn);
-  padding:15px 20px;
-  border-radius:40px;
-  font-weight:bold;
-  text-decoration:none;color:#000;
+.btn{
+display:block;
+padding:14px;
+border-radius:30px;
+background:var(--btn);
+color:#000;
+text-align:center;
+text-decoration:none;
+font-weight:bold;
+margin-top:10px;
+}
+.btn.gray{background:#999}
+
+/* FLOAT WHATSAPP */
+.float{
+position:fixed;
+bottom:20px;right:20px;
+background:#25D366;
+padding:15px 20px;
+border-radius:40px;
+font-weight:bold;
+text-decoration:none;
+color:#000;
+z-index:5;
 }
 </style>
 </head>
 
 <body>
 
-<div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
+<!-- CONFIG -->
+<script>
+const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const WHATSAPP_NUMBER = "50432429490";
+const LOGO_URL = "logo.png";
+</script>
 
 <header>
-<h1>Soluciones Digitales Comayagua</h1>
-<p>Accesorios Gamer · PC · Móvil · Streaming</p>
+<img id="logo">
+<h1>Soluciones Digitales</h1>
+<div class="top-btns">
+<div class="icon-btn" onclick="openDrawer()">☰</div>
+<div class="icon-btn" onclick="toggleMode()">🌙</div>
+</div>
 </header>
 
-<div class="search">
-<input id="search" placeholder="Buscar producto...">
+<div class="drawer" id="drawer" onclick="closeDrawer(event)">
+<div class="drawer-content" id="drawerContent"></div>
 </div>
 
-<div class="categories" id="categories"></div>
 <div class="products" id="products"></div>
 
-<a class="floating" target="_blank"
-href="https://wa.me/50432429490">💬 ESCRÍBENOS</a>
+<a class="float" target="_blank" id="floatWa">💬 ESCRÍBENOS</a>
 
 <script>
-const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+document.getElementById("logo").src = LOGO_URL;
+document.getElementById("floatWa").href = `https://wa.me/${WHATSAPP_NUMBER}`;
 
+const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 let all=[];
 
 fetch(URL).then(r=>r.text()).then(t=>{
-  const json=JSON.parse(t.substr(47).slice(0,-2));
-  const headers=json.table.cols.map(c=>c.label);
-  all=json.table.rows.map(r=>{
-    let o={};
-    r.c.forEach((c,i)=>o[headers[i]]=c?.v||"");
-    return o;
-  }).filter(p=>p.nombre);
-  buildCategories();
-  showProducts();
+const json=JSON.parse(t.substr(47).slice(0,-2));
+const headers=json.table.cols.map(c=>c.label);
+all=json.table.rows.map(r=>{
+let o={};r.c.forEach((c,i)=>o[headers[i]]=c?.v||"");return o;
+}).filter(p=>p.nombre);
+buildMenu();
+renderProducts(all);
 });
 
-function buildCategories(){
-  const cats=[...new Set(all.map(p=>p.categoria))];
-  document.getElementById("categories").innerHTML=cats.map(c=>`
-    <div class="cat" onclick="filterCat('${c}')">${c.toUpperCase()}</div>
-  `).join("");
+function buildMenu(){
+const groups={};
+all.forEach(p=>{
+if(!groups[p.categoria_grupo]) groups[p.categoria_grupo]={};
+if(!groups[p.categoria_grupo][p.subcategoria]) groups[p.categoria_grupo][p.subcategoria]=[];
+groups[p.categoria_grupo][p.subcategoria].push(p);
+});
+const d=document.getElementById("drawerContent");
+d.innerHTML=`<h2>Categorías</h2>`+
+Object.keys(groups).map(g=>`
+<div class="group">
+<div class="group-title">📦 ${g}</div>
+${Object.keys(groups[g]).map(s=>`
+<div class="subcat" onclick="showSub('${g}','${s}')">▶ ${s}</div>
+`).join("")}
+</div>
+`).join("");
 }
 
-function showProducts(list=all){
-  document.getElementById("products").innerHTML=list.map(p=>`
-  <div class="product">
-    <img src="${p.imagen}">
-    <h3>${p.nombre}</h3>
-    <div class="price">Lps. ${p.precio}</div>
-    <div>Stock: ${p.stock}</div>
-    <div class="desc">${p.descripcion||""}</div>
-    <a class="btn" target="_blank"
-    href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp||'Hola, estoy interesado en '+p.nombre)}">
-    💬 PEDIR POR WHATSAPP
-    </a>
-  </div>`).join("");
+function renderProducts(list){
+document.getElementById("products").innerHTML=list.map(p=>`
+<div class="card">
+<img src="${p.imagen}">
+<h3>${p.nombre}</h3>
+<div class="price">Lps. ${p.precio}</div>
+<div class="stock">Stock: ${p.stock}</div>
+<div class="desc">${p.descripcion||""}</div>
+
+${p.tiktok?`<a class="btn gray" target="_blank" href="${p.tiktok}">🎵 Ver en TikTok</a>`:""}
+${p.youtube?`<a class="btn gray" target="_blank" href="${p.youtube}">▶ Ver en YouTube</a>`:""}
+
+<a class="btn" target="_blank"
+href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(p.whatsapp||'Hola, me interesa '+p.nombre)}">
+📲 PEDIR POR WHATSAPP
+</a>
+</div>
+`).join("");
 }
 
-function filterCat(c){
-  showProducts(all.filter(p=>p.categoria===c));
+function showSub(g,s){
+renderProducts(all.filter(p=>p.categoria_grupo===g && p.subcategoria===s));
+closeDrawer();
 }
 
-document.getElementById("search").oninput=e=>{
-  const q=e.target.value.toLowerCase();
-  showProducts(all.filter(p=>p.nombre.toLowerCase().includes(q)));
-}
-
-function toggleMode(){
-  document.body.classList.toggle("light");
-}
+function openDrawer(){document.getElementById("drawer").style.display="block";}
+function closeDrawer(e){if(!e||e.target.id==="drawer")document.getElementById("drawer").style.display="none";}
+function toggleMode(){document.body.classList.toggle("light");}
 </script>
 
 </body>
