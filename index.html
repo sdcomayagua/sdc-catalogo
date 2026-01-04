@@ -1,98 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Soluciones Digitales Comayagua</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0b0f14;
-      color: #e6e6e6;
-    }
-
-    header {
-      padding: 40px 20px;
-      text-align: center;
-      background: radial-gradient(circle at top, #0ff, #001);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      color: #00ffff;
-    }
-
-    header p {
-      opacity: 0.9;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-
-    .card {
-      background: #111827;
-      border: 1px solid #00ffff55;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 20px;
-      background: #00ffff;
-      color: #000;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      opacity: 0.6;
-      font-size: 0.9rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Soluciones Digitales Comayagua</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0b0f14;
+  color:#fff;
+}
+header{
+  padding:40px;
+  text-align:center;
+  background:linear-gradient(135deg,#00f0ff,#003cff);
+}
+.productos{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  padding:30px;
+}
+.card{
+  background:#111827;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 0 15px #00f0ff33;
+}
+.precio{
+  color:#00f0ff;
+  font-size:20px;
+  margin:10px 0;
+}
+.btn{
+  display:block;
+  text-align:center;
+  background:#25d366;
+  color:#000;
+  padding:12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+}
+</style>
 </head>
 
 <body>
 
 <header>
   <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo digital — Accesorios Gamer, Móvil y Streaming</p>
+  <p>Catálogo conectado a Google Sheets</p>
 </header>
 
-<div class="container">
+<section class="productos" id="productos"></section>
 
-  <div class="card">
-    <h2>📦 Catálogo en línea</h2>
-    <p>
-      Este catálogo se conecta con Google Sheets para mostrar precios,
-      stock y disponibilidad en tiempo real.
-    </p>
-    <a class="btn" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vSfVn4HX5crzDBVxmbwdhB_pjAMgOgzlr_2EL7IeQcqWtTceDpLzl_GTWlOnBtx91DKy7uvA1HjqkGG/pubhtml" onclick="alert('Conexión a Google Sheets en el siguiente paso')">
-      Ver productos
-    </a>
-  </div>
+<script>
+const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const URL = `https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json`;
 
-  <div class="card">
-    <h2>📍 Comayagua, Honduras</h2>
-    <p>Ventas locales · Pedidos por WhatsApp · Precios en Lempiras</p>
-  </div>
+fetch(URL)
+.then(res => res.text())
+.then(text => {
+  const json = JSON.parse(text.substring(47).slice(0,-2));
+  const rows = json.table.rows;
+  const cont = document.getElementById("productos");
 
-</div>
+  rows.forEach(r => {
+    const producto = r.c[2].v;
+    const precio = r.c[3].v;
+    const mensaje = encodeURIComponent(r.c[5].v);
 
-<footer>
-  © 2026 Soluciones Digitales Comayagua
-</footer>
+    cont.innerHTML += `
+      <div class="card">
+        <h3>${producto}</h3>
+        <div class="precio">Lps.${precio}</div>
+        <a class="btn"
+           href="https://wa.me/50432429490?text=${mensaje}"
+           target="_blank">
+           Pedir por WhatsApp
+        </a>
+      </div>`;
+  });
+});
+</script>
 
 </body>
 </html>
