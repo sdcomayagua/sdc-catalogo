@@ -2,217 +2,225 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Soluciones Digitales Comayagua</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ICONOS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Soluciones Digitales Comayagua | Catálogo Gamer</title>
+<meta name="description" content="Catálogo Gamer, PC, Móvil y Streaming en Comayagua. Pedidos directos por WhatsApp.">
+
+<!-- ====== SEO / FACEBOOK PIXEL (activar luego) ======
+<meta property="og:title" content="Soluciones Digitales Comayagua">
+<meta property="og:description" content="Accesorios Gamer, PC y Streaming en Honduras">
+<meta property="og:image" content="https://TU-LOGO.png">
+-->
 
 <style>
 :root{
-  --bg:#07162c;
-  --card:#0c2342;
-  --accent:#2df3d6;
-  --text:#eafcff;
-  --green:#25D366;
+--bg:#06162a;
+--card:#0b2545;
+--text:#e9f1ff;
+--accent:#00ffe1;
+--green:#2ee66b;
 }
 .light{
-  --bg:#f3f6fa;
-  --card:#ffffff;
-  --accent:#0077ff;
-  --text:#0a1a2a;
+--bg:#f4f6fb;
+--card:#ffffff;
+--text:#0b2545;
+--accent:#0066ff;
+--green:#25c768;
 }
-*{box-sizing:border-box;font-family:system-ui}
+
+*{box-sizing:border-box}
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  transition:.3s;
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI;
+background:var(--bg);
+color:var(--text);
+transition:.3s;
 }
+
+/* HEADER */
 header{
-  text-align:center;
-  padding:20px;
+padding:30px 20px;
+text-align:center;
+background:linear-gradient(180deg,#0a2b55,transparent);
+}
+header img{
+height:60px;
+margin-bottom:10px;
 }
 header h1{
-  color:var(--accent);
-  margin-bottom:5px;
+margin:0;
+color:var(--accent);
 }
+header p{opacity:.8}
+
+/* DARK MODE */
 .toggle{
-  position:absolute;
-  right:15px;
-  top:15px;
-  font-size:22px;
-  cursor:pointer;
+position:fixed;
+top:15px;
+right:15px;
+background:var(--card);
+border-radius:20px;
+padding:8px 12px;
+cursor:pointer;
 }
-.search{
-  margin:15px auto;
-  width:90%;
-}
-.search input{
-  width:100%;
-  padding:15px;
-  border-radius:30px;
-  border:none;
-  outline:none;
-  background:#0e2c55;
-  color:white;
-}
+
+/* CATEGORIAS */
 .categories{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-  padding:15px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+padding:20px;
 }
 .cat{
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  cursor:pointer;
-  transition:.3s;
-}
-.cat i{
-  font-size:28px;
-  margin-bottom:8px;
+background:var(--card);
+padding:20px;
+border-radius:18px;
+text-align:center;
+cursor:pointer;
+transition:.3s;
 }
 .cat:hover{transform:scale(1.05)}
+.cat span{font-size:30px;display:block}
+
+/* PRODUCTOS */
 .section{
-  padding:10px 15px;
+padding:20px;
 }
 .section h2{
-  margin-top:30px;
+margin:0 0 10px;
+color:var(--accent);
 }
-.product{
-  display:flex;
-  gap:12px;
-  background:var(--card);
-  padding:12px;
-  border-radius:15px;
-  margin-bottom:12px;
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
 }
-.product img{
-  width:90px;
-  height:90px;
-  border-radius:10px;
-  object-fit:cover;
+.card{
+background:var(--card);
+border-radius:20px;
+padding:15px;
+display:flex;
+flex-direction:column;
 }
-.product-info{
-  flex:1;
+.card img{
+width:100%;
+border-radius:15px;
+object-fit:contain;
+background:#000;
 }
-.price{color:#4cff7a;font-weight:bold}
+.card h3{margin:10px 0 5px}
+.price{color:var(--accent);font-size:18px}
+.stock{opacity:.7;font-size:14px}
+.desc{
+font-size:14px;
+white-space:pre-line;
+margin:10px 0;
+}
 .btn{
-  display:block;
-  margin-top:8px;
-  padding:12px;
-  text-align:center;
-  border-radius:25px;
-  background:var(--green);
-  color:black;
-  font-weight:bold;
-  text-decoration:none;
+margin-top:auto;
+padding:14px;
+border-radius:30px;
+text-align:center;
+font-weight:bold;
+text-decoration:none;
+color:#000;
+background:var(--green);
 }
-.btn.off{background:#555;color:white}
-.videos i{
-  font-size:20px;
-  margin-right:10px;
-}
+.btn.gray{background:#999;color:#000}
+
+/* FLOAT WHATSAPP */
 .float{
-  position:fixed;
-  right:15px;
-  bottom:15px;
-  background:var(--green);
-  padding:14px 18px;
-  border-radius:30px;
-  color:black;
-  font-weight:bold;
-  text-decoration:none;
+position:fixed;
+bottom:20px;
+right:20px;
+background:#25d366;
+color:#000;
+padding:14px 18px;
+border-radius:30px;
+font-weight:bold;
+text-decoration:none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="toggle" onclick="toggleMode()">🌙</div>
+<div class="toggle" onclick="toggleMode()">🌙 / ☀️</div>
 
 <header>
-  <!-- LOGO -->
-  <!-- <img src="TU_LOGO_AQUI.png" width="80"> -->
-  <h1>Soluciones Digitales Comayagua</h1>
-  <p>Accesorios Gamer, PC y Más</p>
+<img src="logo.png" alt="Soluciones Digitales">
+<h1>Soluciones Digitales Comayagua</h1>
+<p>Accesorios Gamer, PC y Streaming</p>
 </header>
 
-<div class="search">
-  <input type="text" id="search" placeholder="Buscar producto...">
+<div class="categories" id="categories"></div>
+
+<div class="section">
+<div class="products" id="products"></div>
 </div>
 
-<div class="categories">
-  <div class="cat" onclick="filterMain('gamer')"><i class="fa-solid fa-gamepad"></i>Accesorios Gamer</div>
-  <div class="cat" onclick="filterMain('movil')"><i class="fa-solid fa-mobile-screen"></i>Accesorios Celular</div>
-  <div class="cat" onclick="filterMain('pc')"><i class="fa-solid fa-desktop"></i>Accesorios PC</div>
-  <div class="cat" onclick="filterMain('streaming')"><i class="fa-solid fa-tv"></i>Streaming</div>
-</div>
-
-<div id="content"></div>
-
-<a class="float" href="https://wa.me/50432429490" target="_blank">
-<i class="fa-brands fa-whatsapp"></i> ESCRÍBENOS
-</a>
+<a class="float" href="https://wa.me/50432429490" target="_blank">💬 ESCRÍBENOS</a>
 
 <script>
 const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-let products=[];
-fetch(URL).then(r=>r.text()).then(t=>{
-const json=JSON.parse(t.substring(47,t.length-2));
-const cols=json.table.cols.map(c=>c.label.toLowerCase());
-json.table.rows.forEach(r=>{
-let p={};
-r.c.forEach((c,i)=>p[cols[i]]=c?c.v:"");
-products.push(p);
+let allProducts=[];
+
+fetch(URL)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substr(47).slice(0,-2));
+const rows=json.table.rows;
+
+rows.forEach(r=>{
+allProducts.push({
+categoria:r.c[0]?.v,
+nombre:r.c[1]?.v,
+precio:r.c[2]?.v,
+stock:r.c[3]?.v,
+imagen:r.c[4]?.v,
+estado:r.c[5]?.v,
+sub:r.c[6]?.v,
+desc:r.c[7]?.v,
+whatsapp:r.c[8]?.v,
+tiktok:r.c[9]?.v,
+youtube:r.c[10]?.v
 });
-render(products);
+});
+renderCategories();
+renderProducts(allProducts);
 });
 
-function render(list){
-let html="";
-let groups={};
-list.forEach(p=>{
-if(p.estado!=="activo")return;
-if(!groups[p.subcategoria])groups[p.subcategoria]=[];
-groups[p.subcategoria].push(p);
-});
-for(let g in groups){
-html+=`<div class="section"><h2>${g}</h2>`;
-groups[g].forEach(p=>{
-html+=`
-<div class="product">
+function renderCategories(){
+const cats=[...new Set(allProducts.map(p=>p.categoria))];
+document.getElementById("categories").innerHTML=cats.map(c=>`
+<div class="cat" onclick="filterCat('${c}')">
+<span>🎮</span>${c.toUpperCase()}
+</div>`).join("");
+}
+
+function renderProducts(list){
+document.getElementById("products").innerHTML=list.map(p=>`
+<div class="card">
 <img src="${p.imagen}">
-<div class="product-info">
-<b>${p.nombre}</b><br>
-<span class="price">Lps. ${p.precio}</span><br>
-Stock: ${p.stock}<br>
-<small>${p.descripcion||""}</small>
-<div class="videos">
-${p.tiktok?`<a href="${p.tiktok}" target="_blank"><i class="fa-brands fa-tiktok"></i></a>`:""}
-${p.youtube?`<a href="${p.youtube}" target="_blank"><i class="fa-brands fa-youtube"></i></a>`:""}
-</div>
-${p.stock>0?`<a class="btn" href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp)}">PEDIR POR WHATSAPP</a>`:
-`<div class="btn off">Consultar disponibilidad</div>`}
-</div></div>`;
-});
-html+="</div>";
-}
-document.getElementById("content").innerHTML=html;
+<h3>${p.nombre}</h3>
+<div class="price">Lps. ${p.precio}</div>
+<div class="stock">Stock: ${p.stock}</div>
+<div class="desc">${p.desc||""}</div>
+
+${p.tiktok?`<a class="btn gray" href="${p.tiktok}" target="_blank">🎵 Ver en TikTok</a>`:""}
+${p.youtube?`<a class="btn gray" href="${p.youtube}" target="_blank">▶ Ver en YouTube</a>`:""}
+
+<a class="btn" href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp||"Hola, estoy interesado en "+p.nombre)}" target="_blank">
+📲 PEDIR POR WHATSAPP
+</a>
+</div>`).join("");
 }
 
-function filterMain(cat){
-render(products.filter(p=>p.categoria===cat));
-}
-
-document.getElementById("search").oninput=e=>{
-let v=e.target.value.toLowerCase();
-render(products.filter(p=>p.nombre.toLowerCase().includes(v)));
+function filterCat(c){
+renderProducts(allProducts.filter(p=>p.categoria===c));
 }
 
 function toggleMode(){
