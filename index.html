@@ -6,129 +6,75 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
-  --bg:#060b13;
-  --card:#0c1424;
-  --neon:#00f7ff;
-  --accent:#7cff00;
-  --text:#e8f1ff;
-  --muted:#8aa4c6;
-  --danger:#ff3b3b;
-}
-*{box-sizing:border-box;font-family:Segoe UI,Roboto,Arial}
 body{
   margin:0;
-  background:radial-gradient(circle at top,#0b1d38,#04070c);
-  color:var(--text);
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background:#050b12;
+  color:#e6f1ff;
 }
 header{
+  background:linear-gradient(135deg,#00f2ff,#003cff);
   padding:60px 20px;
   text-align:center;
-  background:linear-gradient(135deg,#00152b,#003b6f,#00152b);
-  box-shadow:0 0 40px rgba(0,247,255,.35);
 }
 header h1{
   margin:0;
-  font-size:clamp(28px,5vw,46px);
-  color:var(--neon);
-  text-shadow:0 0 25px rgba(0,247,255,.8);
+  font-size:38px;
 }
-header p{color:var(--muted)}
-nav{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  padding:15px;
-  background:#050a14;
+header p{
+  margin-top:10px;
+  opacity:.9;
 }
-nav button{
-  background:#0c1b33;
-  color:var(--neon);
-  border:1px solid rgba(0,247,255,.3);
-  padding:8px 16px;
-  border-radius:20px;
+button{
+  background:#00f2ff;
+  border:none;
+  color:#000;
+  padding:12px 22px;
+  font-weight:bold;
+  border-radius:6px;
   cursor:pointer;
 }
-nav button.active{
-  background:var(--neon);
-  color:#000;
-}
-.search{
-  max-width:400px;
-  margin:20px auto;
-}
-.search input{
-  width:100%;
-  padding:12px;
-  border-radius:30px;
-  border:none;
-  outline:none;
-  background:#0c1424;
-  color:#fff;
-}
-.container{
-  max-width:1300px;
-  margin:auto;
-  padding:20px;
-}
-.grid{
+#catalogo{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:25px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  padding:40px;
 }
 .card{
-  background:linear-gradient(180deg,#0c1424,#090f1e);
-  border-radius:14px;
-  border:1px solid rgba(0,247,255,.2);
-  box-shadow:0 0 25px rgba(0,0,0,.7);
-  overflow:hidden;
-  transition:.3s;
-}
-.card:hover{
-  transform:translateY(-6px) scale(1.02);
-  box-shadow:0 0 40px rgba(0,247,255,.45);
+  background:#0b1522;
+  border:1px solid #00f2ff30;
+  border-radius:10px;
+  padding:15px;
+  box-shadow:0 0 20px #00f2ff20;
 }
 .card img{
   width:100%;
-  height:210px;
-  object-fit:cover;
+  border-radius:8px;
 }
-.card-body{padding:18px}
-.card h3{
-  margin:0 0 6px;
-  color:var(--neon);
-}
-.price{
-  color:var(--accent);
+.precio{
+  color:#00ff9c;
   font-size:20px;
   font-weight:bold;
 }
-.stock{font-size:14px;color:var(--muted)}
-.agotado{
-  color:var(--danger);
-  font-weight:bold;
+.stock{
+  font-size:13px;
+  opacity:.8;
 }
-.btn{
-  margin-top:12px;
+.whatsapp{
+  margin-top:10px;
   display:block;
   text-align:center;
-  padding:12px;
-  border-radius:10px;
-  background:linear-gradient(135deg,#00f7ff,#00b3ff);
-  color:#001018;
-  font-weight:800;
+  background:#25D366;
+  color:#000;
+  padding:10px;
+  border-radius:6px;
   text-decoration:none;
-}
-.btn.disabled{
-  background:#444;
-  color:#aaa;
-  pointer-events:none;
+  font-weight:bold;
 }
 footer{
   text-align:center;
-  padding:30px;
-  color:#6b7fa6;
+  padding:20px;
+  opacity:.6;
 }
 </style>
 </head>
@@ -136,89 +82,57 @@ footer{
 <body>
 
 <header>
-<h1>Soluciones Digitales Comayagua</h1>
-<p>Catálogo Gamer · Móvil · Streaming · Honduras</p>
+  <h1>Soluciones Digitales Comayagua</h1>
+  <p>Accesorios Gamer • Móvil • Streaming</p>
+  <button onclick="cargarCatalogo()">VER PRODUCTOS</button>
 </header>
 
-<nav id="categorias"></nav>
-
-<div class="search">
-  <input type="text" id="buscador" placeholder="Buscar producto...">
-</div>
-
-<div class="container">
-  <div id="productos" class="grid">Cargando catálogo…</div>
-</div>
+<section id="catalogo"></section>
 
 <footer>
 © 2026 Soluciones Digitales Comayagua
 </footer>
 
 <script>
-const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-const WHATSAPP="50432429490";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
+const WHATSAPP_NUM = "50432429490";
 
-let DATA=[];
-let CAT="TODOS";
+function cargarCatalogo(){
+  fetch(SHEET_URL)
+    .then(res => res.text())
+    .then(text => {
+      const json = JSON.parse(text.substring(47).slice(0,-2));
+      const rows = json.table.rows;
+      const contenedor = document.getElementById("catalogo");
+      contenedor.innerHTML = "";
 
-fetch(URL)
-.then(r=>r.text())
-.then(t=>{
-  const json=JSON.parse(t.substring(47).slice(0,-2));
-  DATA=json.table.rows.map(r=>({
-    categoria:r.c[0]?.v||"",
-    producto:r.c[1]?.v||"",
-    precio:r.c[2]?.v||"",
-    stock:r.c[3]?.v||0,
-    imagen:r.c[4]?.v||"",
-    mensaje:r.c[5]?.v||""
-  }));
-  renderCategorias();
-  render();
-});
+      rows.forEach(r => {
+        if(!r.c[0]) return;
 
-function renderCategorias(){
-  const nav=document.getElementById("categorias");
-  const cats=["TODOS",...new Set(DATA.map(d=>d.categoria))];
-  nav.innerHTML=cats.map(c=>`<button onclick="setCat('${c}',this)">${c}</button>`).join("");
-}
+        const nombre = r.c[1]?.v || "";
+        const precio = r.c[2]?.v || "";
+        const stock = r.c[3]?.v || "";
+        const imagen = r.c[4]?.v || "";
+        const estado = r.c[5]?.v || "";
+        const whatsappMsg = r.c[7]?.v || "";
 
-function setCat(c,el){
-  CAT=c;
-  [...el.parentNode.children].forEach(b=>b.classList.remove("active"));
-  el.classList.add("active");
-  render();
-}
+        if(estado !== "activo") return;
 
-document.getElementById("buscador").addEventListener("input",render);
+        const linkWA = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(whatsappMsg)}`;
 
-function render(){
-  const q=document.getElementById("buscador").value.toLowerCase();
-  const cont=document.getElementById("productos");
-  cont.innerHTML="";
-  DATA.filter(d=>
-    (CAT==="TODOS"||d.categoria===CAT) &&
-    d.producto.toLowerCase().includes(q)
-  ).forEach(d=>{
-    const agotado=d.stock<=0;
-    cont.innerHTML+=`
-    <div class="card">
-      <img src="${d.imagen}">
-      <div class="card-body">
-        <h3>${d.producto}</h3>
-        <div class="price">Lps. ${d.precio}</div>
-        <div class="stock ${agotado?"agotado":""}">
-          ${agotado?"AGOTADO":"Stock: "+d.stock}
-        </div>
-        <a class="btn ${agotado?"disabled":""}"
-           href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(d.mensaje)}"
-           target="_blank">
-           ${agotado?"NO DISPONIBLE":"PEDIR POR WHATSAPP"}
-        </a>
-      </div>
-    </div>`;
-  });
+        contenedor.innerHTML += `
+          <div class="card">
+            <img src="${imagen}" alt="${nombre}">
+            <h3>${nombre}</h3>
+            <div class="precio">Lps. ${precio}</div>
+            <div class="stock">Stock: ${stock}</div>
+            <a class="whatsapp" href="${linkWA}" target="_blank">
+              Pedir por WhatsApp
+            </a>
+          </div>
+        `;
+      });
+    });
 }
 </script>
 
