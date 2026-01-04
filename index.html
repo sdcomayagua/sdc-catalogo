@@ -6,248 +6,220 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- ICONOS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 :root{
-  --bg:#050b14;
-  --card:#0b1628;
-  --neon:#00fff7;
-  --text:#e6f1ff;
-  --accent:#00ff9d;
+  --bg:#050b16;
+  --card:#0b1b33;
+  --neon:#00ffd5;
+  --green:#25d366;
+  --text:#eaf6ff;
 }
-.light{
-  --bg:#f4f6fb;
-  --card:#ffffff;
-  --text:#111;
-}
-*{box-sizing:border-box;font-family:system-ui}
+
 body{
   margin:0;
-  background:radial-gradient(circle at top,#062b52,var(--bg));
+  background:radial-gradient(circle at top, #0a2a4d, #020612);
+  font-family:system-ui,Segoe UI;
   color:var(--text);
-  transition:.3s;
 }
+
+/* HEADER */
 header{
   text-align:center;
-  padding:50px 15px;
+  padding:50px 20px;
 }
 header h1{
   color:var(--neon);
+  font-size:38px;
   text-shadow:0 0 20px var(--neon);
 }
-nav{
+header p{opacity:.8}
+
+/* MENU */
+#menu{
   display:flex;
-  flex-wrap:wrap;
   justify-content:center;
   gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
 }
-nav button{
-  background:transparent;
+.menu-btn{
+  padding:10px 18px;
   border:1px solid var(--neon);
-  color:var(--neon);
-  padding:8px 18px;
   border-radius:20px;
+  background:transparent;
+  color:var(--neon);
   cursor:pointer;
 }
-nav button.active,nav button:hover{
+.menu-btn.active{
   background:var(--neon);
   color:#000;
 }
-#subcats{
+
+/* SUBMENU */
+#submenu{
   display:flex;
   justify-content:center;
-  flex-wrap:wrap;
   gap:8px;
-  margin-top:10px;
+  flex-wrap:wrap;
+  margin-bottom:30px;
 }
-#subcats button{
-  background:#0c1d38;
-  color:var(--accent);
-  border:1px solid var(--accent);
-  padding:5px 12px;
-  border-radius:15px;
+.sub-btn{
+  padding:6px 14px;
+  border-radius:14px;
+  background:#112a44;
   cursor:pointer;
+  font-size:13px;
 }
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:20px;
-}
-.controls input,.controls select{
-  padding:8px 12px;
-  border-radius:8px;
-  border:none;
-}
-.grid{
+
+/* GRID */
+#productos{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
   padding:20px;
 }
+
+/* CARD */
 .card{
-  background:linear-gradient(180deg,#0c1d38,var(--card));
+  background:linear-gradient(180deg,#0b1b33,#050b16);
   border-radius:16px;
   padding:15px;
-  position:relative;
-  animation:float 4s ease-in-out infinite;
+  box-shadow:0 0 20px #000;
+  animation:fade .4s;
 }
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-}
+@keyframes fade{from{opacity:0;transform:scale(.96)}}
+
 .card img{
   width:100%;
+  height:200px;
+  object-fit:cover;
   border-radius:12px;
 }
+
 .badge{
   position:absolute;
-  top:10px;
-  left:10px;
   background:gold;
   color:#000;
-  padding:3px 10px;
+  padding:4px 10px;
+  border-radius:10px;
   font-size:12px;
-  border-radius:10px;
 }
-.price{color:#00ff9d;font-size:18px}
-.desc{font-size:14px;opacity:.9}
-.btn{
-  margin-top:10px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(90deg,#00ff9d,#00fff7);
+
+.price{color:#7CFF00;font-weight:bold}
+.stock{font-size:13px;opacity:.8}
+
+.desc{
+  font-size:13px;
+  margin:8px 0;
+  white-space:pre-line;
+}
+
+.actions a{
+  display:block;
+  text-align:center;
+  margin-top:6px;
+  padding:10px;
+  border-radius:12px;
+  text-decoration:none;
   font-weight:bold;
-  cursor:pointer;
 }
-.video a{
-  display:inline-block;
-  margin-right:10px;
-  font-size:22px;
+
+.whatsapp{
+  background:var(--green);
+  color:#000;
 }
-.floating{
+.agotado{
+  background:#ffaa00;
+  color:#000;
+}
+
+.video{
+  margin-top:6px;
+  background:#111;
+  color:#fff;
+}
+
+/* FLOAT WHATSAPP */
+#float{
   position:fixed;
   bottom:20px;
   right:20px;
-  background:#25d366;
+  background:var(--green);
   color:#000;
-  padding:14px 20px;
+  padding:14px 18px;
   border-radius:30px;
   font-weight:bold;
-}
-.toggle{
-  position:fixed;
-  top:20px;
-  right:20px;
-  cursor:pointer;
+  text-decoration:none;
 }
 </style>
 </head>
 
 <body>
-<div class="toggle" onclick="toggleMode()">🌓</div>
 
 <header>
 <h1>Soluciones Digitales Comayagua</h1>
 <p>Catálogo Gamer • PC • Móvil • Streaming</p>
-<nav id="cats"></nav>
-<div id="subcats"></div>
 </header>
 
-<div class="controls">
-<input id="search" placeholder="Buscar producto">
-<select id="sort">
-<option value="">Ordenar</option>
-<option value="asc">Precio ↑</option>
-<option value="desc">Precio ↓</option>
-</select>
-</div>
+<div id="menu"></div>
+<div id="submenu"></div>
+<div id="productos"></div>
 
-<div class="grid" id="grid"></div>
-
-<a class="floating" href="https://wa.me/50432429490" target="_blank">
+<a id="float" href="https://wa.me/50432429490" target="_blank">
 <i class="fab fa-whatsapp"></i> ESCRÍBENOS
 </a>
 
 <script>
-const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const SHEET_URL="https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
 
-let items=[],cat="",sub="";
+let data=[],cat="",sub="";
 
-fetch(URL).then(r=>r.text()).then(t=>{
-const json=JSON.parse(t.substring(47).slice(0,-2));
-items=json.table.rows.map(r=>{
-let o={};
-json.table.cols.forEach((c,i)=>o[c.label]=r.c[i]?.v||"");
-return o;
-});
-renderCats();
-render();
+fetch(SHEET_URL).then(r=>r.text()).then(t=>{
+  const json=JSON.parse(t.substr(47).slice(0,-2));
+  data=json.table.rows.map(r=>r.c.map(c=>c?c.v:""));
+  buildMenu();
 });
 
-function renderCats(){
-const cats=[...new Set(items.map(i=>i.categoria))];
-const nav=document.getElementById("cats");
-nav.innerHTML='<button onclick="filterCat(\'\')" class="active">TODOS</button>';
-cats.forEach(c=>{
-nav.innerHTML+=`<button onclick="filterCat('${c}')">${c.toUpperCase()}</button>`;
-});
+function buildMenu(){
+  const cats=[...new Set(data.map(d=>d[0]))];
+  menu.innerHTML=cats.map(c=>`<button class="menu-btn" onclick="selectCat('${c}')">${c.toUpperCase()}</button>`).join("");
 }
 
-function filterCat(c){
-cat=c;sub="";
-renderSub();
-render();
+function selectCat(c){
+  cat=c; sub="";
+  document.querySelectorAll(".menu-btn").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  const subs=[...new Set(data.filter(d=>d[0]==c).map(d=>d[6]))];
+  submenu.innerHTML=subs.map(s=>`<div class="sub-btn" onclick="selectSub('${s}')">${s}</div>`).join("");
+  render();
 }
 
-function renderSub(){
-const sc=[...new Set(items.filter(i=>!cat||i.categoria===cat).map(i=>i.subcategoria).filter(Boolean))];
-const el=document.getElementById("subcats");
-el.innerHTML="";
-sc.forEach(s=>{
-el.innerHTML+=`<button onclick="sub='${s}';render()">${s}</button>`;
-});
-}
+function selectSub(s){sub=s; render();}
 
 function render(){
-let list=items.filter(i=>(!cat||i.categoria===cat)&&(!sub||i.subcategoria===sub));
-const q=document.getElementById("search").value.toLowerCase();
-if(q) list=list.filter(i=>i.nombre.toLowerCase().includes(q));
-const s=document.getElementById("sort").value;
-if(s) list.sort((a,b)=>s==="asc"?a.precio-b.precio:b.precio-a.precio);
+  productos.innerHTML=data.filter(d=>{
+    return d[0]==cat && (!sub || d[6]==sub);
+  }).map(d=>{
+    const video=d[9]?`<a class="actions video" href="${d[9]}" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>`
+    : d[10]?`<a class="actions video" href="${d[10]}" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>`:"";
 
-const g=document.getElementById("grid");
-g.innerHTML="";
-list.forEach(i=>{
-g.innerHTML+=`
-<div class="card">
-${i.estado==="destacado"?'<div class="badge">⭐ DESTACADO</div>':""}
-<img src="${i.imagen}">
-<h3>${i.nombre}</h3>
-<div class="price">Lps. ${i.precio}</div>
-<div>Stock: ${i.stock}</div>
-<p class="desc">${i.descripcion||""}</p>
-<div class="video">
-${i.tiktok?`<a href="${i.tiktok}" target="_blank"><i class="fab fa-tiktok"></i></a>`:""}
-${i.youtube?`<a href="${i.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:""}
-</div>
-<button class="btn" onclick="wa(\`${i.whatsapp}\`)">
-${i.stock>0?"🛒 PEDIR POR WHATSAPP":"📦 CONSULTAR DISPONIBILIDAD"}
-</button>
-</div>`;
-});
-}
-
-function wa(msg){
-window.open(`https://wa.me/50432429490?text=${encodeURIComponent(msg)}`);
-}
-function toggleMode(){
-document.body.classList.toggle("light");
+    return `
+    <div class="card">
+      <img src="${d[4]}">
+      <h3>${d[1]}</h3>
+      <div class="price">Lps. ${d[2]}</div>
+      <div class="stock">Stock: ${d[3]}</div>
+      <div class="desc">${d[7]}</div>
+      ${video}
+      ${d[3]>0?
+      `<a class="actions whatsapp" href="https://wa.me/50432429490?text=${encodeURIComponent(d[8])}" target="_blank">🛒 PEDIR POR WHATSAPP</a>`:
+      `<div class="actions agotado">Consultar disponibilidad</div>`}
+    </div>`;
+  }).join("");
 }
 </script>
+
 </body>
 </html>
