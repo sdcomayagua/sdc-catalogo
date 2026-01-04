@@ -207,34 +207,39 @@ footer{
 
 <script>
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-
-const SHEETS = [
-  "gamer",
-  "pc",
-  "movil",
-  "streaming",
-  "cobertores",
-  "power"
-];
+const CONFIG_URL = `https://opensheet.elk.sh/${SHEET_ID}/_config`;
 
 let DATA = [];
+let CATEGORIES = [];
 let CAT = null;
 let SUB = null;
 
-async function loadAllSheets(){
+/* 🔹 CARGA DINÁMICA DE HOJAS */
+async function loadAll(){
+  const cfg = await fetch(CONFIG_URL).then(r=>r.json());
+  CATEGORIES = cfg.map(r => r.sheet).filter(Boolean);
+
   let all = [];
-  for(const sheet of SHEETS){
-    const url = `https://opensheet.elk.sh/${SHEET_ID}/${sheet}`;
+  for(const cat of CATEGORIES){
+    const url = `https://opensheet.elk.sh/${SHEET_ID}/${cat}`;
     const res = await fetch(url);
     const data = await res.json();
-    data.forEach(p => p.categoria = sheet);
+    data.forEach(p => p.categoria = cat);
     all = all.concat(data);
   }
   DATA = all;
+  renderMenu();
 }
-loadAllSheets();
 
-/* 👉 AL TOCAR CATEGORÍA */
+/* 🔹 MENÚ PRINCIPAL */
+function renderMenu(){
+  const menu = document.querySelector('.menu');
+  menu.innerHTML = CATEGORIES.map(c =>
+    `<button onclick="setCat('${c}',this)">${c.toUpperCase()}</button>`
+  ).join('');
+}
+
+/* 🔹 AL TOCAR CATEGORÍA */
 function setCat(cat, el){
   CAT = cat;
   SUB = null;
@@ -243,11 +248,11 @@ function setCat(cat, el){
     .forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
 
-  products.innerHTML = ""; // 👈 NO mostrar productos aún
+  products.innerHTML = '';
   renderSubcats();
 }
 
-/* 👉 MOSTRAR SUBCATEGORÍAS */
+/* 🔹 SUBCATEGORÍAS AUTOMÁTICAS */
 function renderSubcats(){
   const list = DATA.filter(p => p.categoria === CAT);
   const subs = [...new Set(list.map(p => p.subcategoria).filter(Boolean))];
@@ -256,28 +261,28 @@ function renderSubcats(){
     <button onclick="setSub('ALL')">Todos</button>
     ${subs.map(s=>`
       <button onclick="setSub('${s}')">${s}</button>
-    `).join("")}
+    `).join('')}
   `;
 }
 
-/* 👉 AL TOCAR SUBCATEGORÍA */
+/* 🔹 AL TOCAR SUBCATEGORÍA */
 function setSub(sub){
   SUB = sub;
   drawProducts();
 }
 
-/* 👉 DIBUJAR PRODUCTOS */
+/* 🔹 PRODUCTOS */
 function drawProducts(){
-  let list = DATA.filter(p =>
+  const list = DATA.filter(p =>
     p.categoria === CAT &&
-    (SUB === "ALL" || p.subcategoria === SUB)
+    (SUB === 'ALL' || p.subcategoria === SUB)
   );
 
   products.innerHTML = list.map(p=>{
-    const agotado = p.stock <= 0 || p.estado === "agotado";
+    const agotado = p.stock <= 0 || p.estado === 'agotado';
     return `
       <div class="card">
-        ${agotado ? `<div class="badge agotado">AGOTADO</div>` : ""}
+        ${agotado ? `<div class="badge agotado">AGOTADO</div>` : ''}
         <img src="${p.imagen}">
         <h3>${p.nombre}</h3>
         <div class="price">Lps. ${p.precio}</div>
@@ -288,8 +293,10 @@ function drawProducts(){
         </a>
       </div>
     `;
-  }).join("");
+  }).join('');
 }
+
+loadAll();
 </script>
 
 
