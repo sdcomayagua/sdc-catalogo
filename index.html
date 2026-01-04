@@ -6,106 +6,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#050b14;
-  color:#fff;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: radial-gradient(circle at top, #001a33, #000);
+  color: #fff;
 }
 
-/* HEADER */
-header{
-  padding:40px 20px;
-  text-align:center;
-  background:linear-gradient(135deg,#001a33,#00ffe1);
-}
-header h1{
-  margin:0;
-  color:#00ffe1;
-}
-header p{
-  opacity:.9;
+header {
+  padding: 50px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #00ffe1, #003a66);
 }
 
-/* MENU */
-nav{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:15px;
-  background:#020611;
-}
-nav button{
-  background:#0b1a2f;
-  color:#00ffe1;
-  border:1px solid #00ffe1;
-  padding:10px 20px;
-  cursor:pointer;
-  border-radius:20px;
-}
-nav button.active{
-  background:#00ffe1;
-  color:#000;
+header h1 {
+  margin: 0;
+  font-size: 36px;
+  color: #00ffe1;
+  text-shadow: 0 0 15px #00ffe1;
 }
 
-/* SEARCH */
-.search{
-  text-align:center;
-  padding:20px;
-}
-.search input{
-  width:90%;
-  max-width:400px;
-  padding:12px;
-  border-radius:20px;
-  border:none;
+header p {
+  margin-top: 10px;
+  color: #c7faff;
 }
 
-/* GRID */
-.products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-  padding:20px;
-}
-.card{
-  background:#0b1220;
-  border-radius:15px;
-  padding:15px;
-  box-shadow:0 0 15px #000;
-}
-.card img{
-  width:100%;
-  border-radius:10px;
-}
-.card h3{
-  color:#00ffe1;
-}
-.price{
-  color:#00ff6a;
-  font-size:20px;
-}
-.stock{
-  font-size:14px;
-  opacity:.8;
-}
-.card button{
-  margin-top:10px;
-  width:100%;
-  padding:12px;
-  border:none;
-  background:#00ffe1;
-  color:#000;
-  font-weight:bold;
-  border-radius:10px;
-  cursor:pointer;
+/* MENÚ PRINCIPAL */
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 25px 0;
 }
 
-/* FOOTER */
-footer{
-  text-align:center;
-  padding:20px;
-  opacity:.6;
+.menu button {
+  background: transparent;
+  border: 1px solid #00ffe1;
+  color: #00ffe1;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.menu button.active,
+.menu button:hover {
+  background: #00ffe1;
+  color: #000;
+}
+
+/* SUBMENÚ */
+.submenu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.submenu button {
+  background: #111;
+  border: 1px solid #00bcd4;
+  color: #00eaff;
+  padding: 8px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+/* PRODUCTOS */
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  padding: 0 20px 50px;
+}
+
+.card {
+  background: #0b1320;
+  border-radius: 14px;
+  padding: 15px;
+  box-shadow: 0 0 25px rgba(0,255,255,.1);
+}
+
+.card img {
+  width: 100%;
+  border-radius: 10px;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+  color: #00ffe1;
+}
+
+.price {
+  color: #00ff7f;
+  font-weight: bold;
+}
+
+.stock {
+  font-size: 13px;
+  opacity: .8;
+}
+
+.card a {
+  display: block;
+  margin-top: 12px;
+  background: #00ffe1;
+  color: #000;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  opacity: .5;
 }
 </style>
 </head>
@@ -114,85 +134,90 @@ footer{
 
 <header>
   <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo Gamer · Móvil · Streaming</p>
+  <p>Catálogo Gamer · Móvil · Streaming — Honduras</p>
 </header>
 
-<nav>
-  <button class="active" onclick="setCategory('todos',this)">TODOS</button>
-  <button onclick="setCategory('gamer',this)">GAMER</button>
-  <button onclick="setCategory('movil',this)">MÓVIL</button>
-  <button onclick="setCategory('stream',this)">STREAM</button>
-</nav>
-
-<div class="search">
-  <input type="text" id="search" placeholder="Buscar producto...">
+<div class="menu">
+  <button onclick="setCategory('gamer')" class="active">🎮 GAMER</button>
+  <button onclick="setCategory('movil')">📱 MÓVIL</button>
+  <button onclick="setCategory('stream')">🎥 STREAM</button>
 </div>
 
+<div class="submenu" id="submenu"></div>
 <div class="products" id="products"></div>
 
 <footer>
-  © 2026 Soluciones Digitales Comayagua
+© 2026 Soluciones Digitales Comayagua
 </footer>
 
 <script>
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
-const WHATSAPP_NUMBER = "50432429490";
+const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const PHONE = "50432429490";
 
-let allProducts = [];
-let currentCategory = "todos";
+let data = [];
+let currentCategory = "gamer";
+let currentSub = "ALL";
 
-fetch(SHEET_URL)
-.then(res => res.text())
-.then(text => {
-  const json = JSON.parse(text.substring(47).slice(0,-2));
-  allProducts = json.table.rows.map(r => ({
-    categoria: r.c[0]?.v?.toLowerCase() || "",
-    nombre: r.c[1]?.v || "",
-    precio: r.c[2]?.v || "",
-    stock: r.c[3]?.v || "",
-    imagen: r.c[4]?.v || "",
-    estado: r.c[5]?.v || "",
-    destacado: r.c[6]?.v || "",
-    whatsapp: r.c[7]?.v || ""
-  }));
-  render();
-});
+fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    data = json.table.rows.map(r => ({
+      categoria: r.c[0]?.v?.toLowerCase(),
+      nombre: r.c[1]?.v,
+      precio: r.c[2]?.v,
+      stock: r.c[3]?.v,
+      imagen: r.c[4]?.v,
+      estado: r.c[5]?.v,
+      sub: r.c[6]?.v,
+      whatsapp: r.c[7]?.v
+    }));
+    render();
+  });
 
-function setCategory(cat,btn){
+function setCategory(cat) {
   currentCategory = cat;
-  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
+  currentSub = "ALL";
+  document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
   render();
 }
 
-document.getElementById("search").addEventListener("input",render);
+function render() {
+  const filtered = data.filter(p => p.categoria === currentCategory && p.estado === "activo");
 
-function render(){
-  const q = document.getElementById("search").value.toLowerCase();
-  const container = document.getElementById("products");
-  container.innerHTML = "";
+  // SUBMENÚ
+  const subs = [...new Set(filtered.map(p => p.sub))];
+  submenu.innerHTML = `<button onclick="setSub('ALL')">Todos</button>` +
+    subs.map(s => `<button onclick="setSub('${s}')">${s}</button>`).join("");
 
-  allProducts
-  .filter(p =>
-    (currentCategory==="todos" || p.categoria===currentCategory) &&
-    p.nombre.toLowerCase().includes(q)
-  )
-  .forEach(p=>{
-    const msg = encodeURIComponent(p.whatsapp);
-    const link = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+  renderProducts();
+}
 
-    container.innerHTML += `
-      <div class="card">
-        <img src="${p.imagen}" alt="">
-        <h3>${p.nombre}</h3>
-        <div class="price">Lps. ${p.precio}</div>
-        <div class="stock">Stock: ${p.stock}</div>
-        <button onclick="window.open('${link}','_blank')">
-          PEDIR POR WHATSAPP
-        </button>
-      </div>
-    `;
-  });
+function setSub(s) {
+  currentSub = s;
+  renderProducts();
+}
+
+function renderProducts() {
+  const list = data.filter(p =>
+    p.categoria === currentCategory &&
+    p.estado === "activo" &&
+    (currentSub === "ALL" || p.sub === currentSub)
+  );
+
+  products.innerHTML = list.map(p => `
+    <div class="card">
+      <img src="${p.imagen}">
+      <h3>${p.nombre}</h3>
+      <div class="price">Lps. ${p.precio}</div>
+      <div class="stock">Stock: ${p.stock}</div>
+      <a target="_blank"
+         href="https://wa.me/${PHONE}?text=${encodeURIComponent(p.whatsapp)}">
+         PEDIR POR WHATSAPP
+      </a>
+    </div>
+  `).join("");
 }
 </script>
 
