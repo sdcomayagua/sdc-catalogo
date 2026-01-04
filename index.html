@@ -218,8 +218,8 @@ const SHEETS = [
 ];
 
 let DATA = [];
-let CAT = "gamer";
-let SUB = "ALL";
+let CAT = null;
+let SUB = null;
 
 async function loadAllSheets(){
   let all = [];
@@ -227,66 +227,71 @@ async function loadAllSheets(){
     const url = `https://opensheet.elk.sh/${SHEET_ID}/${sheet}`;
     const res = await fetch(url);
     const data = await res.json();
-    data.forEach(p => p.categoria = sheet); // seguridad
+    data.forEach(p => p.categoria = sheet);
     all = all.concat(data);
   }
   DATA = all;
-  render();
 }
-
 loadAllSheets();
 
-function setCat(c,el){
- CAT=c; SUB="ALL";
- document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
- el.classList.add('active');
- render();
+/* 👉 AL TOCAR CATEGORÍA */
+function setCat(cat, el){
+  CAT = cat;
+  SUB = null;
+
+  document.querySelectorAll('.menu button')
+    .forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+
+  products.innerHTML = ""; // 👈 NO mostrar productos aún
+  renderSubcats();
 }
 
-function render(){
- const f = DATA.filter(p=>p.categoria===CAT);
- const subs = [...new Set(f.map(p=>p.subcategoria).filter(Boolean))];
+/* 👉 MOSTRAR SUBCATEGORÍAS */
+function renderSubcats(){
+  const list = DATA.filter(p => p.categoria === CAT);
+  const subs = [...new Set(list.map(p => p.subcategoria).filter(Boolean))];
 
- submenu.innerHTML =
-  `<button onclick="setSub('ALL')">Todos</button>` +
-  subs.map(s=>`<button onclick="setSub('${s}')">${s}</button>`).join("");
-
- draw();
+  submenu.innerHTML = `
+    <button onclick="setSub('ALL')">Todos</button>
+    ${subs.map(s=>`
+      <button onclick="setSub('${s}')">${s}</button>
+    `).join("")}
+  `;
 }
 
-function setSub(s){ SUB=s; draw(); }
-
-function draw(){
- let list = DATA.filter(p =>
-  p.categoria===CAT &&
-  (SUB==="ALL" || p.subcategoria===SUB) &&
-  p.nombre.toLowerCase().includes(search.value.toLowerCase())
- );
-
- if(order.value==="price-asc") list.sort((a,b)=>a.precio-b.precio);
- if(order.value==="price-desc") list.sort((a,b)=>b.precio-a.precio);
- if(order.value==="stock-desc") list.sort((a,b)=>b.stock-a.stock);
-
- products.innerHTML = list.map(p=>{
-  const agotado = p.stock<=0 || p.estado==="agotado";
-  return `
-  <div class="card ${p.subcategoria?'destacado':''}">
-   ${p.subcategoria?`<div class="badge">${p.subcategoria}</div>`:''}
-   ${agotado?`<div class="badge agotado">AGOTADO</div>`:''}
-   <img src="${p.imagen}">
-   <h3>${p.nombre}</h3>
-   <div class="price">Lps. ${p.precio}</div>
-   <div class="stock">Stock: ${p.stock}</div>
-   <a class="${agotado?'agotado':''}" target="_blank"
-    href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp)}">
-    ${agotado?'AVISARME':'PEDIR POR WHATSAPP'}
-   </a>
-  </div>`;
- }).join("");
+/* 👉 AL TOCAR SUBCATEGORÍA */
+function setSub(sub){
+  SUB = sub;
+  drawProducts();
 }
 
-search.oninput = order.onchange = draw;
+/* 👉 DIBUJAR PRODUCTOS */
+function drawProducts(){
+  let list = DATA.filter(p =>
+    p.categoria === CAT &&
+    (SUB === "ALL" || p.subcategoria === SUB)
+  );
+
+  products.innerHTML = list.map(p=>{
+    const agotado = p.stock <= 0 || p.estado === "agotado";
+    return `
+      <div class="card">
+        ${agotado ? `<div class="badge agotado">AGOTADO</div>` : ""}
+        <img src="${p.imagen}">
+        <h3>${p.nombre}</h3>
+        <div class="price">Lps. ${p.precio}</div>
+        <div class="stock">Stock: ${p.stock}</div>
+        <a class="${agotado?'agotado':''}" target="_blank"
+           href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp)}">
+          ${agotado ? 'AVISARME' : 'PEDIR POR WHATSAPP'}
+        </a>
+      </div>
+    `;
+  }).join("");
+}
 </script>
+
 
 
 </body>
