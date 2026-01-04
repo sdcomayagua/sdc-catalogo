@@ -6,236 +6,247 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- ICONOS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
 :root{
-  --neon:#00ffe1;
-  --bg:#020b1c;
-  --card:#081a33;
-  --btn:#00ff88;
+  --bg:#050b14;
+  --card:#0b1628;
+  --neon:#00fff7;
+  --text:#e6f1ff;
+  --accent:#00ff9d;
 }
-
+.light{
+  --bg:#f4f6fb;
+  --card:#ffffff;
+  --text:#111;
+}
+*{box-sizing:border-box;font-family:system-ui}
 body{
   margin:0;
-  background:linear-gradient(180deg,#021028,#000);
-  font-family: 'Segoe UI',sans-serif;
-  color:#fff;
-}
-
-/* HEADER */
-header{
-  padding:40px 20px;
-  text-align:center;
-  background:linear-gradient(90deg,#003a8f,#00c9b7);
-}
-header h1{
-  margin:0;
-  color:var(--neon);
-  text-shadow:0 0 15px var(--neon);
-}
-header p{opacity:.8}
-
-/* MENUS */
-#menu,#submenu{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin:20px;
-}
-.menu-btn{
-  padding:10px 18px;
-  border-radius:25px;
-  border:1px solid var(--neon);
-  color:var(--neon);
-  background:transparent;
-  cursor:pointer;
+  background:radial-gradient(circle at top,#062b52,var(--bg));
+  color:var(--text);
   transition:.3s;
 }
-.menu-btn.active,
-.menu-btn:hover{
+header{
+  text-align:center;
+  padding:50px 15px;
+}
+header h1{
+  color:var(--neon);
+  text-shadow:0 0 20px var(--neon);
+}
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
+nav button{
+  background:transparent;
+  border:1px solid var(--neon);
+  color:var(--neon);
+  padding:8px 18px;
+  border-radius:20px;
+  cursor:pointer;
+}
+nav button.active,nav button:hover{
   background:var(--neon);
   color:#000;
 }
-
-/* GRID */
-#productos{
+#subcats{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+#subcats button{
+  background:#0c1d38;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  padding:5px 12px;
+  border-radius:15px;
+  cursor:pointer;
+}
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin:20px;
+}
+.controls input,.controls select{
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+}
+.grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:25px;
-  padding:30px;
+  gap:20px;
+  padding:20px;
 }
-
-/* CARD */
 .card{
-  background:linear-gradient(180deg,#081a33,#020b1c);
-  border-radius:15px;
-  overflow:hidden;
-  box-shadow:0 0 25px rgba(0,255,200,.2);
-  animation:fadeUp .5s ease;
+  background:linear-gradient(180deg,#0c1d38,var(--card));
+  border-radius:16px;
+  padding:15px;
+  position:relative;
+  animation:float 4s ease-in-out infinite;
 }
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
 }
 .card img{
   width:100%;
-  height:200px;
-  object-fit:cover;
+  border-radius:12px;
 }
-.card .c{
-  padding:15px;
+.badge{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:gold;
+  color:#000;
+  padding:3px 10px;
+  font-size:12px;
+  border-radius:10px;
 }
-.price{color:#00ff88;font-size:18px}
-.stock{opacity:.7;font-size:13px}
-.desc{font-size:14px;line-height:1.4}
-
-/* BUTTONS */
+.price{color:#00ff9d;font-size:18px}
+.desc{font-size:14px;opacity:.9}
 .btn{
-  display:block;
-  width:100%;
-  padding:14px;
   margin-top:10px;
-  border-radius:30px;
+  width:100%;
+  padding:12px;
   border:none;
-  background:var(--btn);
+  border-radius:10px;
+  background:linear-gradient(90deg,#00ff9d,#00fff7);
   font-weight:bold;
   cursor:pointer;
 }
-.btn.gray{background:#444;color:#ccc}
-
-.socials{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
+.video a{
+  display:inline-block;
+  margin-right:10px;
+  font-size:22px;
 }
-.socials a{
-  flex:1;
-  padding:10px;
-  text-align:center;
-  border-radius:20px;
-  color:#fff;
-}
-.tiktok{background:#000}
-.youtube{background:#f00}
-
-/* WHATSAPP FLOAT */
-#wa-float{
+.floating{
   position:fixed;
   bottom:20px;
   right:20px;
   background:#25d366;
-  color:#fff;
-  padding:15px 20px;
-  border-radius:50px;
-  text-decoration:none;
+  color:#000;
+  padding:14px 20px;
+  border-radius:30px;
   font-weight:bold;
-  box-shadow:0 0 20px #25d366;
+}
+.toggle{
+  position:fixed;
+  top:20px;
+  right:20px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
+<div class="toggle" onclick="toggleMode()">🌓</div>
 
 <header>
-  <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo Gamer · PC · Móvil · Streaming</p>
+<h1>Soluciones Digitales Comayagua</h1>
+<p>Catálogo Gamer • PC • Móvil • Streaming</p>
+<nav id="cats"></nav>
+<div id="subcats"></div>
 </header>
 
-<div id="menu"></div>
-<div id="submenu"></div>
-<div id="productos"></div>
+<div class="controls">
+<input id="search" placeholder="Buscar producto">
+<select id="sort">
+<option value="">Ordenar</option>
+<option value="asc">Precio ↑</option>
+<option value="desc">Precio ↓</option>
+</select>
+</div>
 
-<a id="wa-float" href="https://wa.me/50432429490" target="_blank">
-  <i class="fab fa-whatsapp"></i> ESCRÍBENOS
+<div class="grid" id="grid"></div>
+
+<a class="floating" href="https://wa.me/50432429490" target="_blank">
+<i class="fab fa-whatsapp"></i> ESCRÍBENOS
 </a>
 
 <script>
 const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-let data=[],cat="",sub="";
+let items=[],cat="",sub="";
 
-fetch(URL)
-.then(r=>r.text())
-.then(t=>{
-  data=JSON.parse(t.substring(47).slice(0,-2)).table.rows.map(r=>{
-    const c=r.c;
-    return {
-      categoria:c[0]?.v,
-      nombre:c[1]?.v,
-      precio:c[2]?.v,
-      stock:c[3]?.v,
-      imagen:c[4]?.v,
-      estado:c[5]?.v,
-      sub:c[6]?.v,
-      desc:c[7]?.v,
-      wa:c[8]?.v,
-      tt:c[9]?.v,
-      yt:c[10]?.v
-    }
-  }).filter(p=>p.estado==="activo");
-
-  renderMenu();
+fetch(URL).then(r=>r.text()).then(t=>{
+const json=JSON.parse(t.substring(47).slice(0,-2));
+items=json.table.rows.map(r=>{
+let o={};
+json.table.cols.forEach((c,i)=>o[c.label]=r.c[i]?.v||"");
+return o;
+});
+renderCats();
+render();
 });
 
-function renderMenu(){
-  const cats=[...new Set(data.map(p=>p.categoria))];
-  const m=document.getElementById("menu");
-  m.innerHTML="";
-  cats.forEach(c=>{
-    const b=document.createElement("button");
-    b.textContent=c.toUpperCase();
-    b.className="menu-btn";
-    b.onclick=()=>{cat=c;sub="";renderSub();render();}
-    m.appendChild(b);
-  });
+function renderCats(){
+const cats=[...new Set(items.map(i=>i.categoria))];
+const nav=document.getElementById("cats");
+nav.innerHTML='<button onclick="filterCat(\'\')" class="active">TODOS</button>';
+cats.forEach(c=>{
+nav.innerHTML+=`<button onclick="filterCat('${c}')">${c.toUpperCase()}</button>`;
+});
+}
+
+function filterCat(c){
+cat=c;sub="";
+renderSub();
+render();
 }
 
 function renderSub(){
-  const s=[...new Set(data.filter(p=>p.categoria===cat).map(p=>p.sub))];
-  const sm=document.getElementById("submenu");
-  sm.innerHTML="";
-  s.forEach(x=>{
-    const b=document.createElement("button");
-    b.textContent=x;
-    b.className="menu-btn";
-    b.onclick=()=>{sub=x;render();}
-    sm.appendChild(b);
-  });
+const sc=[...new Set(items.filter(i=>!cat||i.categoria===cat).map(i=>i.subcategoria).filter(Boolean))];
+const el=document.getElementById("subcats");
+el.innerHTML="";
+sc.forEach(s=>{
+el.innerHTML+=`<button onclick="sub='${s}';render()">${s}</button>`;
+});
 }
 
 function render(){
-  const g=document.getElementById("productos");
-  g.innerHTML="";
-  data.filter(p=>p.categoria===cat && (!sub||p.sub===sub))
-  .forEach(p=>{
-    const d=document.createElement("div");
-    d.className="card";
-    d.innerHTML=`
-    <img src="${p.imagen}">
-    <div class="c">
-      <b>${p.nombre}</b>
-      <div class="price">Lps. ${p.precio}</div>
-      <div class="stock">Stock: ${p.stock}</div>
-      <div class="desc">${(p.desc||"").replace(/\n/g,"<br>")}</div>
+let list=items.filter(i=>(!cat||i.categoria===cat)&&(!sub||i.subcategoria===sub));
+const q=document.getElementById("search").value.toLowerCase();
+if(q) list=list.filter(i=>i.nombre.toLowerCase().includes(q));
+const s=document.getElementById("sort").value;
+if(s) list.sort((a,b)=>s==="asc"?a.precio-b.precio:b.precio-a.precio);
 
-      <div class="socials">
-        ${p.tt?`<a class="tiktok" href="${p.tt}" target="_blank"><i class="fab fa-tiktok"></i></a>`:""}
-        ${p.yt?`<a class="youtube" href="${p.yt}" target="_blank"><i class="fab fa-youtube"></i></a>`:""}
-      </div>
-
-      ${p.stock>0?
-      `<button class="btn" onclick="wa('${encodeURIComponent(p.wa)}')">💬 PEDIR POR WHATSAPP</button>`:
-      `<button class="btn gray">Consultar disponibilidad</button>`}
-    </div>`;
-    g.appendChild(d);
-  });
+const g=document.getElementById("grid");
+g.innerHTML="";
+list.forEach(i=>{
+g.innerHTML+=`
+<div class="card">
+${i.estado==="destacado"?'<div class="badge">⭐ DESTACADO</div>':""}
+<img src="${i.imagen}">
+<h3>${i.nombre}</h3>
+<div class="price">Lps. ${i.precio}</div>
+<div>Stock: ${i.stock}</div>
+<p class="desc">${i.descripcion||""}</p>
+<div class="video">
+${i.tiktok?`<a href="${i.tiktok}" target="_blank"><i class="fab fa-tiktok"></i></a>`:""}
+${i.youtube?`<a href="${i.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:""}
+</div>
+<button class="btn" onclick="wa(\`${i.whatsapp}\`)">
+${i.stock>0?"🛒 PEDIR POR WHATSAPP":"📦 CONSULTAR DISPONIBILIDAD"}
+</button>
+</div>`;
+});
 }
 
 function wa(msg){
-  window.open(`https://wa.me/50432429490?text=${msg}`);
+window.open(`https://wa.me/50432429490?text=${encodeURIComponent(msg)}`);
+}
+function toggleMode(){
+document.body.classList.toggle("light");
 }
 </script>
 </body>
