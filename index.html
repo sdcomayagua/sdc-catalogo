@@ -38,15 +38,16 @@ body{
 .menu{
  display:flex;
  justify-content:center;
- gap:12px;
+ gap:10px;
  padding:15px;
  background:#020611;
+ flex-wrap:wrap;
 }
 .menu button{
  background:transparent;
  border:1px solid var(--neon);
  color:var(--neon);
- padding:10px 18px;
+ padding:10px 16px;
  border-radius:20px;
  cursor:pointer;
 }
@@ -173,13 +174,16 @@ footer{
 
 <div class="hero">
  <h1>Soluciones Digitales Comayagua</h1>
- <p>Catálogo Gamer · Móvil · Streaming</p>
+ <p>Catálogo Gamer · PC · Móvil · Streaming · Power</p>
 </div>
 
 <div class="menu">
  <button class="active" onclick="setCat('gamer',this)">🎮 GAMER</button>
+ <button onclick="setCat('pc',this)">🖥️ PC</button>
  <button onclick="setCat('movil',this)">📱 MÓVIL</button>
- <button onclick="setCat('stream',this)">🎥 STREAM</button>
+ <button onclick="setCat('streaming',this)">📺 STREAM</button>
+ <button onclick="setCat('cobertores',this)">📱 CASE</button>
+ <button onclick="setCat('power',this)">🔋 POWER</button>
 </div>
 
 <div class="submenu" id="submenu"></div>
@@ -236,11 +240,11 @@ function draw(){
  if(order.value==="stock-desc")list.sort((a,b)=>b.stock-a.stock);
 
  products.innerHTML=list.map(p=>{
-  const agotado=p.stock<=0||p.estado!=="activo";
-  const destacado=p.subcategoria.toLowerCase().includes("destacado");
+  const agotado=p.stock<=0||p.estado==="agotado";
+  const destacado=p.subcategoria && p.subcategoria.length>0;
   return `
   <div class="card ${destacado?'destacado':''}">
-   ${destacado?'<div class="badge">DESTACADO</div>':''}
+   ${destacado?`<div class="badge">${p.subcategoria}</div>`:''}
    ${agotado?'<div class="badge agotado">AGOTADO</div>':''}
    <img src="${p.imagen}">
    <h3>${p.nombre}</h3>
