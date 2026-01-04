@@ -6,219 +6,255 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: radial-gradient(circle at top, #001a33, #000);
-  color: #fff;
+:root{
+ --bg:#05080f;
+ --card:#0b1320;
+ --neon:#00ffe1;
+ --accent:#00ff7f;
+ --danger:#ff4d4d;
+}
+*{box-sizing:border-box;font-family:Segoe UI,Arial}
+body{
+ margin:0;
+ background:radial-gradient(circle at top,#0a1d33,#000);
+ color:#fff;
 }
 
-header {
-  padding: 50px 20px;
-  text-align: center;
-  background: linear-gradient(135deg, #00ffe1, #003a66);
+/* HERO */
+.hero{
+ padding:55px 20px;
+ text-align:center;
+ background:linear-gradient(135deg,#001a33,#003a66);
 }
-
-header h1 {
-  margin: 0;
-  font-size: 36px;
-  color: #00ffe1;
-  text-shadow: 0 0 15px #00ffe1;
+.hero h1{
+ margin:0;
+ font-size:36px;
+ color:var(--neon);
+ text-shadow:0 0 20px var(--neon);
 }
+.hero p{opacity:.85}
 
-header p {
-  margin-top: 10px;
-  color: #c7faff;
+/* MENU */
+.menu{
+ display:flex;
+ justify-content:center;
+ gap:12px;
+ padding:15px;
+ background:#020611;
 }
-
-/* MENÚ PRINCIPAL */
-.menu {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin: 25px 0;
+.menu button{
+ background:transparent;
+ border:1px solid var(--neon);
+ color:var(--neon);
+ padding:10px 18px;
+ border-radius:20px;
+ cursor:pointer;
 }
-
-.menu button {
-  background: transparent;
-  border: 1px solid #00ffe1;
-  color: #00ffe1;
-  padding: 10px 18px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
 .menu button.active,
-.menu button:hover {
-  background: #00ffe1;
-  color: #000;
+.menu button:hover{
+ background:var(--neon);
+ color:#000;
 }
 
-/* SUBMENÚ */
-.submenu {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 25px;
+/* SUBMENU */
+.submenu{
+ display:flex;
+ justify-content:center;
+ flex-wrap:wrap;
+ gap:10px;
+ padding:15px;
 }
 
-.submenu button {
-  background: #111;
-  border: 1px solid #00bcd4;
-  color: #00eaff;
-  padding: 8px 14px;
-  border-radius: 14px;
-  cursor: pointer;
+/* FILTERS */
+.filters{
+ display:flex;
+ justify-content:center;
+ flex-wrap:wrap;
+ gap:10px;
+ padding:10px;
+}
+.filters input,
+.filters select{
+ padding:8px;
+ border-radius:10px;
+ border:none;
 }
 
-/* PRODUCTOS */
-.products {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
-  padding: 0 20px 50px;
+/* GRID */
+.products{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+ gap:20px;
+ padding:20px;
+}
+.card{
+ background:linear-gradient(180deg,#0b1320,#070d18);
+ border-radius:14px;
+ padding:15px;
+ box-shadow:0 0 20px rgba(0,255,255,.12);
+ position:relative;
+ transition:.3s;
+}
+.card:hover{
+ transform:translateY(-6px);
+ box-shadow:0 0 35px rgba(0,255,255,.35);
+}
+.card.destacado{
+ border:1px solid var(--neon);
+ box-shadow:0 0 40px rgba(0,255,255,.6);
+}
+.badge{
+ position:absolute;
+ top:10px;
+ left:10px;
+ padding:5px 10px;
+ font-size:12px;
+ border-radius:12px;
+ background:var(--neon);
+ color:#000;
+}
+.badge.agotado{
+ background:var(--danger);
+ color:#fff;
+}
+.card img{
+ width:100%;
+ height:180px;
+ object-fit:cover;
+ border-radius:10px;
+}
+.card h3{
+ margin:10px 0 5px;
+ color:var(--neon);
+}
+.price{color:var(--accent);font-weight:bold}
+.stock{font-size:13px;opacity:.8}
+
+.card a{
+ display:block;
+ margin-top:12px;
+ background:var(--neon);
+ color:#000;
+ text-align:center;
+ padding:10px;
+ border-radius:10px;
+ text-decoration:none;
+ font-weight:bold;
+}
+.card a.agotado{
+ background:#444;
+ color:#ccc;
+ pointer-events:none;
 }
 
-.card {
-  background: #0b1320;
-  border-radius: 14px;
-  padding: 15px;
-  box-shadow: 0 0 25px rgba(0,255,255,.1);
+/* WHATSAPP FLOAT */
+.whatsapp-float{
+ position:fixed;
+ bottom:20px;
+ right:20px;
+ background:#25D366;
+ color:#fff;
+ padding:15px;
+ border-radius:50%;
+ font-size:22px;
+ text-decoration:none;
+ box-shadow:0 0 20px rgba(0,0,0,.4);
 }
 
-.card img {
-  width: 100%;
-  border-radius: 10px;
-  height: 180px;
-  object-fit: cover;
-}
-
-.card h3 {
-  margin: 10px 0 5px;
-  color: #00ffe1;
-}
-
-.price {
-  color: #00ff7f;
-  font-weight: bold;
-}
-
-.stock {
-  font-size: 13px;
-  opacity: .8;
-}
-
-.card a {
-  display: block;
-  margin-top: 12px;
-  background: #00ffe1;
-  color: #000;
-  text-align: center;
-  padding: 10px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  opacity: .5;
+footer{
+ text-align:center;
+ padding:20px;
+ opacity:.5;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo Gamer · Móvil · Streaming — Honduras</p>
-</header>
+<div class="hero">
+ <h1>Soluciones Digitales Comayagua</h1>
+ <p>Catálogo Gamer · Móvil · Streaming</p>
+</div>
 
 <div class="menu">
-  <button onclick="setCategory('gamer')" class="active">🎮 GAMER</button>
-  <button onclick="setCategory('movil')">📱 MÓVIL</button>
-  <button onclick="setCategory('stream')">🎥 STREAM</button>
+ <button class="active" onclick="setCat('gamer',this)">🎮 GAMER</button>
+ <button onclick="setCat('movil',this)">📱 MÓVIL</button>
+ <button onclick="setCat('stream',this)">🎥 STREAM</button>
 </div>
 
 <div class="submenu" id="submenu"></div>
+
+<div class="filters">
+ <input type="text" id="search" placeholder="Buscar producto…">
+ <select id="order">
+  <option value="">Ordenar</option>
+  <option value="price-asc">Precio ↑</option>
+  <option value="price-desc">Precio ↓</option>
+  <option value="stock-desc">Stock ↓</option>
+ </select>
+</div>
+
 <div class="products" id="products"></div>
 
-<footer>
-© 2026 Soluciones Digitales Comayagua
-</footer>
+<a class="whatsapp-float" target="_blank"
+ href="https://wa.me/50432429490">💬</a>
+
+<footer>© 2026 Soluciones Digitales Comayagua</footer>
 
 <script>
-const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const PHONE = "50432429490";
+const URL="https://opensheet.elk.sh/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/Catalogo%20SDC";
+let DATA=[],CAT="gamer",SUB="ALL";
 
-let data = [];
-let currentCategory = "gamer";
-let currentSub = "ALL";
+fetch(URL).then(r=>r.json()).then(j=>{DATA=j;render();});
 
-fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substr(47).slice(0, -2));
-    data = json.table.rows.map(r => ({
-      categoria: r.c[0]?.v?.toLowerCase(),
-      nombre: r.c[1]?.v,
-      precio: r.c[2]?.v,
-      stock: r.c[3]?.v,
-      imagen: r.c[4]?.v,
-      estado: r.c[5]?.v,
-      sub: r.c[6]?.v,
-      whatsapp: r.c[7]?.v
-    }));
-    render();
-  });
-
-function setCategory(cat) {
-  currentCategory = cat;
-  currentSub = "ALL";
-  document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  render();
+function setCat(c,el){
+ CAT=c; SUB="ALL";
+ document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+ el.classList.add('active');
+ render();
 }
 
-function render() {
-  const filtered = data.filter(p => p.categoria === currentCategory && p.estado === "activo");
-
-  // SUBMENÚ
-  const subs = [...new Set(filtered.map(p => p.sub))];
-  submenu.innerHTML = `<button onclick="setSub('ALL')">Todos</button>` +
-    subs.map(s => `<button onclick="setSub('${s}')">${s}</button>`).join("");
-
-  renderProducts();
+function render(){
+ const f=DATA.filter(p=>p.categoria===CAT);
+ const subs=[...new Set(f.map(p=>p.subcategoria))];
+ submenu.innerHTML=`<button onclick="setSub('ALL')">Todos</button>`+
+ subs.map(s=>`<button onclick="setSub('${s}')">${s}</button>`).join("");
+ draw();
 }
 
-function setSub(s) {
-  currentSub = s;
-  renderProducts();
+function setSub(s){SUB=s;draw();}
+
+function draw(){
+ let list=DATA.filter(p=>
+  p.categoria===CAT &&
+  (SUB==="ALL"||p.subcategoria===SUB) &&
+  p.nombre.toLowerCase().includes(search.value.toLowerCase())
+ );
+
+ if(order.value==="price-asc")list.sort((a,b)=>a.precio-b.precio);
+ if(order.value==="price-desc")list.sort((a,b)=>b.precio-a.precio);
+ if(order.value==="stock-desc")list.sort((a,b)=>b.stock-a.stock);
+
+ products.innerHTML=list.map(p=>{
+  const agotado=p.stock<=0||p.estado!=="activo";
+  const destacado=p.subcategoria.toLowerCase().includes("destacado");
+  return `
+  <div class="card ${destacado?'destacado':''}">
+   ${destacado?'<div class="badge">DESTACADO</div>':''}
+   ${agotado?'<div class="badge agotado">AGOTADO</div>':''}
+   <img src="${p.imagen}">
+   <h3>${p.nombre}</h3>
+   <div class="price">Lps. ${p.precio}</div>
+   <div class="stock">Stock: ${p.stock}</div>
+   <a class="${agotado?'agotado':''}" target="_blank"
+    href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp)}">
+    ${agotado?'AVISARME':'PEDIR POR WHATSAPP'}
+   </a>
+  </div>`;
+ }).join("");
 }
 
-function renderProducts() {
-  const list = data.filter(p =>
-    p.categoria === currentCategory &&
-    p.estado === "activo" &&
-    (currentSub === "ALL" || p.sub === currentSub)
-  );
-
-  products.innerHTML = list.map(p => `
-    <div class="card">
-      <img src="${p.imagen}">
-      <h3>${p.nombre}</h3>
-      <div class="price">Lps. ${p.precio}</div>
-      <div class="stock">Stock: ${p.stock}</div>
-      <a target="_blank"
-         href="https://wa.me/${PHONE}?text=${encodeURIComponent(p.whatsapp)}">
-         PEDIR POR WHATSAPP
-      </a>
-    </div>
-  `).join("");
-}
+search.oninput=order.onchange=draw;
 </script>
 
 </body>
