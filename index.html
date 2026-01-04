@@ -91,7 +91,7 @@
     }
     .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
 
-    /* CATEGORÍAS (Barra Horizontal) */
+    /* CATEGORÍAS */
     .filters-wrapper {
       position: sticky; top: 65px; z-index: 90;
       background: var(--bg); padding-bottom: 5px; transition: 0.3s;
@@ -108,7 +108,7 @@
     }
     .category-bar::-webkit-scrollbar, .sub-bar::-webkit-scrollbar { display: none; }
 
-    /* Estilo de los Botones (Chips) */
+    /* CHIPS / BOTONES */
     .chip {
       padding: 10px 18px;
       border-radius: 12px;
@@ -119,10 +119,9 @@
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: flex; align-items: center; gap: 8px;
       transition: all 0.2s;
+      text-transform: uppercase; /* MAYUSCULAS */
     }
 
     .chip.active {
@@ -133,7 +132,7 @@
       transform: scale(1.05);
     }
     
-    .sub-bar .chip { font-size: 13px; padding: 6px 14px; border-radius: 20px; }
+    .sub-bar .chip { font-size: 12px; padding: 6px 14px; border-radius: 20px; text-transform: capitalize; }
     .sub-bar .chip.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3); }
 
     /* GRID PRODUCTOS */
@@ -146,30 +145,76 @@
     .card {
       background: var(--card-bg); border: 1px solid var(--border);
       border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;
+      position: relative;
       animation: fadeIn 0.5s ease-out forwards;
     }
-    .card-img-container {
-      width: 100%; aspect-ratio: 1/1; background: #fff; padding: 15px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .card img { width: 100%; height: 100%; object-fit: contain; }
-    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; gap: 6px; }
-    .card h3 { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .price { color: var(--accent); font-weight: 700; font-size: 16px; }
     
-    .stock-badge { font-size: 10px; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.1); color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-    .stock-ok { color: var(--accent); background: rgba(52, 211, 153, 0.15); }
-    .stock-out { color: #f87171; background: rgba(248, 113, 113, 0.15); }
+    /* IMAGEN DE PRODUCTO */
+    .card-img-container {
+      width: 100%; 
+      aspect-ratio: 1/1; 
+      background: #fff; /* Fondo blanco para que la imagen resalte */
+      padding: 0; /* SIN RELLENO PARA QUE LLENE TODO */
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* Ajustar sin cortar */
+      transition: 0.3s;
+    }
 
+    /* ESTILOS DE AGOTADO */
+    .card.agotado .card-img-container img {
+        filter: grayscale(100%); /* Blanco y negro */
+        opacity: 0.6;
+    }
+
+    .ribbon {
+        position: absolute;
+        top: 20px; left: -35px;
+        width: 120px;
+        background: #ef4444; /* Rojo */
+        color: white;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 5px 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10;
+        letter-spacing: 1px;
+    }
+
+    .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; gap: 6px; }
+    
+    .card h3 { 
+      margin: 0; font-size: 15px; font-weight: 600; line-height: 1.3; 
+      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
+    }
+    
+    .price { color: var(--accent); font-weight: 700; font-size: 17px; }
+    
     .desc { font-size: 12px; color: var(--text-muted); margin-bottom: auto; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
+    /* BOTONES */
     .btn-ws {
       margin-top: 12px; background: var(--primary); color: #fff; border: none;
-      padding: 10px; border-radius: 12px; font-weight: 600; font-size: 13px;
+      padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13px;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      gap: 6px; width: 100%; text-decoration: none;
+      gap: 6px; width: 100%; text-decoration: none; transition: 0.2s;
     }
-    .btn-ws.disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+    .btn-ws:hover { transform: scale(0.98); opacity: 0.9; }
+
+    .btn-consultar {
+      background: #475569; /* Gris */
+      color: #cbd5e1;
+      font-size: 11px;
+    }
+    .btn-consultar:hover { background: #334155; color: #fff; }
 
     /* LOADING */
     #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: var(--primary); }
@@ -223,18 +268,14 @@
 <script>
 /* ================= CONFIGURACIÓN ================= */
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-
-// ✅ TU CÓDIGO ACTUALIZADO
-const CONFIG_GID = "1488858707"; 
-
+const CONFIG_GID = "1488858707"; // TU CONFIG GID ACTUAL
 const MY_PHONE = "50432429490"; 
 
-/* ================= LÓGICA DEL SISTEMA ================= */
+/* ================= LÓGICA ================= */
 let products = [];
 let currentCategory = "";
 let currentSub = "";
 
-// 1. DICCIONARIO DE ICONOS AUTOMÁTICOS
 function getIconForCategory(catName) {
   if (!catName) return '📦';
   const name = catName.toLowerCase();
@@ -249,101 +290,52 @@ function getIconForCategory(catName) {
   return '📦';
 }
 
-// 2. PASO A: LEER LA PESTAÑA _CONFIG
 function fetchConfig() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
-  
-  fetch(url)
-    .then(r => r.text())
-    .then(t => {
+  fetch(url).then(r => r.text()).then(t => {
       const json = JSON.parse(t.substring(47, t.length - 2));
-      // Extraemos los nombres de la Columna A de _config
-      const sheetNames = json.table.rows
-        .map(r => r.c[0] ? r.c[0].v : null)
-        .filter(name => name && name.toLowerCase() !== 'sheet'); // Filtramos header si existe
-      
-      console.log("Hojas detectadas:", sheetNames);
+      const sheetNames = json.table.rows.map(r => r.c[0] ? r.c[0].v : null).filter(name => name && name.toLowerCase() !== 'sheet');
       loadAllTabs(sheetNames);
-    })
-    .catch(e => {
-      console.error("Error leyendo config:", e);
-      document.getElementById('loader').innerHTML = 
-        '<p style="color:red; text-align:center;">Error: No se pudo leer la configuración.<br>Verifica el GID de la pestaña _config</p>';
-    });
+    }).catch(e => console.error("Error config", e));
 }
 
-// 3. PASO B: CARGAR UNA HOJA INDIVIDUAL
 function fetchTab(sheetName) {
-  // Usamos el nombre de la hoja directamente
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  
-  return fetch(url)
-    .then(r => r.text())
-    .then(t => {
+  return fetch(url).then(r => r.text()).then(t => {
       const json = JSON.parse(t.substring(47, t.length - 2));
-      
-      // Normalizamos encabezados (quita tildes y espacios)
-      const cols = json.table.cols.map(c => {
-        if(!c || !c.label) return "col_desc";
-        return c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
-      });
-
+      const cols = json.table.cols.map(c => c && c.label ? c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "col");
       return json.table.rows.map(r => {
         let obj = {};
-        r.c.forEach((c, i) => {
-          obj[cols[i]] = c ? (c.v === null ? "" : c.v) : "";
-        });
-        
-        // Si la columna categoria está vacía, usamos el nombre de la hoja
-        if (!obj.categoria || obj.categoria === "") {
-            obj.categoria = sheetName;
-        }
+        r.c.forEach((c, i) => obj[cols[i]] = c ? (c.v === null ? "" : c.v) : "");
+        if (!obj.categoria) obj.categoria = sheetName;
         return obj;
-      }).filter(p => p.nombre); // Solo productos con nombre
-    })
-    .catch(err => {
-        console.warn(`Error cargando la hoja: ${sheetName}`, err);
-        return []; // Retorna vacío si falla una hoja para no romper todo
-    });
+      }).filter(p => p.nombre);
+    }).catch(err => []);
 }
 
-// 4. PASO C: UNIR TODO
 function loadAllTabs(sheetNames) {
-  const promises = sheetNames.map(name => fetchTab(name));
-  
-  Promise.all(promises)
-    .then(results => {
-      products = results.flat(); // Unimos todos los arrays
-      
-      if(products.length === 0) {
-         document.getElementById('loader').innerHTML = '<p>No se encontraron productos.</p>';
-         return;
-      }
-
+  Promise.all(sheetNames.map(name => fetchTab(name))).then(results => {
+      products = results.flat();
       document.getElementById('loader').style.display = 'none';
       initCategories();
       render();
     });
 }
 
-// Arrancar el sistema
 fetchConfig();
-
 
 /* ================= VISUALIZACIÓN ================= */
 function initCategories() {
   const rawCats = products.map(p => p.categoria ? p.categoria.trim() : "Otros");
   const cats = [...new Set(rawCats)];
-  
   const bar = document.getElementById('categoryBar');
   bar.innerHTML = "";
 
   cats.forEach((c, i) => {
     const btn = document.createElement('div');
     btn.className = 'chip' + (i === 0 ? ' active' : '');
-    const displayName = c.charAt(0).toUpperCase() + c.slice(1);
-    btn.innerHTML = `${getIconForCategory(c)} ${displayName}`;
-    
+    // El CSS se encarga de las mayúsculas
+    btn.innerHTML = `${getIconForCategory(c)} ${c}`; 
     btn.onclick = () => {
       currentCategory = c;
       currentSub = "";
@@ -359,19 +351,11 @@ function initCategories() {
 }
 
 function updateSubs() {
-  const currentCatProducts = products.filter(p => {
-    const pCat = p.categoria ? p.categoria.trim() : "Otros";
-    return pCat === currentCategory;
-  });
-
+  const currentCatProducts = products.filter(p => (p.categoria ? p.categoria.trim() : "Otros") === currentCategory);
   const subs = [...new Set(currentCatProducts.map(p => p.subcategoria).filter(Boolean))];
   const bar = document.getElementById('subBar');
   bar.innerHTML = "";
-  
-  if(subs.length === 0) {
-    bar.style.display = 'none';
-    return;
-  }
+  if(subs.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
 
   const allBtn = document.createElement('div');
@@ -415,30 +399,44 @@ function render() {
   }
 
   filtered.forEach(p => {
-    let stockClass = p.stock <= 0 ? 'stock-out' : 'stock-ok';
-    let stockText = p.stock <= 0 ? 'Agotado' : 'Disponible';
-
-    // Prioridad: Mensaje de columna whatsapp > Mensaje automático
-    let msg = "";
+    // LÓGICA DE STOCK
+    const isAgotado = p.stock <= 0;
+    
+    // Configuración del botón y mensaje
+    let btnText = "PEDIR AHORA 🚀";
+    let btnClass = "btn-ws";
+    let waMsg = "";
+    
+    // Si tienes un mensaje personalizado en Excel, úsalo, si no usa el default
     if(p.whatsapp && p.whatsapp.length > 5) {
-        msg = p.whatsapp;
+        waMsg = p.whatsapp;
     } else {
-        msg = `Hola SDC, me interesa: *${p.nombre}*`;
+        waMsg = `Hola SDC, me interesa: *${p.nombre}*`;
     }
-    const waLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
+
+    // SI ESTÁ AGOTADO
+    if (isAgotado) {
+        btnText = "PREGUNTAR DISPONIBILIDAD";
+        btnClass = "btn-ws btn-consultar";
+        waMsg = `Hola SDC, vi que el producto *${p.nombre}* está AGOTADO. ¿Podrían avisarme cuando esté disponible?`;
+    }
+
+    const waLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
 
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = isAgotado ? 'card agotado' : 'card';
+    
+    // Ribbon de Agotado
+    const ribbonHTML = isAgotado ? `<div class="ribbon">AGOTADO</div>` : '';
+
     card.innerHTML = `
       <div class="card-img-container">
-        <img src="${p.imagen}" alt="${p.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
+        ${ribbonHTML}
+        <img src="${p.imagen}" alt="${p.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Sin+Imagen'">
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
-        <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
-          <div class="price">Lps. ${p.precio || '0'}</div>
-          <div class="stock-badge ${stockClass}">${stockText}</div>
-        </div>
+        <div class="price">Lps. ${p.precio || '0'}</div>
         <div class="desc">${p.descripcion || ""}</div>
         
         <div class="media-links" style="display:flex; gap:10px; margin: 8px 0;">
@@ -446,9 +444,9 @@ function render() {
           ${p.youtube ? `<a href="${p.youtube}" target="_blank" style="color:#fff; background:#ff0000; padding:6px 10px; border-radius:8px; font-size:12px; font-weight:bold; text-decoration:none; flex:1; text-align:center;"><i class="fa-brands fa-youtube"></i> Video</a>` : ""}
         </div>
 
-        ${p.stock > 0 ? 
-          `<a href="${waLink}" target="_blank" class="btn-ws"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>` : 
-          `<button class="btn-ws disabled">AGOTADO</button>`}
+        <a href="${waLink}" target="_blank" class="${btnClass}">
+           <i class="fa-brands fa-whatsapp"></i> ${btnText}
+        </a>
       </div>
     `;
     grid.appendChild(card);
