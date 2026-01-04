@@ -2,131 +2,140 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Soluciones Digitales Comayagua</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ICONOS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Soluciones Digitales Comayagua | Catálogo</title>
+
+<meta name="description" content="Catálogo Gamer, PC, Móvil y Streaming en Comayagua. Pedidos directos por WhatsApp.">
+<meta name="keywords" content="Gamer, Accesorios, Celulares, Streaming, Comayagua">
+<meta name="author" content="Soluciones Digitales Comayagua">
 
 <style>
 :root{
-  --bg:#07182d;
-  --card:#0d2545;
-  --neon:#00fff0;
+  --bg:#061a2f;
+  --card:#0b2a4a;
+  --neon:#19f6e8;
   --green:#25d366;
+  --text:#eafcff;
 }
-*{box-sizing:border-box;font-family:Segoe UI,sans-serif}
 body{
   margin:0;
-  background:radial-gradient(circle at top,#0a2a52,#020b18);
-  color:#fff;
+  font-family:system-ui,Segoe UI;
+  background:radial-gradient(circle at top,#0c3b63,#020d1a);
+  color:var(--text);
 }
-
-/* HEADER */
 header{
-  padding:40px 20px;
+  padding:50px 20px;
   text-align:center;
 }
 header h1{
   color:var(--neon);
-  text-shadow:0 0 15px var(--neon);
+  font-size:2.5rem;
 }
-header p{opacity:.8}
-
-/* CATEGORIAS */
-.menu{
+header p{
+  opacity:.85;
+}
+.controls{
   display:flex;
+  flex-wrap:wrap;
   justify-content:center;
-  margin:20px 0;
+  gap:10px;
+  margin-bottom:30px;
 }
-.menu button{
-  background:var(--neon);
-  color:#000;
-  border:none;
-  padding:14px 26px;
-  border-radius:30px;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 0 20px var(--neon);
-}
-
-/* DROPDOWN */
-.dropdown{
-  display:none;
-  background:#05162b;
-  border-radius:16px;
-  padding:20px;
-  max-width:900px;
-  margin:20px auto;
-}
-.dropdown.active{display:block}
-.dropdown button{
-  display:block;
-  width:100%;
-  margin:10px 0;
-  padding:14px;
+select,input{
+  background:#061a2f;
+  border:1px solid #19f6e840;
+  color:white;
+  padding:12px 14px;
   border-radius:12px;
-  border:none;
-  background:#0b2d55;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
+  font-size:1rem;
 }
-.dropdown button:hover{
-  background:var(--neon);
-  color:#000;
-}
-
-/* PRODUCTOS */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
-  padding:20px;
+  padding:0 20px 80px;
 }
 .card{
-  background:linear-gradient(160deg,#0b2445,#06162c);
+  background:linear-gradient(180deg,#0b2a4a,#071a2d);
   border-radius:18px;
   overflow:hidden;
-  box-shadow:0 0 20px #000;
-  animation:fade .4s ease;
+  box-shadow:0 0 25px #000;
+  transition:.3s;
 }
-@keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
+.card:hover{
+  transform:translateY(-5px);
+}
 .card img{
   width:100%;
-  height:200px;
+  height:220px;
   object-fit:cover;
 }
-.card .c{
-  padding:15px;
+.card .body{
+  padding:16px;
 }
-.price{color:#7CFF00;font-weight:bold}
-.stock{font-size:13px;opacity:.8}
-
-/* BOTON */
+.card h3{
+  margin:0 0 8px;
+}
+.price{
+  color:#4cff9f;
+  font-weight:bold;
+}
+.stock{
+  font-size:.9rem;
+  opacity:.85;
+}
+.desc{
+  font-size:.9rem;
+  margin:10px 0;
+}
 .btn{
-  display:block;
-  margin-top:15px;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
   padding:14px;
-  text-align:center;
   border-radius:30px;
   background:var(--green);
-  color:#000;
-  font-weight:bold;
+  color:#003b1b;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+}
+.btn.off{
+  background:#ffb703;
+}
+.video{
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+.video a{
+  flex:1;
+  text-align:center;
+  padding:8px;
+  border-radius:10px;
+  color:white;
   text-decoration:none;
 }
-.btn.out{background:#444;color:#fff}
+.tiktok{background:#000;}
+.youtube{background:#e62117;}
 
-/* FLOAT */
-.float{
+.floating{
   position:fixed;
   bottom:20px;
   right:20px;
   background:var(--green);
-  color:#000;
-  padding:14px 20px;
-  border-radius:30px;
-  font-weight:bold;
+  color:#003b1b;
+  padding:14px 18px;
+  border-radius:40px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  box-shadow:0 0 20px #25d366;
 }
 </style>
 </head>
@@ -134,96 +143,94 @@ header p{opacity:.8}
 <body>
 
 <header>
-  <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo Gamer · PC · Móvil · Streaming</p>
+<h1>Soluciones Digitales Comayagua</h1>
+<p>Catálogo Gamer • PC • Móvil • Streaming</p>
 </header>
 
-<div class="menu">
-  <button onclick="toggleMenu()">📂 CATEGORÍAS</button>
+<div class="controls">
+<select id="categorySelect">
+<option value="all">Categorías</option>
+</select>
+
+<select id="subSelect">
+<option value="all">Subcategorías</option>
+</select>
+
+<input id="search" placeholder="Buscar producto...">
 </div>
 
-<div class="dropdown" id="catMenu"></div>
+<div class="grid" id="products"></div>
 
-<div class="grid" id="productos"></div>
-
-<a class="float" href="https://wa.me/50432429490" target="_blank">
-  <i class="fab fa-whatsapp"></i> ESCRÍBENOS
+<a class="floating" href="https://wa.me/50432429490" target="_blank">
+💬 ESCRÍBENOS
 </a>
 
 <script>
-const SHEET =
-"https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
+const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const WHATSAPP_NUMBER="50432429490";
 
-let data=[];
+let DATA=[];
 
-fetch(SHEET)
+fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`)
 .then(r=>r.text())
-.then(t=>{
-  const json=JSON.parse(t.substring(47).slice(0,-2));
-  const rows=json.table.rows;
-
-  rows.forEach(r=>{
-    if(!r.c[0] || r.c[0].v==="categoria") return;
-    data.push({
-      categoria:r.c[0]?.v||"",
-      nombre:r.c[1]?.v||"",
-      precio:r.c[2]?.v||0,
-      stock:r.c[3]?.v||0,
-      imagen:r.c[4]?.v||"",
-      estado:r.c[5]?.v||"",
-      sub:r.c[6]?.v||"",
-      desc:r.c[7]?.v||"",
-      wa:r.c[8]?.v||"",
-      tt:r.c[9]?.v||"",
-      yt:r.c[10]?.v||""
-    });
-  });
-
-  buildMenu();
-  showGroup("gamer");
+.then(txt=>{
+  const json=JSON.parse(txt.substring(47,txt.length-2));
+  const cols=json.table.cols.map(c=>c.label);
+  DATA=json.table.rows.map(r=>{
+    let o={};
+    r.c.forEach((c,i)=>o[cols[i]]=c?.v||"");
+    return o;
+  }).filter(x=>x.nombre);
+  buildCategories();
+  render();
 });
 
-function toggleMenu(){
-  document.getElementById("catMenu").classList.toggle("active");
+function buildCategories(){
+  const cats=[...new Set(DATA.map(x=>x.categoria))];
+  cats.forEach(c=>{
+    const op=document.createElement("option");
+    op.value=c;op.textContent=c.toUpperCase();
+    categorySelect.appendChild(op);
+  });
 }
 
-function buildMenu(){
-  const m=document.getElementById("catMenu");
-  m.innerHTML=`
-    <button onclick="showGroup('gamer')">🎮 Accesorios Gamer</button>
-    <button onclick="showGroup('movil')">📱 Accesorios para Celular</button>
-    <button onclick="showGroup('pc')">🖥️ Accesorios para PC</button>
-    <button onclick="showGroup('streaming')">📺 Streaming</button>
-  `;
-}
+categorySelect.onchange=()=>{
+  subSelect.innerHTML='<option value="all">Subcategorías</option>';
+  const subs=[...new Set(DATA.filter(x=>categorySelect.value=="all"||x.categoria==categorySelect.value).map(x=>x.subcategoria).filter(x=>x))];
+  subs.forEach(s=>{
+    const o=document.createElement("option");
+    o.value=s;o.textContent=s;
+    subSelect.appendChild(o);
+  });
+  render();
+};
+subSelect.onchange=render;
+search.oninput=render;
 
-function showGroup(type){
-  document.getElementById("catMenu").classList.remove("active");
-  const map={
-    gamer:["gamer"],
-    movil:["movil","cobertores","power"],
-    pc:["pc"],
-    streaming:["streaming"]
-  };
-  render(data.filter(p=>map[type].includes(p.categoria)));
-}
+function render(){
+  products.innerHTML="";
+  DATA.filter(x=>{
+    return (categorySelect.value=="all"||x.categoria==categorySelect.value)
+    && (subSelect.value=="all"||x.subcategoria==subSelect.value)
+    && x.nombre.toLowerCase().includes(search.value.toLowerCase());
+  }).forEach(p=>{
+    const btn=p.stock>0
+      ? `<a class="btn" href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(p.whatsapp)}">🟢 PEDIR POR WHATSAPP</a>`
+      : `<div class="btn off">⚠ CONSULTAR DISPONIBILIDAD</div>`;
 
-function render(list){
-  const g=document.getElementById("productos");
-  g.innerHTML="";
-  list.forEach(p=>{
-    g.innerHTML+=`
+    products.innerHTML+=`
     <div class="card">
       <img src="${p.imagen}">
-      <div class="c">
+      <div class="body">
         <h3>${p.nombre}</h3>
         <div class="price">Lps. ${p.precio}</div>
         <div class="stock">Stock: ${p.stock}</div>
-        <a class="btn ${p.stock==0?'out':''}"
-        href="https://wa.me/50432429490?text=${encodeURIComponent(p.wa)}"
-        target="_blank">
-        ${p.stock==0?'CONSULTAR DISPONIBILIDAD':'PEDIR POR WHATSAPP'}
-        </a>
+        <div class="desc">${(p.descripcion||"").replace(/\n/g,"<br>")}</div>
+        <div class="video">
+          ${p.tiktok?`<a class="tiktok" href="${p.tiktok}" target="_blank">TikTok</a>`:""}
+          ${p.youtube?`<a class="youtube" href="${p.youtube}" target="_blank">YouTube</a>`:""}
+        </div>
+        ${btn}
       </div>
     </div>`;
   });
