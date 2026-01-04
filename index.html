@@ -6,300 +6,229 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
- --bg:#05080f;
- --card:#0b1320;
- --neon:#00ffe1;
- --accent:#00ff7f;
- --danger:#ff4d4d;
-}
-*{box-sizing:border-box;font-family:Segoe UI,Arial}
 body{
- margin:0;
- background:radial-gradient(circle at top,#0a1d33,#000);
- color:#fff;
+  margin:0;
+  font-family:Segoe UI, Arial;
+  background:radial-gradient(circle at top,#0a3d66,#000);
+  color:#e6faff;
 }
 
-/* HERO */
-.hero{
- padding:55px 20px;
- text-align:center;
- background:linear-gradient(135deg,#001a33,#003a66);
+/* HEADER */
+header{
+  text-align:center;
+  padding:40px 20px;
+  background:linear-gradient(90deg,#003,#00d4c7,#003);
 }
-.hero h1{
- margin:0;
- font-size:36px;
- color:var(--neon);
- text-shadow:0 0 20px var(--neon);
+header h1{
+  color:#00ffe7;
+  text-shadow:0 0 15px #00ffe7;
 }
-.hero p{opacity:.85}
+header p{opacity:.9}
 
-/* MENU */
+/* MENÚ */
 .menu{
- display:flex;
- justify-content:center;
- gap:10px;
- padding:15px;
- background:#020611;
- flex-wrap:wrap;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:15px;
 }
 .menu button{
- background:transparent;
- border:1px solid var(--neon);
- color:var(--neon);
- padding:10px 16px;
- border-radius:20px;
- cursor:pointer;
+  background:#000;
+  border:1px solid #00ffe7;
+  color:#00ffe7;
+  padding:8px 14px;
+  border-radius:20px;
+  cursor:pointer;
 }
-.menu button.active,
-.menu button:hover{
- background:var(--neon);
- color:#000;
+.menu button.active{
+  background:#00ffe7;
+  color:#000;
 }
 
 /* SUBMENU */
 .submenu{
- display:flex;
- justify-content:center;
- flex-wrap:wrap;
- gap:10px;
- padding:15px;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:20px;
 }
-
-/* FILTERS */
-.filters{
- display:flex;
- justify-content:center;
- flex-wrap:wrap;
- gap:10px;
- padding:10px;
-}
-.filters input,
-.filters select{
- padding:8px;
- border-radius:10px;
- border:none;
+.submenu button{
+  background:#001;
+  border:1px solid #00c6ff;
+  color:#00c6ff;
+  padding:6px 12px;
+  border-radius:14px;
+  cursor:pointer;
 }
 
 /* GRID */
-.products{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
- gap:20px;
- padding:20px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  padding:20px;
 }
+
+/* CARD */
 .card{
- background:linear-gradient(180deg,#0b1320,#070d18);
- border-radius:14px;
- padding:15px;
- box-shadow:0 0 20px rgba(0,255,255,.12);
- position:relative;
- transition:.3s;
-}
-.card:hover{
- transform:translateY(-6px);
- box-shadow:0 0 35px rgba(0,255,255,.35);
-}
-.card.destacado{
- border:1px solid var(--neon);
- box-shadow:0 0 40px rgba(0,255,255,.6);
-}
-.badge{
- position:absolute;
- top:10px;
- left:10px;
- padding:5px 10px;
- font-size:12px;
- border-radius:12px;
- background:var(--neon);
- color:#000;
-}
-.badge.agotado{
- background:var(--danger);
- color:#fff;
+  background:linear-gradient(180deg,#001c2f,#000);
+  border:1px solid #00ffe7;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 0 20px #00ffe733;
 }
 .card img{
- width:100%;
- height:180px;
- object-fit:cover;
- border-radius:10px;
+  width:100%;
+  height:200px;
+  object-fit:cover;
 }
-.card h3{
- margin:10px 0 5px;
- color:var(--neon);
+.card .info{
+  padding:15px;
 }
-.price{color:var(--accent);font-weight:bold}
+.price{color:#00ff6a;font-size:18px}
 .stock{font-size:13px;opacity:.8}
+.desc{
+  font-size:14px;
+  margin:10px 0;
+}
+.desc div::before{
+  content:"★ ";
+  color:#ffd700;
+}
 
-.card a{
- display:block;
- margin-top:12px;
- background:var(--neon);
- color:#000;
- text-align:center;
- padding:10px;
- border-radius:10px;
- text-decoration:none;
- font-weight:bold;
+/* BOTONES */
+.btn{
+  display:block;
+  margin-top:8px;
+  padding:10px;
+  border-radius:8px;
+  text-align:center;
+  text-decoration:none;
+  font-weight:bold;
 }
-.card a.agotado{
- background:#444;
- color:#ccc;
- pointer-events:none;
+.whatsapp{
+  background:#25d366;
+  color:#000;
 }
+.tiktok{background:#000;color:#fff}
+.youtube{background:#ff0000;color:#fff}
 
 /* WHATSAPP FLOAT */
-.whatsapp-float{
- position:fixed;
- bottom:20px;
- right:20px;
- background:#25D366;
- color:#fff;
- padding:15px;
- border-radius:50%;
- font-size:22px;
- text-decoration:none;
- box-shadow:0 0 20px rgba(0,0,0,.4);
-}
-
-footer{
- text-align:center;
- padding:20px;
- opacity:.5;
+.float-wsp{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#25d366;
+  color:#000;
+  padding:14px 18px;
+  border-radius:50px;
+  font-weight:bold;
+  text-decoration:none;
+  box-shadow:0 0 20px #25d366aa;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero">
- <h1>Soluciones Digitales Comayagua</h1>
- <p>Catálogo Gamer · PC · Móvil · Streaming · Power</p>
-</div>
+<header>
+  <h1>Soluciones Digitales Comayagua</h1>
+  <p>Catálogo Gamer · PC · Móvil · Streaming · Power</p>
+</header>
 
-<div class="menu">
- <button class="active" onclick="setCat('gamer',this)">🎮 GAMER</button>
- <button onclick="setCat('pc',this)">🖥️ PC</button>
- <button onclick="setCat('movil',this)">📱 MÓVIL</button>
- <button onclick="setCat('streaming',this)">📺 STREAM</button>
- <button onclick="setCat('cobertores',this)">📱 CASE</button>
- <button onclick="setCat('power',this)">🔋 POWER</button>
-</div>
-
+<div class="menu" id="menu"></div>
 <div class="submenu" id="submenu"></div>
+<div class="grid" id="productos"></div>
 
-<div class="filters">
- <input type="text" id="search" placeholder="Buscar producto…">
- <select id="order">
-  <option value="">Ordenar</option>
-  <option value="price-asc">Precio ↑</option>
-  <option value="price-desc">Precio ↓</option>
-  <option value="stock-desc">Stock ↓</option>
- </select>
-</div>
-
-<div class="products" id="products"></div>
-
-<a class="whatsapp-float" target="_blank"
- href="https://wa.me/50432429490">💬</a>
-
-<footer>© 2026 Soluciones Digitales Comayagua</footer>
+<a class="float-wsp" href="https://wa.me/50432429490" target="_blank">💬 ESCRÍBENOS</a>
 
 <script>
-const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const CONFIG_URL = `https://opensheet.elk.sh/${SHEET_ID}/_config`;
+const URL="https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json";
 
-let DATA = [];
-let CATEGORIES = [];
-let CAT = null;
-let SUB = null;
+let data=[],categoriaActual="TODOS",subActual="TODOS";
 
-/* 🔹 CARGA DINÁMICA DE HOJAS */
-async function loadAll(){
-  const cfg = await fetch(CONFIG_URL).then(r=>r.json());
-  CATEGORIES = cfg.map(r => r.sheet).filter(Boolean);
-
-  let all = [];
-  for(const cat of CATEGORIES){
-    const url = `https://opensheet.elk.sh/${SHEET_ID}/${cat}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    data.forEach(p => p.categoria = cat);
-    all = all.concat(data);
-  }
-  DATA = all;
+fetch(URL).then(r=>r.text()).then(t=>{
+  const json=JSON.parse(t.substr(47).slice(0,-2));
+  data=json.table.rows.map(r=>{
+    const c=r.c;
+    return {
+      categoria:c[0]?.v,
+      nombre:c[1]?.v,
+      precio:c[2]?.v,
+      stock:c[3]?.v,
+      imagen:c[4]?.v,
+      estado:c[5]?.v,
+      sub:c[6]?.v,
+      desc:c[7]?.v,
+      wsp:c[8]?.v,
+      tiktok:c[9]?.v,
+      youtube:c[10]?.v
+    }
+  });
   renderMenu();
-}
+  filtrar();
+});
 
-/* 🔹 MENÚ PRINCIPAL */
 function renderMenu(){
-  const menu = document.querySelector('.menu');
-  menu.innerHTML = CATEGORIES.map(c =>
-    `<button onclick="setCat('${c}',this)">${c.toUpperCase()}</button>`
-  ).join('');
+  const cats=[...new Set(data.map(p=>p.categoria))];
+  menu.innerHTML='<button onclick="setCat(\'TODOS\')">🔥 TODOS</button>';
+  cats.forEach(c=>{
+    menu.innerHTML+=`<button onclick="setCat('${c}')">${emojiCat(c)} ${c.toUpperCase()}</button>`;
+  });
 }
 
-/* 🔹 AL TOCAR CATEGORÍA */
-function setCat(cat, el){
-  CAT = cat;
-  SUB = null;
-
-  document.querySelectorAll('.menu button')
-    .forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-
-  products.innerHTML = '';
-  renderSubcats();
+function renderSub(){
+  const subs=[...new Set(data.filter(p=>categoriaActual==="TODOS"||p.categoria===categoriaActual).map(p=>p.sub))];
+  submenu.innerHTML='<button onclick="setSub(\'TODOS\')">✨ Todos</button>';
+  subs.forEach(s=>{
+    if(s) submenu.innerHTML+=`<button onclick="setSub('${s}')">${emojiSub(s)} ${s}</button>`;
+  });
 }
 
-/* 🔹 SUBCATEGORÍAS AUTOMÁTICAS */
-function renderSubcats(){
-  const list = DATA.filter(p => p.categoria === CAT);
-  const subs = [...new Set(list.map(p => p.subcategoria).filter(Boolean))];
-
-  submenu.innerHTML = `
-    <button onclick="setSub('ALL')">Todos</button>
-    ${subs.map(s=>`
-      <button onclick="setSub('${s}')">${s}</button>
-    `).join('')}
-  `;
+function setCat(c){
+  categoriaActual=c;
+  subActual="TODOS";
+  renderSub();
+  filtrar();
 }
 
-/* 🔹 AL TOCAR SUBCATEGORÍA */
-function setSub(sub){
-  SUB = sub;
-  drawProducts();
+function setSub(s){
+  subActual=s;
+  filtrar();
 }
 
-/* 🔹 PRODUCTOS */
-function drawProducts(){
-  const list = DATA.filter(p =>
-    p.categoria === CAT &&
-    (SUB === 'ALL' || p.subcategoria === SUB)
-  );
-
-  products.innerHTML = list.map(p=>{
-    const agotado = p.stock <= 0 || p.estado === 'agotado';
-    return `
-      <div class="card">
-        ${agotado ? `<div class="badge agotado">AGOTADO</div>` : ''}
-        <img src="${p.imagen}">
+function filtrar(){
+  productos.innerHTML="";
+  data.filter(p=>{
+    if(p.estado!=="activo") return false;
+    if(categoriaActual!=="TODOS" && p.categoria!==categoriaActual) return false;
+    if(subActual!=="TODOS" && p.sub!==subActual) return false;
+    return true;
+  }).forEach(p=>{
+    productos.innerHTML+=`
+    <div class="card">
+      <img src="${p.imagen}">
+      <div class="info">
         <h3>${p.nombre}</h3>
         <div class="price">Lps. ${p.precio}</div>
         <div class="stock">Stock: ${p.stock}</div>
-        <a class="${agotado?'agotado':''}" target="_blank"
-           href="https://wa.me/50432429490?text=${encodeURIComponent(p.whatsapp)}">
-          ${agotado ? 'AVISARME' : 'PEDIR POR WHATSAPP'}
-        </a>
+        <div class="desc">${(p.desc||"").split("\n").map(d=>`<div>${d}</div>`).join("")}</div>
+        ${p.tiktok?`<a class="btn tiktok" href="${p.tiktok}" target="_blank">🎵 Ver en TikTok</a>`:""}
+        ${p.youtube?`<a class="btn youtube" href="${p.youtube}" target="_blank">▶ Ver en YouTube</a>`:""}
+        <a class="btn whatsapp" href="https://wa.me/50432429490?text=${encodeURIComponent(p.wsp)}" target="_blank">📲 PEDIR POR WHATSAPP</a>
       </div>
-    `;
-  }).join('');
+    </div>`;
+  });
 }
 
-loadAll();
+function emojiCat(c){
+  return {gamer:"🎮",pc:"🖥️",movil:"📱",streaming:"📺",cobertores:"📦",power:"⚡"}[c]||"✨";
+}
+function emojiSub(s){
+  return {Coolers:"❄️",Dedales:"🧤",Gamepad:"🎮",USB:"💾",MicroSD:"📀",Mouse:"🖱️",Soporte:"🧍",XuperTV:"📺","Case Samsung":"📱","Case IPhone":"📱","Carga Superrápida 2.0":"⚡"}[s]||"⭐";
+}
 </script>
-
-
-
 </body>
 </html>
