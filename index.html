@@ -121,7 +121,7 @@
       cursor: pointer;
       display: flex; align-items: center; gap: 8px;
       transition: all 0.2s;
-      text-transform: uppercase; /* MAYUSCULAS */
+      text-transform: uppercase; 
     }
 
     .chip.active {
@@ -149,48 +149,59 @@
       animation: fadeIn 0.5s ease-out forwards;
     }
     
-    /* IMAGEN DE PRODUCTO */
+    /* CONTENEDOR DE IMAGEN */
     .card-img-container {
       width: 100%; 
       aspect-ratio: 1/1; 
-      background: #fff; /* Fondo blanco */
-      padding: 0; /* SIN RELLENO PARA QUE LLENE TODO */
+      background: #fff; 
+      padding: 0; 
       display: flex; align-items: center; justify-content: center;
-      position: relative;
+      position: relative; /* Necesario para la marca de agua absoluta */
       overflow: hidden;
     }
     
-    .card img { 
+    /* FOTO DEL PRODUCTO (BASE) */
+    .product-img { 
       width: 100%; 
       height: 100%; 
-      object-fit: contain; /* Ajustar sin cortar */
+      object-fit: contain;
       transition: 0.3s;
+      position: relative;
+      z-index: 1; /* Capa inferior */
+    }
+
+    /* MARCA DE AGUA (SUPERPOSICIÓN) */
+    .watermark-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg); /* Centrada e inclinada */
+        width: 70%; /* Tamaño relativo al contenedor */
+        height: auto;
+        opacity: 0.25; /* Transparencia sutil (ajusta de 0.1 a 1.0) */
+        z-index: 5; /* Encima del producto, debajo de la cinta de Agotado */
+        pointer-events: none; /* Permite que los clics pasen a través */
+        user-select: none; /* Evita que se seleccione al arrastrar */
+        filter: grayscale(100%) contrast(50%); /* Opcional: hacerla gris para que no compita con el color del producto */
     }
 
     /* ESTILOS DE AGOTADO */
-    .card.agotado .card-img-container img {
-        filter: grayscale(100%); /* Blanco y negro */
+    .card.agotado .product-img {
+        filter: grayscale(100%);
         opacity: 0.5;
     }
 
-    /* CINTA DE AGOTADO - GRANDE Y VISIBLE */
+    /* CINTA DE AGOTADO */
     .ribbon {
         position: absolute;
-        top: 35px;        /* Bajamos un poco más la cinta */
-        left: -60px;      /* La movemos a la izquierda para centrarla al rotar */
-        width: 200px;     /* Mucho más ancha para que cubra bien */
-        background: #ef4444; /* Rojo intenso */
-        color: white;
-        text-align: center;
-        font-size: 14px;  /* Letra más grande */
-        font-weight: 800; /* Letra extra gruesa */
-        padding: 8px 0;   /* Cinta más gorda */
-        transform: rotate(-45deg); /* Diagonal exacta */
+        top: 35px; left: -60px; width: 200px;
+        background: #ef4444; color: white;
+        text-align: center; font-size: 14px; font-weight: 800;
+        padding: 8px 0; transform: rotate(-45deg);
         box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-        z-index: 10;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        border: 2px solid white; /* Borde blanco para resaltar */
+        z-index: 10; /* Encima de todo, incluida la marca de agua */
+        letter-spacing: 2px; text-transform: uppercase;
+        border: 2px solid white;
     }
 
     .card-body { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; gap: 6px; }
@@ -214,10 +225,7 @@
     .btn-ws:hover { transform: scale(0.98); opacity: 0.9; }
 
     .btn-consultar {
-      background: #334155; /* Gris Oscuro */
-      color: #e2e8f0;
-      font-size: 11px;
-      border: 1px solid #475569;
+      background: #334155; color: #e2e8f0; font-size: 11px; border: 1px solid #475569;
     }
     .btn-consultar:hover { background: #1e293b; color: #fff; }
 
@@ -275,6 +283,11 @@
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const CONFIG_GID = "1488858707"; 
 const MY_PHONE = "50432429490"; 
+
+// 🔴 IMPORTANTE: CAMBIA ESTO SI NO USAS EL NOMBRE "marca.png"
+// Si decides usar el link largo de GitHub, pégalo completo aquí entre las comillas.
+const WATERMARK_URL = "marca.png"; 
+
 
 /* ================= LÓGICA ================= */
 let products = [];
@@ -339,7 +352,6 @@ function initCategories() {
   cats.forEach((c, i) => {
     const btn = document.createElement('div');
     btn.className = 'chip' + (i === 0 ? ' active' : '');
-    // El CSS se encarga de las mayúsculas (text-transform: uppercase)
     btn.innerHTML = `${getIconForCategory(c)} ${c}`; 
     btn.onclick = () => {
       currentCategory = c;
@@ -426,13 +438,14 @@ function render() {
     const card = document.createElement('div');
     card.className = isAgotado ? 'card agotado' : 'card';
     
-    // CINTA VISIBLE
     const ribbonHTML = isAgotado ? `<div class="ribbon">AGOTADO</div>` : '';
 
     card.innerHTML = `
       <div class="card-img-container">
         ${ribbonHTML}
-        <img src="${p.imagen}" alt="${p.nombre}" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Sin+Imagen'">
+        <img src="${p.imagen}" alt="${p.nombre}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/300?text=Sin+Imagen'">
+        
+        <img src="${WATERMARK_URL}" class="watermark-overlay" alt="SDC Watermark">
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
