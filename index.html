@@ -1,88 +1,189 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Soluciones Digitales Comayagua</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#0b0f14;
-  color:#fff;
-}
-header{
-  padding:40px;
-  text-align:center;
-  background:linear-gradient(135deg,#00f0ff,#003cff);
-}
-.productos{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-  padding:30px;
-}
-.card{
-  background:#111827;
-  border-radius:12px;
-  padding:20px;
-  box-shadow:0 0 15px #00f0ff33;
-}
-.precio{
-  color:#00f0ff;
-  font-size:20px;
-  margin:10px 0;
-}
-.btn{
-  display:block;
-  text-align:center;
-  background:#25d366;
-  color:#000;
-  padding:12px;
-  border-radius:8px;
-  text-decoration:none;
-  font-weight:bold;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Soluciones Digitales Comayagua</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root{
+      --bg:#070b12;
+      --card:#0e1624;
+      --neon:#00f7ff;
+      --text:#e6f1ff;
+      --muted:#8aa0c8;
+      --ok:#00ff9c;
+    }
+
+    *{box-sizing:border-box;font-family:Segoe UI,Roboto,Arial}
+
+    body{
+      margin:0;
+      background:radial-gradient(circle at top,#0a1a33,#05080f);
+      color:var(--text);
+    }
+
+    header{
+      padding:60px 20px;
+      text-align:center;
+      background:linear-gradient(135deg,#001a33,#003a66,#001a33);
+      box-shadow:0 0 40px rgba(0,247,255,.25);
+    }
+
+    header h1{
+      margin:0;
+      font-size:clamp(28px,5vw,46px);
+      color:var(--neon);
+      text-shadow:0 0 20px rgba(0,247,255,.6);
+    }
+
+    header p{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .container{
+      max-width:1300px;
+      margin:auto;
+      padding:40px 20px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:25px;
+    }
+
+    .card{
+      background:linear-gradient(180deg,#0e1624,#0b1220);
+      border:1px solid rgba(0,247,255,.2);
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 0 25px rgba(0,0,0,.7);
+      transition:.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 0 35px rgba(0,247,255,.35);
+    }
+
+    .card img{
+      width:100%;
+      height:220px;
+      object-fit:cover;
+      background:#000;
+    }
+
+    .card-body{
+      padding:18px;
+    }
+
+    .title{
+      font-size:18px;
+      margin:0 0 6px;
+      color:var(--neon);
+    }
+
+    .price{
+      font-size:20px;
+      color:var(--ok);
+      margin:6px 0;
+      font-weight:bold;
+    }
+
+    .stock{
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+
+    .btn{
+      display:block;
+      text-align:center;
+      padding:12px;
+      border-radius:10px;
+      background:linear-gradient(135deg,#00f7ff,#00b3ff);
+      color:#001018;
+      font-weight:700;
+      text-decoration:none;
+      transition:.3s;
+      box-shadow:0 0 15px rgba(0,247,255,.6);
+    }
+
+    .btn:hover{
+      box-shadow:0 0 25px rgba(0,247,255,1);
+      transform:scale(1.03);
+    }
+
+    footer{
+      text-align:center;
+      padding:30px;
+      color:#6b7fa6;
+      font-size:14px;
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
   <h1>Soluciones Digitales Comayagua</h1>
-  <p>Catálogo conectado a Google Sheets</p>
+  <p>Catálogo Gamer · Móvil · Streaming · Precios en Lempiras</p>
 </header>
 
-<section class="productos" id="productos"></section>
+<div class="container">
+  <div id="productos" class="grid">
+    Cargando catálogo...
+  </div>
+</div>
+
+<footer>
+  © 2026 Soluciones Digitales Comayagua · Comayagua, Honduras
+</footer>
 
 <script>
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const URL = `https://docs.google.com/spreadsheets/d/1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng/gviz/tq?tqx=out:json`;
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const WHATSAPP = "50432429490";
 
-fetch(URL)
-.then(res => res.text())
-.then(text => {
-  const json = JSON.parse(text.substring(47).slice(0,-2));
-  const rows = json.table.rows;
-  const cont = document.getElementById("productos");
+fetch(SHEET_URL)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const rows = json.table.rows;
+    let html = "";
 
-  rows.forEach(r => {
-    const producto = r.c[2].v;
-    const precio = r.c[3].v;
-    const mensaje = encodeURIComponent(r.c[5].v);
+    rows.forEach(r => {
+      const nombre = r.c[0]?.v || "";
+      const precio = r.c[1]?.v || "";
+      const stock = r.c[2]?.v || "";
+      const imagen = r.c[3]?.v || "";
+      const mensaje = r.c[4]?.v || nombre;
 
-    cont.innerHTML += `
-      <div class="card">
-        <h3>${producto}</h3>
-        <div class="precio">Lps.${precio}</div>
-        <a class="btn"
-           href="https://wa.me/50432429490?text=${mensaje}"
-           target="_blank">
-           Pedir por WhatsApp
-        </a>
-      </div>`;
+      const waMsg = encodeURIComponent(mensaje);
+      const waLink = `https://wa.me/${WHATSAPP}?text=${waMsg}`;
+
+      html += `
+        <div class="card">
+          <img src="${imagen}" alt="${nombre}">
+          <div class="card-body">
+            <h3 class="title">${nombre}</h3>
+            <div class="price">Lps. ${precio}</div>
+            <div class="stock">Stock: ${stock}</div>
+            <a class="btn" href="${waLink}" target="_blank">PEDIR POR WHATSAPP</a>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById("productos").innerHTML = html;
+  })
+  .catch(() => {
+    document.getElementById("productos").innerHTML =
+      "Error al cargar el catálogo.";
   });
-});
 </script>
 
 </body>
