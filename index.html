@@ -1,238 +1,264 @@
 <!DOCTYPE html>
 <html lang="es-HN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Soluciones Digitales Comayagua | Accesorios Gamer y Tecnología</title>
+<title>Soluciones Digitales Comayagua | Accesorios Gamer y Tecnología</title>
 
-  <meta name="description" content="Accesorios Gamer, productos para celular, PC y streaming en Comayagua. Atención directa por WhatsApp. Ofertas y envíos rápidos en Honduras." />
+<meta name="description" content="Accesorios Gamer, celulares, PC y tecnología en Comayagua. Ofertas, productos gancho y pedidos directos por WhatsApp. Envíos a Honduras.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="HN-CM">
+<meta name="geo.placename" content="Comayagua">
 
-  <!-- SEO LOCAL -->
-  <meta name="geo.region" content="HN-CM" />
-  <meta name="geo.placename" content="Comayagua" />
-  <meta name="robots" content="index, follow" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Soluciones Digitales Comayagua" />
-  <meta property="og:description" content="Accesorios Gamer y Tecnología en Comayagua. Pedidos por WhatsApp." />
-  <meta property="og:type" content="website" />
-
-  <!-- FUENTES / ICONOS -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <style>
-/* ================== VARIABLES ================== */
-:root {
-  --bg:#0b1120;
-  --card:#151e32;
-  --primary:#38bdf8;
-  --accent:#2dd4bf;
-  --text:#f8fafc;
-  --muted:#94a3b8;
-  --border:#1e293b;
-  --danger:#ef4444;
-  --promo:#ff6b00;
+:root{
+--bg:#0b1120;
+--card:#151e32;
+--primary:#38bdf8;
+--accent:#2dd4bf;
+--text:#f8fafc;
+--muted:#94a3b8;
+--border:#1e293b;
+--promo:#ff6b00;
+--danger:#ef4444;
 }
 
+*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:'Outfit',sans-serif;
-  background:radial-gradient(at top,#1e293b,#0b1120);
-  color:var(--text);
+margin:0;
+font-family:'Outfit',sans-serif;
+background:radial-gradient(at top,#1e293b,#0b1120);
+color:var(--text);
+padding-bottom:90px;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:var(--card);
-  padding:12px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid var(--border);
+position:sticky;
+top:0;
+z-index:100;
+background:var(--card);
+border-bottom:1px solid var(--border);
+padding:12px 16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
-
 .brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
+display:flex;
+align-items:center;
+gap:10px;
 }
-
-.brand img{
-  height:36px;
-  border-radius:6px;
-}
-
+.brand img{height:36px;border-radius:6px}
 .brand h1{
-  font-size:15px;
-  margin:0;
-  font-weight:800;
-  text-transform:uppercase;
+margin:0;
+font-size:15px;
+font-weight:800;
+text-transform:uppercase;
 }
+.brand span{color:var(--primary)}
 
-.brand span{color:var(--primary);}
-
-/* ================= HERO ================= */
+/* HERO */
 .hero{
-  padding:40px 16px;
-  text-align:center;
+padding:40px 16px 20px;
+text-align:center;
 }
-
-.hero h2{
-  font-size:26px;
-  margin-bottom:10px;
-}
-
+.hero h2{font-size:26px;margin:0 0 10px}
 .hero p{
-  color:var(--muted);
-  font-size:14px;
-  max-width:500px;
-  margin:0 auto 20px;
+font-size:14px;
+color:var(--muted);
+max-width:520px;
+margin:0 auto 20px;
 }
-
 .hero-buttons{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  flex-wrap:wrap;
+display:flex;
+gap:12px;
+justify-content:center;
+flex-wrap:wrap;
 }
-
 .hero a{
-  padding:12px 18px;
-  border-radius:10px;
-  font-weight:800;
-  text-decoration:none;
-  font-size:13px;
+padding:12px 18px;
+border-radius:10px;
+font-weight:800;
+font-size:13px;
+text-decoration:none;
 }
+.btn-primary{background:var(--primary);color:#000}
+.btn-outline{border:1px solid var(--border);color:var(--text)}
 
-.btn-primary{
-  background:var(--primary);
-  color:#000;
-}
-
-.btn-outline{
-  border:1px solid var(--border);
-  color:var(--text);
-}
-
-/* ================= TRUST ================= */
+/* TRUST */
 .trust{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  padding:20px 16px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+padding:20px 16px;
 }
-
 .trust div{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:14px;
-  font-size:12px;
-  text-align:center;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:12px;
+padding:14px;
+font-size:12px;
+text-align:center;
 }
-
 .trust i{
-  font-size:20px;
-  color:var(--accent);
-  margin-bottom:6px;
+font-size:20px;
+color:var(--accent);
+margin-bottom:6px;
 }
 
-/* ================= SEARCH ================= */
-.search{
-  padding:16px;
+/* SEARCH */
+.search-container{padding:16px}
+.search-container input{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:1px solid var(--border);
+background:var(--card);
+color:var(--text);
 }
 
-.search input{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text);
+/* CATEGORIES */
+.category-bar{
+display:flex;
+gap:10px;
+overflow-x:auto;
+padding:0 16px 10px;
+}
+.chip{
+padding:8px 16px;
+border-radius:99px;
+border:1px solid var(--border);
+background:var(--card);
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+white-space:nowrap;
+}
+.chip.active{
+background:var(--primary);
+color:#000;
+border-color:var(--primary);
 }
 
-/* ================= GRID ================= */
+/* GRID */
 .grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  padding:16px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+padding:16px;
 }
-
+@media(min-width:768px){
+.grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+}
 .card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:14px;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+position:relative;
 }
-
 .card img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:contain;
-  background:#fff;
+width:100%;
+aspect-ratio:1/1;
+object-fit:contain;
+background:#fff;
 }
-
 .card-body{
-  padding:12px;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
+padding:12px;
+display:flex;
+flex-direction:column;
+gap:8px;
+flex-grow:1;
 }
-
-.card h3{
-  font-size:13px;
-  margin:0;
-}
-
+.card h3{font-size:13px;margin:0}
 .price{
-  font-size:18px;
-  font-weight:800;
-  color:var(--accent);
+font-size:18px;
+font-weight:800;
+color:var(--accent);
 }
 
+/* OFERTAS / GANCHO / STOCK */
+.card.oferta{
+border:2px solid var(--promo);
+box-shadow:0 0 25px rgba(255,107,0,.7);
+transform:scale(1.03);
+}
+.badge-oferta{
+position:absolute;
+top:8px;
+right:8px;
+background:linear-gradient(135deg,#ff9800,#ff5722);
+color:#fff;
+font-size:10px;
+font-weight:900;
+padding:6px 10px;
+border-radius:8px;
+}
+.badge-gancho{
+position:absolute;
+top:8px;
+left:8px;
+background:#22c55e;
+color:#000;
+font-size:10px;
+font-weight:900;
+padding:6px 10px;
+border-radius:8px;
+}
+.stock-low{
+font-size:11px;
+font-weight:800;
+color:#ff9800;
+}
+.card.sin-stock{
+opacity:.6;
+filter:grayscale(100%);
+}
+
+/* WHATSAPP */
 .btn-ws{
-  background:#25D366;
-  color:#fff;
-  padding:10px;
-  border-radius:8px;
-  text-align:center;
-  text-decoration:none;
-  font-size:12px;
-  font-weight:800;
+background:#25D366;
+color:#fff;
+padding:10px;
+border-radius:8px;
+font-size:12px;
+font-weight:800;
+text-align:center;
+text-decoration:none;
+margin-top:auto;
 }
 
-/* ================= FOOTER ================= */
+/* FOOTER */
 footer{
-  padding:30px 16px;
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
+padding:30px 16px;
+text-align:center;
+font-size:12px;
+color:var(--muted);
 }
+footer a{color:var(--primary);text-decoration:none}
 
-footer a{color:var(--primary);text-decoration:none;}
-
-/* ================= FLOAT ================= */
+/* FLOAT */
 .float-ws{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  width:55px;
-  height:55px;
-  background:#25D366;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:26px;
-  color:#fff;
+position:fixed;
+bottom:20px;
+right:20px;
+width:55px;
+height:55px;
+background:#25D366;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:26px;
+color:#fff;
+z-index:200;
 }
 </style>
 </head>
@@ -248,10 +274,9 @@ footer a{color:var(--primary);text-decoration:none;}
 
 <section class="hero">
   <h2>🎮 Accesorios Gamer & Tecnología</h2>
-  <p>En Comayagua. Atención directa por WhatsApp. Productos probados y ofertas reales.</p>
-
+  <p>En Comayagua. Ofertas reales, productos gancho y atención directa por WhatsApp.</p>
   <div class="hero-buttons">
-    <a href="#productos" class="btn-primary">🔥 Ver Ofertas</a>
+    <a href="#ofertas" class="btn-primary">🔥 Ver Ofertas</a>
     <a href="https://wa.me/50432429490" target="_blank" class="btn-outline">📲 WhatsApp</a>
   </div>
 </section>
@@ -263,31 +288,122 @@ footer a{color:var(--primary);text-decoration:none;}
   <div><i class="fa-solid fa-star"></i><br>Clientes satisfechos</div>
 </section>
 
-<section class="search">
-  <input type="text" placeholder="Buscar producto...">
-</section>
+<div class="search-container">
+  <input id="searchInput" placeholder="Buscar producto...">
+</div>
 
-<section id="productos" class="grid">
-  <!-- PRODUCTOS DESDE GOOGLE SHEETS -->
-</section>
+<div class="category-bar" id="categoryBar"></div>
+<div class="grid" id="productGrid"></div>
 
 <section style="padding:20px;max-width:800px;margin:auto;font-size:12px;color:#94a3b8">
-  <h2>Accesorios Gamer y Tecnología en Comayagua</h2>
-  <p>
-    Soluciones Digitales Comayagua es una tienda digital especializada en accesorios gamer,
-    productos para celular, PC y streaming. Atendemos pedidos por WhatsApp y realizamos envíos
-    a todo Honduras.
-  </p>
+<h2>Accesorios Gamer y Tecnología en Comayagua</h2>
+<p>
+Soluciones Digitales Comayagua ofrece accesorios gamer, celulares, PC y productos tecnológicos.
+Pedidos por WhatsApp y envíos a toda Honduras.
+</p>
 </section>
 
 <footer>
-  © 2026 Soluciones Digitales Comayagua<br>
-  <a href="https://wa.me/50432429490">WhatsApp</a> · Facebook · TikTok
+© 2026 Soluciones Digitales Comayagua<br>
+<a href="https://wa.me/50432429490">WhatsApp</a> · Facebook · TikTok
 </footer>
 
 <a class="float-ws" href="https://wa.me/50432429490" target="_blank">
-  <i class="fa-brands fa-whatsapp"></i>
+<i class="fa-brands fa-whatsapp"></i>
 </a>
+
+<script>
+const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const PHONE="50432429490";
+let products=[],currentCat="";
+
+fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`)
+.then(r=>r.text())
+.then(t=>{
+const json=JSON.parse(t.substring(47,t.length-2));
+products=json.table.rows.map(r=>({
+nombre:r.c[0]?.v||"",
+precio:r.c[1]?.v||"",
+imagen:r.c[2]?.v||"",
+categoria:r.c[3]?.v||"Otros",
+oferta:r.c[4]?.v||"NO",
+gancho:r.c[5]?.v||"NO",
+stock:r.c[6]?.v||0
+}));
+initCategories();
+render();
+});
+
+function initCategories(){
+const cats=[...new Set(products.map(p=>p.categoria))];
+const bar=document.getElementById("categoryBar");
+cats.forEach((c,i)=>{
+const d=document.createElement("div");
+d.className="chip"+(i===0?" active":"");
+d.textContent=c;
+d.onclick=()=>{
+document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));
+d.classList.add("active");
+currentCat=c;
+render();
+};
+bar.appendChild(d);
+if(i===0)currentCat=c;
+});
+}
+
+function render(){
+const q=document.getElementById("searchInput").value.toLowerCase();
+const grid=document.getElementById("productGrid");
+grid.innerHTML="";
+
+products.filter(p=>{
+return p.categoria===currentCat &&
+p.nombre.toLowerCase().includes(q);
+}).forEach(p=>{
+
+const isOferta=p.oferta==="SI";
+const isGancho=p.gancho==="SI";
+const stock=Number(p.stock||0);
+
+let cardClass="card";
+if(isOferta) cardClass+=" oferta";
+if(stock<=0) cardClass+=" sin-stock";
+
+let mensaje=
+`🔥 *SDC Comayagua* 🔥
+🛒 Producto: ${p.nombre}
+💰 Precio: Lps. ${p.precio}
+${isOferta?"🔥 OFERTA ACTIVA":""}
+${stock>0 && stock<=3?`⚠️ Últimas ${stock} unidades`:""}
+📦 ¿Disponible?`;
+
+const waLink=`https://wa.me/${PHONE}?text=${encodeURIComponent(mensaje)}`;
+
+grid.innerHTML+=`
+<div class="${cardClass}" ${isOferta?'id="ofertas"':''}>
+${isOferta?`<div class="badge-oferta">🔥 OFERTA</div>`:""}
+${isGancho?`<div class="badge-gancho">🎯 GANCHO</div>`:""}
+<img src="${p.imagen}" onerror="this.src='https://via.placeholder.com/300'">
+<div class="card-body">
+<h3>${p.nombre}</h3>
+<div class="price">Lps. ${p.precio}</div>
+${stock>0 && stock<=3?`<div class="stock-low">⚠️ Últimas ${stock} unidades</div>`:""}
+<a class="btn-ws" target="_blank" href="${waLink}" onclick="trackLead('${p.nombre}','${isOferta}','${isGancho}')">
+${stock<=0?"CONSULTAR":"COMPRAR POR WHATSAPP"}
+</a>
+</div>
+</div>`;
+});
+}
+
+document.getElementById("searchInput").addEventListener("input",render);
+
+function trackLead(producto,oferta,gancho){
+console.log("LEAD:",producto,"OFERTA:",oferta,"GANCHO:",gancho);
+// Aquí se conecta Meta Pixel cuando quieras
+}
+</script>
 
 </body>
 </html>
