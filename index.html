@@ -251,24 +251,28 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
     
-    /* === PRECIOS VERTICALES (PERFECTOS PARA CELULAR) === */
+    /* === PRECIOS CENTRADOS === */
     .price-bar {
-        display: flex; align-items: center; justify-content: space-between;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; /* CENTRADO HORIZONTAL */
+        gap: 8px; /* Espacio entre icono y texto */
         background: rgba(255, 255, 255, 0.03); 
         border: 1px solid var(--border);
-        border-left: 4px solid var(--accent);
-        border-radius: 8px; padding: 6px 10px;
+        border-radius: 8px; 
+        padding: 6px 10px;
         margin-top: auto; 
     }
-    [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; border-left-color: #16a34a; }
+    [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
-    /* Contenedor vertical alineado a la derecha */
+    /* CONTENEDOR VERTICAL CENTRADO */
     .price-stack {
         display: flex;
         flex-direction: column;
-        align-items: flex-end; /* Todo a la derecha */
+        align-items: center; /* CENTRADO VERTICAL DE TEXTO */
         justify-content: center;
-        text-align: right;
+        text-align: center; /* TEXTO AL CENTRO */
+        line-height: 1.2;
     }
 
     /* FILA 1: PRECIO VIEJO */
@@ -277,7 +281,7 @@
         color: var(--text-muted);
         line-height: 1;
         margin-bottom: 2px;
-        white-space: nowrap; /* No se parte */
+        white-space: nowrap; 
     }
     .old-val { text-decoration: line-through; opacity: 0.7; }
 
@@ -288,16 +292,15 @@
         font-weight: 900;
         color: var(--accent);
         line-height: 1;
-        white-space: nowrap; /* No se parte */
+        white-space: nowrap; 
     }
 
-    .price-icon { color: var(--accent); font-size: 14px; }
+    .price-icon { color: var(--accent); font-size: 14px; opacity: 0.8; }
 
     /* MODO OFERTA */
     .card.promo-mode .price-bar {
         background: var(--promo-bg);
         border-color: var(--promo-color);
-        border-left: 6px solid var(--promo-color);
     }
     .card.promo-mode .price-icon, 
     .card.promo-mode .current-price-row {
@@ -308,10 +311,10 @@
     /* MODO AGOTADO */
     .card.agotado .price-bar {
         background: rgba(239, 68, 68, 0.1); 
-        border-color: var(--danger); border-left-color: var(--danger);
+        border-color: var(--danger);
     }
     .card.agotado .price-icon, .card.agotado .current-price-row { color: var(--danger); text-shadow:none; }
-    [data-theme="light"] .card.agotado .price-bar { background: #fef2f2; border-color: #fca5a5; border-left-color: #ef4444; }
+    [data-theme="light"] .card.agotado .price-bar { background: #fef2f2; border-color: #fca5a5; }
 
     /* DESC */
     .desc {
@@ -591,18 +594,25 @@ function render() {
 
     const descText = p.descripcion || p.descipcion || "";
 
-    // === LÓGICA DE PRECIOS ESTRATÉGICOS (VERTICAL) ===
+    // === LÓGICA DE PRECIOS ETIQUETADOS (CENTRADO) ===
     let priceHTMLContent = "";
     
     // CASO 1: HAY UN PRECIO ANTERIOR (COMPARACIÓN)
     if (p.precio_anterior && p.precio_anterior !== "") {
+        let labelNow = "Ahora:";
+        
+        // Si es categoría oferta, cambiamos "Ahora" por "OFERTA"
+        if(isPromoCategory && !isAgotado) {
+            labelNow = "OFERTA:";
+        }
+
         priceHTMLContent = `
             <div class="price-stack">
                 <div class="old-price-row">
                     Antes: <span class="old-val">Lps. ${p.precio_anterior}</span>
                 </div>
                 <div class="current-price-row">
-                    Lps. ${p.precio || '0'}
+                    ${labelNow} Lps. ${p.precio || '0'}
                 </div>
             </div>
         `;
