@@ -13,54 +13,50 @@
   <style>
     /* ============ ESTILOS BASE (CSS) ============ */
     :root {
-      /* === MODO OSCURO (CYBERPUNK GAMER) === */
-      --bg: #050505;        
-      --card-bg: #141414;   
+      /* === MODO OSCURO (GAMER ELEGANTE) === */
+      /* Fondo azul muy profundo (casi negro), serio y profesional */
+      --bg: #020617;        
+      --card-bg: #0f172a;   /* Tarjetas un poco más claras que el fondo */
       
-      --primary: #00e5ff;   /* Cyan Neón */
-      --primary-text: #00e5ff;
-      --primary-glow: rgba(0, 229, 255, 0.4); 
+      --primary: #38bdf8;   /* Azul Cielo Neón (Sky Blue) - Muy Gamer */
+      --primary-text: #38bdf8;
+      --primary-glow: rgba(56, 189, 248, 0.3); 
       
-      --accent: #39ff14;    /* Verde Neón */
-      --accent-glow: rgba(57, 255, 20, 0.4);
+      --accent: #2dd4bf;    /* Turquesa para detalles secundarios */
+      --accent-glow: rgba(45, 212, 191, 0.2);
 
-      --text: #ffffff;      
-      --text-muted: #a3a3a3;
+      --text: #f8fafc;      /* Blanco brillante */
+      --text-muted: #94a3b8; /* Gris azulado */
       
-      --border: #333333;
-      --shadow-card: 0 0 15px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 229, 255, 0.05);
+      --border: #1e293b;    /* Bordes sutiles */
+      --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
       
-      /* Grid Cyberpunk */
-      --bg-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      --chip-bg: #1e293b;   /* Fondo sólido para botones de menú inactivos */
       
-      --btn-bg: var(--primary);
-      --btn-text: #000;
+      --bg-image: radial-gradient(at top, #0f172a 0%, #020617 100%);
     }
 
     [data-theme="light"] {
-      /* === MODO DÍA (LIMPIO Y CLARO) === */
-      --bg: #f2f4f7;        /* Gris muy suave para el fondo general */
-      --card-bg: #ffffff;   /* Blanco puro para las tarjetas */
+      /* === MODO DÍA (LIMPIO Y BLANCO - COMO TE GUSTÓ) === */
+      --bg: #f8fafc;        
+      --card-bg: #ffffff;   
       
-      --primary: #111111;   /* Negro Sólido para botones (Elegante) */
+      --primary: #0f172a;   /* Negro/Azul oscuro sólido */
       --primary-text: #000000;
-      --primary-glow: rgba(0, 0, 0, 0.1); /* Sombra suave */
+      --primary-glow: rgba(0, 0, 0, 0.1); 
       
-      --accent: #15803d;    /* Verde bosque legible */
+      --accent: #15803d;    
       --accent-glow: rgba(0, 0, 0, 0);
 
-      --text: #1a1a1a;      /* Negro casi puro */
-      --text-muted: #525252; /* Gris oscuro */
+      --text: #1a1a1a;      
+      --text-muted: #64748b; 
       
-      --border: #e5e5e5;    /* Borde gris claro */
-      --shadow-card: 0 2px 10px rgba(0,0,0,0.08); /* Sombra suave flotante */
+      --border: #e2e8f0;    
+      --shadow-card: 0 4px 15px rgba(0,0,0,0.05); 
       
-      /* SIN GRID EN MODO DÍA (LIMPIO) */
+      --chip-bg: #ffffff;
+      
       --bg-image: none;
-      
-      --btn-bg: #111111;
-      --btn-text: #ffffff;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -70,7 +66,7 @@
       font-family: 'Outfit', sans-serif;
       background-color: var(--bg);
       background-image: var(--bg-image);
-      background-size: 30px 30px;
+      background-attachment: fixed;
       color: var(--text);
       padding-bottom: 80px;
       transition: background 0.3s, color 0.3s;
@@ -79,79 +75,94 @@
     /* HEADER */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: var(--card-bg); /* Se adapta al tema (Blanco en día) */
-      backdrop-filter: blur(10px);
+      background: var(--card-bg); 
+      /* Efecto vidrio sutil solo en el header */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); 
       padding: 12px 16px;
       display: flex; align-items: center; justify-content: space-between;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .brand { display: flex; align-items: center; gap: 10px; }
     .brand img { height: 35px; border-radius: 6px; }
     .brand h1 {
       margin: 0; font-size: 16px; font-weight: 800;
-      color: var(--primary-text); text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text); text-transform: uppercase; letter-spacing: 0.5px;
     }
+    .brand h1 span { color: var(--primary); } /* Resalte de color */
 
     .icon-btn {
       background: transparent; border: 1px solid var(--border);
-      color: var(--text); width: 35px; height: 35px; border-radius: 8px;
+      color: var(--text); width: 35px; height: 35px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
+      cursor: pointer; transition: 0.2s;
     }
+    .icon-btn:hover { background: var(--border); }
 
     /* BÚSQUEDA */
     .search-container { padding: 16px; max-width: 800px; margin: 0 auto; }
     .search-box { position: relative; display: flex; align-items: center; }
     .search-box i { position: absolute; left: 14px; color: var(--text-muted); }
     .search-box input {
-      width: 100%; padding: 12px 16px 12px 40px; border-radius: 8px;
+      width: 100%; padding: 12px 16px 12px 40px; border-radius: 12px;
       border: 1px solid var(--border); 
-      background: var(--card-bg); /* Blanco en día */
-      color: var(--text); font-size: 14px; outline: none; font-weight: 600;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      background: var(--card-bg); 
+      color: var(--text); font-size: 14px; outline: none; font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: 0.3s;
     }
-    .search-box input:focus { border-color: var(--text); }
+    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
 
     /* CATEGORÍAS */
     .filters-wrapper {
       position: sticky; top: 60px; z-index: 90;
-      background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border);
+      background: var(--bg); padding: 10px 0; 
+      border-bottom: 1px solid transparent;
+      transition: 0.3s;
     }
+    /* Sombra al hacer scroll */
+    .filters-wrapper.scrolled {
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
     .category-bar, .sub-bar {
       display: flex; gap: 10px; overflow-x: auto; padding: 0 16px 8px;
       scrollbar-width: none;
     }
     
+    /* CHIPS (BOTONES DE MENÚ) - AHORA MÁS CLAROS */
     .chip {
-      padding: 8px 16px;
-      /* Forma simplificada en modo día */
-      clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%, 0% 20%);
-      background: var(--card-bg); 
+      padding: 8px 18px;
+      border-radius: 99px; /* Redondos clásicos */
+      background: var(--chip-bg); /* Fondo sólido (Gris oscuro en noche, Blanco en día) */
       border: 1px solid var(--border);
-      border-left: 3px solid var(--text-muted);
       color: var(--text-muted);
-      font-size: 12px; font-weight: 700;
+      font-size: 13px; font-weight: 700;
       white-space: nowrap; cursor: pointer;
       display: flex; align-items: center; gap: 6px;
       text-transform: uppercase; 
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.2s;
     }
 
     .chip.active {
       background: var(--primary); 
-      color: var(--btn-text); 
+      color: #fff; /* Texto blanco siempre en activo */
       border-color: var(--primary);
-      border-left-color: var(--text);
-      box-shadow: 0 4px 10px var(--primary-glow);
+      box-shadow: 0 4px 12px var(--primary-glow);
+      transform: translateY(-1px);
     }
+    /* Corrección texto negro en activo si el fondo es muy claro en modo oscuro */
+    [data-theme="dark"] .chip.active { color: #000; font-weight: 800; }
 
     .sub-bar .chip { 
-        padding: 6px 12px; font-size: 11px; border-radius: 4px; clip-path: none; 
-        border: 1px solid var(--border); background: var(--card-bg);
+        padding: 6px 14px; font-size: 11px; border-radius: 8px; 
+        background: transparent; border: 1px solid var(--border);
     }
-    .sub-bar .chip.active { background: var(--text); border-color: var(--text); color: #fff; }
+    .sub-bar .chip.active { background: var(--text); border-color: var(--text); color: var(--bg); }
 
     /* GRID */
     .grid {
@@ -164,7 +175,7 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border); 
-      border-radius: 12px; overflow: hidden; 
+      border-radius: 16px; overflow: hidden; 
       display: flex; flex-direction: column; position: relative;
       animation: fadeIn 0.4s ease-out forwards;
       box-shadow: var(--shadow-card);
@@ -177,18 +188,17 @@
       position: relative; overflow: hidden;
       border-bottom: 1px solid var(--border);
     }
-    .product-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
+    .product-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; transition: 0.3s; }
     
     .watermark-overlay {
-        position: absolute; width: 80%; opacity: 0.2; 
+        position: absolute; width: 70%; opacity: 0.15; 
         z-index: 2; pointer-events: none;
-        /* Modo oscuro usa la normal, Modo día se invierte a negro */
         filter: grayscale(100%);
     }
-    [data-theme="light"] .watermark-overlay { opacity: 0.08; filter: grayscale(100%) invert(1); }
+    [data-theme="light"] .watermark-overlay { filter: grayscale(100%) invert(1); opacity: 0.08; }
 
     /* AGOTADO */
-    .card.agotado { opacity: 0.8; }
+    .card.agotado { opacity: 0.7; }
     .card.agotado .product-img { filter: grayscale(100%); opacity: 0.6; }
     .ribbon {
         position: absolute; top: 15px; left: -30px; width: 100px;
@@ -208,16 +218,13 @@
     /* PRECIO */
     .price-bar {
         display: flex; align-items: center; justify-content: space-between;
-        background: rgba(0, 0, 0, 0.2); 
-        border: 1px solid var(--accent);
-        border-radius: 6px; padding: 6px 10px;
+        background: rgba(255, 255, 255, 0.03); /* Fondo muy sutil */
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent); /* Línea de acento a la izquierda */
+        border-radius: 8px; padding: 6px 12px;
         margin-top: auto; 
     }
-    /* Precio en Modo Día: Fondo verde muy claro, texto verde oscuro */
-    [data-theme="light"] .price-bar { 
-        background: #ecfdf5; 
-        border-color: #d1fae5; 
-    }
+    [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; border-left-color: #16a34a; }
 
     .price-icon { color: var(--accent); font-size: 14px; }
     
@@ -229,16 +236,19 @@
 
     /* BOTONES */
     .btn-ws {
-      background: var(--btn-bg); 
-      color: var(--btn-text); 
+      background: var(--primary); 
+      color: #fff; /* Blanco por defecto */
       border: none;
-      padding: 10px; border-radius: 6px; 
+      padding: 10px; border-radius: 8px; 
       font-weight: 800; font-size: 12px; 
       cursor: pointer; text-decoration: none; 
       display: flex; align-items: center; justify-content: center; gap: 6px;
       text-transform: uppercase;
-      box-shadow: 0 4px 10px var(--primary-glow);
+      box-shadow: 0 4px 12px var(--primary-glow);
+      transition: 0.2s;
     }
+    /* En modo oscuro, texto negro para contraste con el Azul Neón */
+    [data-theme="dark"] .btn-ws { color: #000; }
     
     .btn-ws:active { transform: scale(0.98); }
     
@@ -246,11 +256,11 @@
     
     .media-btn {
         flex: 1; border: 1px solid var(--border); color: var(--text-muted);
-        padding: 6px; border-radius: 4px; font-size: 10px; font-weight: 700;
+        padding: 6px; border-radius: 6px; font-size: 10px; font-weight: 700;
         text-align: center; text-decoration: none; text-transform: uppercase;
-        background: var(--bg);
+        background: rgba(255,255,255,0.02);
     }
-    [data-theme="light"] .media-btn { background: #fff; }
+    [data-theme="light"] .media-btn { background: #f1f5f9; color: #64748b; }
 
     /* BOTON FLOTANTE WHATSAPP */
     .float-ws { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; }
@@ -268,8 +278,8 @@
   <div class="brand">
     <img src="logo.png" alt="SDC" onerror="this.style.display='none'"> 
     <div>
-      <h1>Soluciones Digitales</h1>
-      <small style="color:var(--text-muted); font-size:10px; letter-spacing:1px; font-weight:700;">// SYSTEM ONLINE</small>
+      <h1>Soluciones <span>Digitales</span></h1>
+      <small style="color:var(--text-muted); font-size:10px; letter-spacing:1px; font-weight:700;">COMAYAGUA</small>
     </div>
   </div>
   <div class="icon-btn" id="themeToggle"><i class="fa-solid fa-moon"></i></div>
@@ -319,9 +329,9 @@ function getIconForCategory(catName) {
   if(name.includes('celular') || name.includes('móvil') || name.includes('phone') || name.includes('samsung') || name.includes('iphone')) return '📱';
   if(name.includes('pc') || name.includes('computadora')) return '🖥️';
   if(name.includes('tv') || name.includes('stream')) return '📺';
-  if(name.includes('audio')) return '🎧';
-  if(name.includes('power')) return '🔋';
-  if(name.includes('reloj')) return '⌚';
+  if(name.includes('audio') || name.includes('audifonos')) return '🎧';
+  if(name.includes('power') || name.includes('carga')) return '🔋';
+  if(name.includes('reloj') || name.includes('smart')) return '⌚';
   return '📦';
 }
 
