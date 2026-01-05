@@ -226,34 +226,47 @@
       min-height: 40px; color: var(--text);
     }
     
-    /* === NUEVO ESTILO DE PRECIO MEJORADO === */
+    /* === CAJA DE PRECIO HUD GAMER (NUEVA) === */
     .price-tag {
-        display: inline-flex;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        background: rgba(0, 0, 0, 0.3); /* Fondo oscuro semitransparente */
+        border: 1px solid var(--accent); /* Borde verde fino */
+        border-left: 5px solid var(--accent); /* Borde grueso a la izquierda */
+        
+        padding: 6px 12px;
+        border-radius: 6px;
+        margin-top: 5px;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.15); /* Resplandor sutil */
+    }
+
+    .price-tag i {
+        color: var(--accent);
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .price-content {
+        display: flex;
         align-items: baseline;
-        gap: 4px;
-        /* Fondo gradiente sutil */
-        background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), transparent);
-        border-left: 4px solid var(--accent); /* Línea verde de poder */
-        padding: 4px 10px;
-        border-radius: 0 8px 8px 0;
-        width: fit-content;
-        margin-top: 4px;
+        gap: 5px;
     }
 
     .price-currency {
         font-size: 12px;
         font-weight: 600;
-        color: var(--accent);
+        color: var(--text-muted);
         text-transform: uppercase;
-        opacity: 0.9;
     }
 
     .price-amount {
         color: var(--accent);
         font-weight: 800;
         font-size: 20px; /* Número GRANDE */
-        text-shadow: 0 0 15px var(--accent-glow); /* Brillo neón */
-        letter-spacing: -0.5px;
+        text-shadow: 0 0 5px var(--accent-glow); /* Texto brillante */
+        letter-spacing: 0.5px;
     }
     
     .desc { font-size: 12px; color: var(--text-muted); margin-bottom: auto; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -495,11 +508,14 @@ function render() {
     
     const ribbonHTML = isAgotado ? `<div class="ribbon">AGOTADO</div>` : '';
 
-    // NUEVO FORMATO DE PRECIO
+    // NUEVO FORMATO DE PRECIO (ESTILO HUD GAMER)
     const priceHTML = `
       <div class="price-tag">
-        <span class="price-currency">Lps.</span>
-        <span class="price-amount">${p.precio || '0'}</span>
+        <div class="price-content">
+            <span class="price-currency">Lps.</span>
+            <span class="price-amount">${p.precio || '0'}</span>
+        </div>
+        <i class="fa-solid fa-tag"></i>
       </div>`;
 
     card.innerHTML = `
