@@ -13,7 +13,7 @@
   <style>
     /* ============ ESTILOS BASE ============ */
     :root {
-      /* MODO OSCURO */
+      /* MODO OSCURO (Variables base) */
       --bg: #0b1120;        
       --card-bg: #151e32;   
       
@@ -43,7 +43,7 @@
     }
 
     [data-theme="light"] {
-      /* MODO DÍA */
+      /* MODO DÍA (Sobreescritura) */
       --bg: #f8fafc;        
       --card-bg: #ffffff;   
       
@@ -596,12 +596,12 @@ window.addEventListener('scroll', () => {
   window.scrollY > 50 ? f.classList.add('scrolled') : f.classList.remove('scrolled');
 });
 const toggle = document.getElementById('themeToggle');
-let dark = true; 
-document.documentElement.setAttribute('data-theme', 'dark');
+let dark = false; // INICIO EN MODO DIA
+document.documentElement.setAttribute('data-theme', 'light'); // INICIO EN LIGHT
 toggle.onclick = () => {
   dark = !dark;
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  toggle.innerHTML = dark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+  toggle.innerHTML = dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
 };
 </script>
 </body>
