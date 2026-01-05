@@ -14,34 +14,37 @@
     /* ============ ESTILOS BASE (CSS) ============ */
     :root {
       /* === MODO OSCURO (GAMER ELEGANTE) === */
-      /* Fondo azul muy profundo (casi negro), serio y profesional */
       --bg: #020617;        
-      --card-bg: #0f172a;   /* Tarjetas un poco más claras que el fondo */
+      --card-bg: #0f172a;   
       
-      --primary: #38bdf8;   /* Azul Cielo Neón (Sky Blue) - Muy Gamer */
+      --primary: #38bdf8;   /* Azul Cielo */
       --primary-text: #38bdf8;
       --primary-glow: rgba(56, 189, 248, 0.3); 
       
-      --accent: #2dd4bf;    /* Turquesa para detalles secundarios */
+      --accent: #2dd4bf;    /* Turquesa */
       --accent-glow: rgba(45, 212, 191, 0.2);
 
-      --text: #f8fafc;      /* Blanco brillante */
-      --text-muted: #94a3b8; /* Gris azulado */
+      --text: #f8fafc;      
+      --text-muted: #94a3b8; 
       
-      --border: #1e293b;    /* Bordes sutiles */
+      --border: #1e293b;    
       --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
       
-      --chip-bg: #1e293b;   /* Fondo sólido para botones de menú inactivos */
+      --chip-bg: #1e293b;   
       
       --bg-image: radial-gradient(at top, #0f172a 0%, #020617 100%);
+      
+      /* Color Rojo para Agotado */
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.3);
     }
 
     [data-theme="light"] {
-      /* === MODO DÍA (LIMPIO Y BLANCO - COMO TE GUSTÓ) === */
+      /* === MODO DÍA (LIMPIO Y BLANCO) === */
       --bg: #f8fafc;        
       --card-bg: #ffffff;   
       
-      --primary: #0f172a;   /* Negro/Azul oscuro sólido */
+      --primary: #0f172a;   
       --primary-text: #000000;
       --primary-glow: rgba(0, 0, 0, 0.1); 
       
@@ -76,7 +79,6 @@
     header {
       position: sticky; top: 0; z-index: 100;
       background: var(--card-bg); 
-      /* Efecto vidrio sutil solo en el header */
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); 
@@ -91,7 +93,7 @@
       margin: 0; font-size: 16px; font-weight: 800;
       color: var(--text); text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .brand h1 span { color: var(--primary); } /* Resalte de color */
+    .brand h1 span { color: var(--primary); } 
 
     .icon-btn {
       background: transparent; border: 1px solid var(--border);
@@ -122,7 +124,6 @@
       border-bottom: 1px solid transparent;
       transition: 0.3s;
     }
-    /* Sombra al hacer scroll */
     .filters-wrapper.scrolled {
         background: var(--card-bg);
         border-bottom: 1px solid var(--border);
@@ -134,11 +135,11 @@
       scrollbar-width: none;
     }
     
-    /* CHIPS (BOTONES DE MENÚ) - AHORA MÁS CLAROS */
+    /* CHIPS */
     .chip {
       padding: 8px 18px;
-      border-radius: 99px; /* Redondos clásicos */
-      background: var(--chip-bg); /* Fondo sólido (Gris oscuro en noche, Blanco en día) */
+      border-radius: 99px; 
+      background: var(--chip-bg); 
       border: 1px solid var(--border);
       color: var(--text-muted);
       font-size: 13px; font-weight: 700;
@@ -150,12 +151,11 @@
 
     .chip.active {
       background: var(--primary); 
-      color: #fff; /* Texto blanco siempre en activo */
+      color: #fff; 
       border-color: var(--primary);
       box-shadow: 0 4px 12px var(--primary-glow);
       transform: translateY(-1px);
     }
-    /* Corrección texto negro en activo si el fondo es muy claro en modo oscuro */
     [data-theme="dark"] .chip.active { color: #000; font-weight: 800; }
 
     .sub-bar .chip { 
@@ -197,12 +197,13 @@
     }
     [data-theme="light"] .watermark-overlay { filter: grayscale(100%) invert(1); opacity: 0.08; }
 
-    /* AGOTADO */
-    .card.agotado { opacity: 0.7; }
+    /* AGOTADO (ESTILOS ESPECIALES) */
+    .card.agotado { opacity: 0.9; border-color: var(--danger); }
     .card.agotado .product-img { filter: grayscale(100%); opacity: 0.6; }
+    
     .ribbon {
         position: absolute; top: 15px; left: -30px; width: 100px;
-        background: #ef4444; color: #fff; font-size: 10px; font-weight: 800;
+        background: var(--danger); color: #fff; font-size: 10px; font-weight: 800;
         padding: 4px 0; transform: rotate(-45deg); text-align: center;
         z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
@@ -218,26 +219,43 @@
     /* PRECIO */
     .price-bar {
         display: flex; align-items: center; justify-content: space-between;
-        background: rgba(255, 255, 255, 0.03); /* Fondo muy sutil */
+        background: rgba(255, 255, 255, 0.03); 
         border: 1px solid var(--border);
-        border-left: 4px solid var(--accent); /* Línea de acento a la izquierda */
+        border-left: 4px solid var(--accent); /* Verde por defecto */
         border-radius: 8px; padding: 6px 12px;
         margin-top: auto; 
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; border-left-color: #16a34a; }
 
     .price-icon { color: var(--accent); font-size: 14px; }
-    
     .price-value {
         font-family: 'Outfit', sans-serif; 
         font-size: 18px; font-weight: 800;
         color: var(--accent);
     }
 
+    /* 🔥 ESTILO ESPECIAL: PRECIO ROJO CUANDO ESTÁ AGOTADO 🔥 */
+    .card.agotado .price-bar {
+        background: rgba(239, 68, 68, 0.1); /* Fondo rojizo suave */
+        border-color: var(--danger);
+        border-left-color: var(--danger);
+    }
+    .card.agotado .price-icon,
+    .card.agotado .price-value {
+        color: var(--danger); /* Texto e icono rojo */
+        text-shadow: 0 0 8px var(--danger-glow);
+    }
+    /* Ajuste para modo claro agotado */
+    [data-theme="light"] .card.agotado .price-bar {
+        background: #fef2f2;
+        border-color: #fca5a5;
+        border-left-color: #ef4444;
+    }
+
     /* BOTONES */
     .btn-ws {
       background: var(--primary); 
-      color: #fff; /* Blanco por defecto */
+      color: #fff; 
       border: none;
       padding: 10px; border-radius: 8px; 
       font-weight: 800; font-size: 12px; 
@@ -247,7 +265,6 @@
       box-shadow: 0 4px 12px var(--primary-glow);
       transition: 0.2s;
     }
-    /* En modo oscuro, texto negro para contraste con el Azul Neón */
     [data-theme="dark"] .btn-ws { color: #000; }
     
     .btn-ws:active { transform: scale(0.98); }
@@ -329,9 +346,9 @@ function getIconForCategory(catName) {
   if(name.includes('celular') || name.includes('móvil') || name.includes('phone') || name.includes('samsung') || name.includes('iphone')) return '📱';
   if(name.includes('pc') || name.includes('computadora')) return '🖥️';
   if(name.includes('tv') || name.includes('stream')) return '📺';
-  if(name.includes('audio') || name.includes('audifonos')) return '🎧';
-  if(name.includes('power') || name.includes('carga')) return '🔋';
-  if(name.includes('reloj') || name.includes('smart')) return '⌚';
+  if(name.includes('audio') return '🎧';
+  if(name.includes('power')) return '🔋';
+  if(name.includes('reloj')) return '⌚';
   return '📦';
 }
 
