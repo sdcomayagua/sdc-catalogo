@@ -37,9 +37,9 @@
       --danger: #ef4444;
       
       /* OFERTAS */
-      --promo-color: #f59e0b; 
-      --promo-glow: rgba(245, 158, 11, 0.4);
-      --promo-bg: rgba(245, 158, 11, 0.15);
+      --promo-color: #ff6b00; 
+      --promo-glow: rgba(255, 107, 0, 0.6);
+      --promo-bg: rgba(255, 107, 0, 0.15);
     }
 
     [data-theme="light"] {
@@ -64,8 +64,8 @@
       
       --bg-image: none;
       
-      --promo-color: #d97706; 
-      --promo-glow: rgba(217, 119, 6, 0.2);
+      --promo-color: #ea580c; 
+      --promo-glow: rgba(234, 88, 12, 0.2);
       --promo-bg: #fff7ed;
     }
 
@@ -243,35 +243,40 @@
       height: 36px; color: var(--text);
     }
     
-    /* === PRECIOS === */
+    /* === CAJA DE PRECIOS OPTIMIZADA === */
     .price-bar {
-        display: flex; align-items: center; justify-content: space-between;
+        display: flex; 
+        align-items: center; /* Centrar icono verticalmente */
+        justify-content: space-between; /* Icono izq, Precios der */
         background: rgba(255, 255, 255, 0.03); 
         border: 1px solid var(--border);
         border-left: 4px solid var(--accent);
-        border-radius: 8px; padding: 6px 12px;
+        border-radius: 8px; 
+        padding: 4px 12px; /* Menos padding vertical para ajustar altura */
         margin-top: auto; 
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; border-left-color: #16a34a; }
 
-    /* CONTENEDOR PARA LOS DOS PRECIOS */
-    .price-group {
+    /* CONTENEDOR VERTICAL DE PRECIOS */
+    .price-content {
         display: flex;
-        align-items: center;
-        gap: 8px; /* Espacio entre el precio tachado y el nuevo */
+        flex-direction: column; /* Uno encima del otro */
+        align-items: flex-end; /* Alineados a la derecha */
+        line-height: 1.1;
     }
-
-    /* PRECIO ANTERIOR (TACHADO) */
-    .old-price {
-        font-size: 11px;
-        color: var(--text-muted);
-        text-decoration: line-through;
-        font-weight: 500;
-        opacity: 0.8;
-    }
-    [data-theme="light"] .old-price { color: #9ca3af; }
 
     .price-icon { color: var(--accent); font-size: 14px; }
+    
+    /* PRECIO ANTERIOR (Arriba, pequeño) */
+    .old-price {
+        font-size: 10px;
+        color: var(--text-muted);
+        text-decoration: line-through;
+        opacity: 0.7;
+        margin-bottom: 2px;
+    }
+    
+    /* PRECIO NUEVO (Abajo, grande) */
     .price-value {
         font-family: 'Outfit', sans-serif; 
         font-size: 18px; font-weight: 800;
@@ -543,7 +548,7 @@ function render() {
     return;
   }
 
-  // DETECCIÓN DE SI ESTAMOS EN LA CATEGORÍA DE OFERTAS
+  // DETECCIÓN DE OFERTAS
   const isPromoCategory = currentCategory.toLowerCase().includes('oferta') || currentCategory.toLowerCase().includes('mayorista');
 
   filtered.forEach(p => {
@@ -576,7 +581,7 @@ function render() {
 
     const descText = p.descripcion || p.descipcion || "";
 
-    // === LÓGICA DE PRECIO ANTERIOR ===
+    // === LÓGICA DE PRECIO APILADO VERTICALMENTE ===
     let oldPriceHTML = "";
     if (p.precio_anterior && p.precio_anterior !== "") {
         oldPriceHTML = `<span class="old-price">Lps. ${p.precio_anterior}</span>`;
@@ -585,7 +590,7 @@ function render() {
     const priceHTML = `
       <div class="price-bar">
         <i class="fa-solid fa-tag price-icon"></i>
-        <div class="price-group">
+        <div class="price-content">
             ${oldPriceHTML}
             <span class="price-value">Lps. ${p.precio || '0'}</span>
         </div>
