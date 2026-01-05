@@ -222,12 +222,12 @@
       color: #fff; 
       border: none;
       
-      /* MÓVIL (Por defecto): Letra pequeña y sin saltos de línea */
+      /* MÓVIL: Compacto y sin saltos de línea */
       padding: 10px 4px; 
       border-radius: 10px; 
       font-weight: 700; 
       font-size: 11px; 
-      white-space: nowrap; /* Evita que el texto se parta */
+      white-space: nowrap; 
       
       cursor: pointer; 
       display: flex; 
@@ -241,7 +241,7 @@
     
     .btn-ws:hover { transform: scale(0.98); opacity: 0.9; }
 
-    /* PC / TABLET: Botón más grande y espacioso */
+    /* PC / TABLET: Botón más grande */
     @media (min-width: 768px) {
       .btn-ws {
         font-size: 13px;
@@ -252,7 +252,7 @@
 
     .btn-consultar {
       background: #334155; color: #e2e8f0; font-size: 11px; border: 1px solid #475569;
-      white-space: normal; /* Permitir 2 líneas si es muy largo el "Preguntar dispon." */
+      white-space: normal; 
       line-height: 1.2;
     }
     .btn-consultar:hover { background: #1e293b; color: #fff; }
@@ -312,8 +312,8 @@ const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const CONFIG_GID = "1488858707"; 
 const MY_PHONE = "50432429490"; 
 
-// Asegúrate de tener esta imagen en tu carpeta
-const WATERMARK_URL = "marca.png"; 
+// ✅ NOMBRE ACTUALIZADO DE LA MARCA DE AGUA
+const WATERMARK_URL = "LOGO SDC - LETRAS 2.png"; 
 
 
 /* ================= LÓGICA ================= */
