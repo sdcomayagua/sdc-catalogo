@@ -243,45 +243,57 @@
       height: 36px; color: var(--text);
     }
     
-    /* === CAJA DE PRECIOS OPTIMIZADA === */
+    /* === PRECIOS ESTRATÉGICOS === */
     .price-bar {
-        display: flex; 
-        align-items: center; /* Centrar icono verticalmente */
-        justify-content: space-between; /* Icono izq, Precios der */
+        display: flex; align-items: center; justify-content: space-between;
         background: rgba(255, 255, 255, 0.03); 
         border: 1px solid var(--border);
         border-left: 4px solid var(--accent);
-        border-radius: 8px; 
-        padding: 4px 12px; /* Menos padding vertical para ajustar altura */
+        border-radius: 8px; padding: 6px 12px;
         margin-top: auto; 
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; border-left-color: #16a34a; }
 
-    /* CONTENEDOR VERTICAL DE PRECIOS */
-    .price-content {
+    /* CONTENEDOR DE PRECIOS APILADOS */
+    .price-stack {
         display: flex;
-        flex-direction: column; /* Uno encima del otro */
-        align-items: flex-end; /* Alineados a la derecha */
-        line-height: 1.1;
+        flex-direction: column;
+        align-items: flex-end; /* Alineado a la derecha */
+        line-height: 1.2;
+    }
+
+    /* FILA INDIVIDUAL DE PRECIO */
+    .price-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* ESTILOS DE ETIQUETAS */
+    .p-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+    }
+
+    /* PRECIO ANTERIOR */
+    .old-val {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-decoration: line-through;
+        opacity: 0.8;
+    }
+
+    /* PRECIO ACTUAL */
+    .current-val {
+        font-family: 'Outfit', sans-serif; 
+        font-size: 17px; font-weight: 800;
+        color: var(--accent);
     }
 
     .price-icon { color: var(--accent); font-size: 14px; }
-    
-    /* PRECIO ANTERIOR (Arriba, pequeño) */
-    .old-price {
-        font-size: 10px;
-        color: var(--text-muted);
-        text-decoration: line-through;
-        opacity: 0.7;
-        margin-bottom: 2px;
-    }
-    
-    /* PRECIO NUEVO (Abajo, grande) */
-    .price-value {
-        font-family: 'Outfit', sans-serif; 
-        font-size: 18px; font-weight: 800;
-        color: var(--accent);
-    }
 
     /* MODO OFERTA */
     .card.promo-mode .price-bar {
@@ -290,9 +302,13 @@
         border-left: 6px solid var(--promo-color);
     }
     .card.promo-mode .price-icon, 
-    .card.promo-mode .price-value {
+    .card.promo-mode .current-val {
         color: var(--promo-color);
         text-shadow: 0 0 10px var(--promo-glow);
+    }
+    /* La etiqueta "OFERTA:" en naranja */
+    .card.promo-mode .p-label-promo {
+        color: var(--promo-color);
     }
 
     /* MODO AGOTADO */
@@ -300,7 +316,7 @@
         background: rgba(239, 68, 68, 0.1); 
         border-color: var(--danger); border-left-color: var(--danger);
     }
-    .card.agotado .price-icon, .card.agotado .price-value { color: var(--danger); text-shadow:none; }
+    .card.agotado .price-icon, .card.agotado .current-val { color: var(--danger); text-shadow:none; }
     [data-theme="light"] .card.agotado .price-bar { background: #fef2f2; border-color: #fca5a5; border-left-color: #ef4444; }
 
     /* DESC */
@@ -581,19 +597,43 @@ function render() {
 
     const descText = p.descripcion || p.descipcion || "";
 
-    // === LÓGICA DE PRECIO APILADO VERTICALMENTE ===
-    let oldPriceHTML = "";
+    // === LÓGICA DE PRECIOS ETIQUETADOS ===
+    let priceHTMLContent = "";
+    
+    // CASO 1: HAY UN PRECIO ANTERIOR (COMPARACIÓN)
     if (p.precio_anterior && p.precio_anterior !== "") {
-        oldPriceHTML = `<span class="old-price">Lps. ${p.precio_anterior}</span>`;
+        let labelNow = "Ahora:";
+        let labelClass = "p-label";
+        
+        // Si es categoría oferta, cambiamos "Ahora" por "OFERTA" y color especial
+        if(isPromoCategory && !isAgotado) {
+            labelNow = "OFERTA:";
+            labelClass = "p-label p-label-promo";
+        }
+
+        priceHTMLContent = `
+            <div class="price-stack">
+                <div class="price-row">
+                    <span class="p-label">Antes:</span>
+                    <span class="old-val">Lps. ${p.precio_anterior}</span>
+                </div>
+                <div class="price-row">
+                    <span class="${labelClass}">${labelNow}</span>
+                    <span class="current-val">Lps. ${p.precio || '0'}</span>
+                </div>
+            </div>
+        `;
+    } else {
+        // CASO 2: SOLO PRECIO NORMAL (SIN COMPARACIÓN)
+        priceHTMLContent = `
+            <span class="current-val">Lps. ${p.precio || '0'}</span>
+        `;
     }
 
     const priceHTML = `
       <div class="price-bar">
         <i class="fa-solid fa-tag price-icon"></i>
-        <div class="price-content">
-            ${oldPriceHTML}
-            <span class="price-value">Lps. ${p.precio || '0'}</span>
-        </div>
+        ${priceHTMLContent}
       </div>`;
 
     card.innerHTML = `
