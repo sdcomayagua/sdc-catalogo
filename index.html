@@ -5,59 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
-  <meta name="description" content="Catálogo digital de accesorios Gamer, PC, Móvil y Streaming en Comayagua. Pedidos por WhatsApp." />
+  <meta name="description" content="Catálogo digital de accesorios Gamer, PC, Móvil y Streaming en Comayagua." />
   
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    /* ============ ESTILOS BASE (CSS) ============ */
+    /* ============ ESTILOS ============ */
     :root {
-      /* === MODO OSCURO (GAMER ELEGANTE) === */
-      --bg: #020617;        
-      --card-bg: #0f172a;   
+      /* MODO OSCURO (GAMER PROFESIONAL) */
+      --bg: #0b1120;        /* Azul muy oscuro, casi negro */
+      --card-bg: #151e32;   /* Tarjetas azul profundo */
       
       --primary: #38bdf8;   /* Azul Cielo */
       --primary-text: #38bdf8;
-      --primary-glow: rgba(56, 189, 248, 0.3); 
       
       --accent: #2dd4bf;    /* Turquesa */
       --accent-glow: rgba(45, 212, 191, 0.2);
 
-      --text: #f8fafc;      
+      --text: #f8fafc;      /* Blanco */
       --text-muted: #94a3b8; 
       
       --border: #1e293b;    
       --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
       
+      /* Fondo del menú en modo oscuro para que se vea bien */
       --chip-bg: #1e293b;   
+      --chip-text: #cbd5e1;
       
-      --bg-image: radial-gradient(at top, #0f172a 0%, #020617 100%);
+      --bg-image: radial-gradient(at top, #1e293b 0%, #0b1120 100%);
       
-      /* Color Rojo para Agotado */
       --danger: #ef4444;
-      --danger-glow: rgba(239, 68, 68, 0.3);
     }
 
     [data-theme="light"] {
-      /* === MODO DÍA (LIMPIO Y BLANCO) === */
-      --bg: #f8fafc;        
+      /* MODO DÍA (LIMPIO Y BLANCO) */
+      --bg: #f3f4f6;        
       --card-bg: #ffffff;   
       
-      --primary: #0f172a;   
+      --primary: #0f172a;   /* Negro/Azul */
       --primary-text: #000000;
-      --primary-glow: rgba(0, 0, 0, 0.1); 
       
       --accent: #15803d;    
-      --accent-glow: rgba(0, 0, 0, 0);
+      --accent-glow: rgba(0,0,0,0);
 
       --text: #1a1a1a;      
       --text-muted: #64748b; 
       
-      --border: #e2e8f0;    
+      --border: #e5e7eb;    
       --shadow-card: 0 4px 15px rgba(0,0,0,0.05); 
       
       --chip-bg: #ffffff;
+      --chip-text: #4b5563;
       
       --bg-image: none;
     }
@@ -79,8 +78,6 @@
     header {
       position: sticky; top: 0; z-index: 100;
       background: var(--card-bg); 
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); 
       padding: 12px 16px;
       display: flex; align-items: center; justify-content: space-between;
@@ -99,9 +96,8 @@
       background: transparent; border: 1px solid var(--border);
       color: var(--text); width: 35px; height: 35px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.2s;
+      cursor: pointer;
     }
-    .icon-btn:hover { background: var(--border); }
 
     /* BÚSQUEDA */
     .search-container { padding: 16px; max-width: 800px; margin: 0 auto; }
@@ -113,9 +109,8 @@
       background: var(--card-bg); 
       color: var(--text); font-size: 14px; outline: none; font-weight: 500;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      transition: 0.3s;
     }
-    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+    .search-box input:focus { border-color: var(--primary); }
 
     /* CATEGORÍAS */
     .filters-wrapper {
@@ -135,13 +130,13 @@
       scrollbar-width: none;
     }
     
-    /* CHIPS */
+    /* BOTONES DEL MENÚ (CHIPS) */
     .chip {
       padding: 8px 18px;
       border-radius: 99px; 
-      background: var(--chip-bg); 
+      background: var(--chip-bg); /* Fondo sólido */
       border: 1px solid var(--border);
-      color: var(--text-muted);
+      color: var(--chip-text);    /* Color de letra claro */
       font-size: 13px; font-weight: 700;
       white-space: nowrap; cursor: pointer;
       display: flex; align-items: center; gap: 6px;
@@ -153,9 +148,10 @@
       background: var(--primary); 
       color: #fff; 
       border-color: var(--primary);
-      box-shadow: 0 4px 12px var(--primary-glow);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transform: translateY(-1px);
     }
+    /* Texto negro en activo si es modo oscuro para contraste */
     [data-theme="dark"] .chip.active { color: #000; font-weight: 800; }
 
     .sub-bar .chip { 
@@ -181,7 +177,6 @@
       box-shadow: var(--shadow-card);
     }
 
-    /* IMAGEN */
     .card-img-container {
       width: 100%; aspect-ratio: 1/1; background: #fff; 
       padding: 0; display: flex; align-items: center; justify-content: center;
@@ -197,7 +192,7 @@
     }
     [data-theme="light"] .watermark-overlay { filter: grayscale(100%) invert(1); opacity: 0.08; }
 
-    /* AGOTADO (ESTILOS ESPECIALES) */
+    /* AGOTADO */
     .card.agotado { opacity: 0.9; border-color: var(--danger); }
     .card.agotado .product-img { filter: grayscale(100%); opacity: 0.6; }
     
@@ -221,7 +216,7 @@
         display: flex; align-items: center; justify-content: space-between;
         background: rgba(255, 255, 255, 0.03); 
         border: 1px solid var(--border);
-        border-left: 4px solid var(--accent); /* Verde por defecto */
+        border-left: 4px solid var(--accent);
         border-radius: 8px; padding: 6px 12px;
         margin-top: auto; 
     }
@@ -234,43 +229,27 @@
         color: var(--accent);
     }
 
-    /* 🔥 ESTILO ESPECIAL: PRECIO ROJO CUANDO ESTÁ AGOTADO 🔥 */
+    /* PRECIO ROJO SI AGOTADO */
     .card.agotado .price-bar {
-        background: rgba(239, 68, 68, 0.1); /* Fondo rojizo suave */
-        border-color: var(--danger);
-        border-left-color: var(--danger);
+        background: rgba(239, 68, 68, 0.1); 
+        border-color: var(--danger); border-left-color: var(--danger);
     }
-    .card.agotado .price-icon,
-    .card.agotado .price-value {
-        color: var(--danger); /* Texto e icono rojo */
-        text-shadow: 0 0 8px var(--danger-glow);
-    }
-    /* Ajuste para modo claro agotado */
-    [data-theme="light"] .card.agotado .price-bar {
-        background: #fef2f2;
-        border-color: #fca5a5;
-        border-left-color: #ef4444;
-    }
+    .card.agotado .price-icon, .card.agotado .price-value { color: var(--danger); }
+    [data-theme="light"] .card.agotado .price-bar { background: #fef2f2; border-color: #fca5a5; border-left-color: #ef4444; }
 
     /* BOTONES */
     .btn-ws {
-      background: var(--primary); 
-      color: #fff; 
-      border: none;
+      background: var(--primary); color: #fff; border: none;
       padding: 10px; border-radius: 8px; 
       font-weight: 800; font-size: 12px; 
       cursor: pointer; text-decoration: none; 
       display: flex; align-items: center; justify-content: center; gap: 6px;
       text-transform: uppercase;
-      box-shadow: 0 4px 12px var(--primary-glow);
       transition: 0.2s;
     }
     [data-theme="dark"] .btn-ws { color: #000; }
     
-    .btn-ws:active { transform: scale(0.98); }
-    
     .media-links { display: flex; gap: 8px; }
-    
     .media-btn {
         flex: 1; border: 1px solid var(--border); color: var(--text-muted);
         padding: 6px; border-radius: 6px; font-size: 10px; font-weight: 700;
@@ -279,7 +258,6 @@
     }
     [data-theme="light"] .media-btn { background: #f1f5f9; color: #64748b; }
 
-    /* BOTON FLOTANTE WHATSAPP */
     .float-ws { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 200; }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -334,6 +312,9 @@ const CONFIG_GID = "1488858707";
 const MY_PHONE = "50432429490"; 
 const WATERMARK_URL = "LOGO SDC - LETRAS 2.png"; 
 
+// 🚨 RESPALDO DE SEGURIDAD: Si falla Google Sheets, usaremos estas pestañas
+const BACKUP_SHEETS = ['gamer', 'pc', 'movil', 'streaming', 'cobertores', 'power'];
+
 /* ================= LÓGICA ================= */
 let products = [];
 let currentCategory = "";
@@ -346,19 +327,34 @@ function getIconForCategory(catName) {
   if(name.includes('celular') || name.includes('móvil') || name.includes('phone') || name.includes('samsung') || name.includes('iphone')) return '📱';
   if(name.includes('pc') || name.includes('computadora')) return '🖥️';
   if(name.includes('tv') || name.includes('stream')) return '📺';
-  if(name.includes('audio') return '🎧';
+  if(name.includes('audio')) return '🎧';
   if(name.includes('power')) return '🔋';
-  if(name.includes('reloj')) return '⌚';
   return '📦';
 }
 
 function fetchConfig() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
-  fetch(url).then(r => r.text()).then(t => {
+  
+  // Intentamos cargar la config. Si falla en 3 segs, usamos el respaldo.
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error("Tiempo de espera agotado")), 3000)
+  );
+
+  Promise.race([fetch(url), timeoutPromise])
+    .then(r => r.text())
+    .then(t => {
       const json = JSON.parse(t.substring(47, t.length - 2));
-      const sheetNames = json.table.rows.map(r => r.c[0] ? r.c[0].v : null).filter(name => name && name.toLowerCase() !== 'sheet');
+      const sheetNames = json.table.rows
+        .map(r => r.c[0] ? r.c[0].v : null)
+        .filter(name => name && name.toLowerCase() !== 'sheet');
+      console.log("Hojas detectadas:", sheetNames);
       loadAllTabs(sheetNames);
-    }).catch(e => console.error("Error config", e));
+    })
+    .catch(e => {
+      console.warn("Usando respaldo manual por error:", e);
+      // SI FALLA, USAMOS LA LISTA MANUAL PARA QUE LA PÁGINA NO SE QUEDE PEGADA
+      loadAllTabs(BACKUP_SHEETS);
+    });
 }
 
 function fetchTab(sheetName) {
@@ -372,18 +368,28 @@ function fetchTab(sheetName) {
         if (!obj.categoria) obj.categoria = sheetName;
         return obj;
       }).filter(p => p.nombre);
-    }).catch(err => []);
+    }).catch(err => {
+        console.error("Error en hoja " + sheetName, err);
+        return [];
+    });
 }
 
 function loadAllTabs(sheetNames) {
   Promise.all(sheetNames.map(name => fetchTab(name))).then(results => {
       products = results.flat();
-      document.getElementById('loader').style.display = 'none';
-      initCategories();
-      render();
+      
+      const loader = document.getElementById('loader');
+      if (products.length === 0) {
+          loader.innerHTML = "<p>No se encontraron productos.</p>";
+      } else {
+          loader.style.display = 'none';
+          initCategories();
+          render();
+      }
     });
 }
 
+// INICIAR
 fetchConfig();
 
 function initCategories() {
@@ -391,6 +397,8 @@ function initCategories() {
   const cats = [...new Set(rawCats)];
   const bar = document.getElementById('categoryBar');
   bar.innerHTML = "";
+
+  if(cats.length === 0) return;
 
   cats.forEach((c, i) => {
     const btn = document.createElement('div');
@@ -453,7 +461,7 @@ function render() {
   if(filtered.length === 0) {
     grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted)">
       <i class="fa-solid fa-ghost" style="font-size:40px; margin-bottom:10px;"></i>
-      <p>NO SE ENCONTRARON PRODUCTOS</p>
+      <p>NO HAY RESULTADOS</p>
     </div>`;
     return;
   }
