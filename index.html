@@ -14,34 +14,35 @@
     /* ============ ESTILOS CYBERPUNK (CSS) ============ */
     :root {
       /* MODO OSCURO (CYBERPUNK) */
-      --bg: #020617;        /* Fondo casi negro */
-      --card-bg: #1e293b;   /* Tarjeta gris azulado oscuro */
+      --bg: #020617;        
+      --card-bg: #1e293b;   
       
-      /* COLORES NEÓN */
-      --primary: #06b6d4;   /* Cyan Neón (Tron Legacy style) */
-      --primary-glow: rgba(6, 182, 212, 0.4); /* Resplandor del neón */
+      --primary: #06b6d4;   /* Cyan Neón */
+      --primary-glow: rgba(6, 182, 212, 0.4); 
       
-      --accent: #10b981;    /* Verde eléctrico para precios */
-      --text: #f1f5f9;      /* Blanco brillante */
+      --accent: #10b981;    /* Verde eléctrico (Precios) */
+      --accent-glow: rgba(16, 185, 129, 0.4);
+
+      --text: #f1f5f9;      
       --text-muted: #94a3b8;
       
-      /* Borde brillante para separar productos */
       --border: #06b6d4; 
     }
 
     [data-theme="light"] {
       /* MODO CLARO (ALTO CONTRASTE) */
-      --bg: #e2e8f0;        /* Gris claro (no blanco puro para que no canse) */
-      --card-bg: #ffffff;   /* Tarjeta blanca pura */
+      --bg: #e2e8f0;        
+      --card-bg: #ffffff;   
       
-      --primary: #0284c7;   /* Azul fuerte profesional */
+      --primary: #0284c7;   
       --primary-glow: rgba(2, 132, 199, 0.1);
       
-      --accent: #059669;    /* Verde oscuro legible */
-      --text: #0f172a;      /* Negro azulado */
+      --accent: #059669;    
+      --accent-glow: rgba(5, 150, 105, 0.2);
+
+      --text: #0f172a;      
       --text-muted: #475569;
       
-      /* Borde gris sólido para definir límites */
       --border: #cbd5e1; 
     }
 
@@ -51,7 +52,6 @@
       margin: 0;
       font-family: 'Outfit', sans-serif;
       background-color: var(--bg);
-      /* Patrón de malla sutil para toque tecnológico */
       background-image: radial-gradient(var(--text-muted) 1px, transparent 1px);
       background-size: 40px 40px;
       background-attachment: fixed;
@@ -65,8 +65,8 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--card-bg); /* Fondo sólido para que no se mezcle */
-      border-bottom: 2px solid var(--border); /* Línea divisoria clara */
+      background: var(--card-bg); 
+      border-bottom: 2px solid var(--border); 
       padding: 12px 16px;
       display: flex;
       align-items: center;
@@ -97,14 +97,14 @@
     .search-box i { position: absolute; left: 16px; color: var(--primary); }
     .search-box input {
       width: 100%; padding: 14px 16px 14px 45px; border-radius: 12px;
-      border: 2px solid var(--border); /* Borde grueso */
+      border: 2px solid var(--border); 
       background: var(--card-bg);
       color: var(--text); font-size: 16px; outline: none; transition: 0.3s;
       font-weight: 600;
     }
     .search-box input:focus { 
         border-color: var(--primary); 
-        box-shadow: 0 0 15px var(--primary-glow); /* Resplandor al escribir */
+        box-shadow: 0 0 15px var(--primary-glow); 
     }
 
     /* CATEGORÍAS */
@@ -122,11 +122,11 @@
     }
     .category-bar::-webkit-scrollbar, .sub-bar::-webkit-scrollbar { display: none; }
 
-    /* BOTONES DE CATEGORÍA (CHIPS) */
+    /* CHIPS */
     .chip {
       padding: 10px 18px;
-      border-radius: 8px; /* Más cuadrados para look tech */
-      background: var(--card-bg); /* Fondo sólido para resaltar del fondo */
+      border-radius: 8px; 
+      background: var(--card-bg); 
       border: 1px solid var(--text-muted);
       color: var(--text-muted);
       font-size: 13px;
@@ -140,7 +140,7 @@
 
     .chip.active {
       background: var(--primary);
-      color: #000; /* Texto negro para contraste máximo con el neón */
+      color: #000; 
       border-color: var(--primary);
       box-shadow: 0 0 15px var(--primary-glow);
       transform: translateY(-2px);
@@ -149,7 +149,7 @@
     .sub-bar .chip { font-size: 12px; padding: 6px 14px; border-radius: 20px; text-transform: capitalize; }
     .sub-bar .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
 
-    /* GRID PRODUCTOS */
+    /* GRID */
     .grid {
       display: grid; 
       grid-template-columns: repeat(2, 1fr); 
@@ -160,25 +160,19 @@
     }
     @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; } }
 
-    /* TARJETA CYBERPUNK */
+    /* TARJETA */
     .card {
       background: var(--card-bg);
-      
-      /* BORDE DE NEÓN */
       border: 1px solid var(--border); 
-      
       border-radius: 16px; 
       overflow: hidden; 
       display: flex; 
       flex-direction: column;
       position: relative;
       animation: fadeIn 0.5s ease-out forwards;
-      
-      /* Sombra sólida */
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     
-    /* Efecto Hover en PC */
     .card:hover {
         border-color: var(--primary);
         box-shadow: 0 0 20px var(--primary-glow);
@@ -186,7 +180,7 @@
         transition: 0.3s;
     }
 
-    /* CONTENEDOR DE IMAGEN */
+    /* IMAGEN */
     .card-img-container {
       width: 100%; 
       aspect-ratio: 1/1; 
@@ -195,15 +189,11 @@
       display: flex; align-items: center; justify-content: center;
       position: relative;
       overflow: hidden;
-      border-bottom: 1px solid var(--border); /* Línea divisoria */
+      border-bottom: 1px solid var(--border);
     }
     
     .product-img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain;
-      transition: 0.3s;
-      z-index: 1; 
+      width: 100%; height: 100%; object-fit: contain; transition: 0.3s; z-index: 1; 
     }
 
     .watermark-overlay {
@@ -214,7 +204,7 @@
         filter: grayscale(100%) contrast(50%);
     }
 
-    /* ESTILOS DE AGOTADO */
+    /* AGOTADO */
     .card.agotado { border-color: #ef4444; opacity: 0.9; }
     .card.agotado .product-img { filter: grayscale(100%); opacity: 0.5; }
 
@@ -236,7 +226,35 @@
       min-height: 40px; color: var(--text);
     }
     
-    .price { color: var(--accent); font-weight: 800; font-size: 18px; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+    /* === NUEVO ESTILO DE PRECIO MEJORADO === */
+    .price-tag {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 4px;
+        /* Fondo gradiente sutil */
+        background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), transparent);
+        border-left: 4px solid var(--accent); /* Línea verde de poder */
+        padding: 4px 10px;
+        border-radius: 0 8px 8px 0;
+        width: fit-content;
+        margin-top: 4px;
+    }
+
+    .price-currency {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        text-transform: uppercase;
+        opacity: 0.9;
+    }
+
+    .price-amount {
+        color: var(--accent);
+        font-weight: 800;
+        font-size: 20px; /* Número GRANDE */
+        text-shadow: 0 0 15px var(--accent-glow); /* Brillo neón */
+        letter-spacing: -0.5px;
+    }
     
     .desc { font-size: 12px; color: var(--text-muted); margin-bottom: auto; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
@@ -244,7 +262,7 @@
     .btn-ws {
       margin-top: 10px; 
       background: var(--primary); 
-      color: #000; /* Texto negro en botón neón se lee mejor */
+      color: #000; 
       border: none;
       padding: 10px 4px; 
       border-radius: 8px; 
@@ -477,6 +495,13 @@ function render() {
     
     const ribbonHTML = isAgotado ? `<div class="ribbon">AGOTADO</div>` : '';
 
+    // NUEVO FORMATO DE PRECIO
+    const priceHTML = `
+      <div class="price-tag">
+        <span class="price-currency">Lps.</span>
+        <span class="price-amount">${p.precio || '0'}</span>
+      </div>`;
+
     card.innerHTML = `
       <div class="card-img-container">
         ${ribbonHTML}
@@ -485,8 +510,7 @@ function render() {
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
-        <div class="price">Lps. ${p.precio || '0'}</div>
-        <div class="desc">${p.descripcion || ""}</div>
+        ${priceHTML} <div class="desc">${p.descripcion || ""}</div>
         
         <div class="media-links" style="display:flex; gap:10px; margin: 8px 0;">
           ${p.tiktok ? `<a href="${p.tiktok}" target="_blank" style="color:#000; background:#00f2ea; padding:6px 10px; border-radius:8px; font-size:12px; font-weight:bold; text-decoration:none; flex:1; text-align:center;"><i class="fa-brands fa-tiktok"></i> TikTok</a>` : ""}
