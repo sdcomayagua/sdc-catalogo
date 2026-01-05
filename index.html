@@ -237,7 +237,7 @@
 
     .card-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
     
-    /* TÍTULOS */
+    /* TITULOS */
     .card h3 { 
       margin: 0; 
       font-size: 14px; 
@@ -251,59 +251,58 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
     
-    /* === PRECIOS CENTRADOS Y OPTIMIZADOS PARA MÓVIL === */
+    /* === PRECIOS CENTRADOS Y LIMPIOS === */
     .price-bar {
         display: flex; 
         align-items: center; 
-        justify-content: center; 
+        justify-content: center; /* CENTRADO HORIZONTAL */
         gap: 8px; 
         background: rgba(255, 255, 255, 0.03); 
         border: 1px solid var(--border);
         border-radius: 8px; 
-        padding: 6px 8px; /* Menos padding horizontal */
+        padding: 6px 8px; 
         margin-top: auto; 
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
-    /* Contenedor vertical centrado */
+    /* CONTENEDOR VERTICAL */
     .price-stack {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: center; /* CENTRADO VERTICAL */
         justify-content: center;
         text-align: center;
         line-height: 1.2;
     }
 
-    /* 🔥 NUEVA CLASE PARA ETIQUETAS PEQUEÑAS (Antes, Ahora, OFERTA) 🔥 */
+    /* ETIQUETA "Antes:" PEQUEÑA */
     .p-label-small {
-        font-size: 11px; /* Mucho más pequeño */
+        font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-right: 4px;
-        opacity: 0.9;
+        margin-right: 3px;
+        opacity: 0.8;
     }
 
-    /* FILA 1: PRECIO VIEJO (Tachado) */
+    /* FILA 1: PRECIO VIEJO */
     .old-price-row {
         color: var(--text-muted);
         line-height: 1;
         margin-bottom: 3px;
         white-space: nowrap;
-        display: flex; align-items: center; /* Para alinear etiqueta y precio */
+        display: flex; align-items: center; justify-content: center;
     }
-    .old-val { text-decoration: line-through; opacity: 0.7; font-size: 12px; }
+    .old-val { text-decoration: line-through; opacity: 0.7; font-size: 11px; }
 
-    /* FILA 2: PRECIO NUEVO (Grande) */
+    /* FILA 2: PRECIO NUEVO (SOLO EL NÚMERO) */
     .current-price-row {
         font-family: 'Outfit', sans-serif; 
-        font-size: 18px; 
+        font-size: 19px; /* Un poco más grande para destacar */
         font-weight: 900;
         color: var(--accent);
         line-height: 1;
         white-space: nowrap;
-        display: flex; align-items: baseline; /* Alinea la base del texto pequeño con el número grande */
     }
 
     .price-icon { color: var(--accent); font-size: 14px; opacity: 0.8; }
@@ -605,30 +604,23 @@ function render() {
 
     const descText = p.descripcion || p.descipcion || "";
 
-    // === LÓGICA DE PRECIOS ETIQUETADOS (CENTRADO Y PEQUEÑO) ===
+    // === LÓGICA DE PRECIOS SIN ETIQUETAS "AHORA/OFERTA" ===
     let priceHTMLContent = "";
     
-    // CASO 1: HAY UN PRECIO ANTERIOR (COMPARACIÓN)
     if (p.precio_anterior && p.precio_anterior !== "") {
-        let labelNow = "Ahora:";
-        
-        // Si es categoría oferta, cambiamos "Ahora" por "OFERTA"
-        if(isPromoCategory && !isAgotado) {
-            labelNow = "OFERTA:";
-        }
-
+        // CON PRECIO ANTERIOR (Solo etiqueta "Antes")
         priceHTMLContent = `
             <div class="price-stack">
                 <div class="old-price-row">
                     <span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span>
                 </div>
                 <div class="current-price-row">
-                    <span class="p-label-small">${labelNow}</span> Lps. ${p.precio || '0'}
+                    Lps. ${p.precio || '0'}
                 </div>
             </div>
         `;
     } else {
-        // CASO 2: SOLO PRECIO NORMAL
+        // SIN PRECIO ANTERIOR (Solo número)
         priceHTMLContent = `
             <div class="price-stack">
                 <div class="current-price-row">
