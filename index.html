@@ -14,8 +14,8 @@
     /* ============ ESTILOS ============ */
     :root {
       /* MODO OSCURO (GAMER PROFESIONAL) */
-      --bg: #0b1120;        /* Azul muy oscuro, casi negro */
-      --card-bg: #151e32;   /* Tarjetas azul profundo */
+      --bg: #0b1120;        
+      --card-bg: #151e32;   
       
       --primary: #38bdf8;   /* Azul Cielo */
       --primary-text: #38bdf8;
@@ -23,19 +23,21 @@
       --accent: #2dd4bf;    /* Turquesa */
       --accent-glow: rgba(45, 212, 191, 0.2);
 
-      --text: #f8fafc;      /* Blanco */
+      --text: #f8fafc;      
       --text-muted: #94a3b8; 
       
       --border: #1e293b;    
       --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
       
-      /* Fondo del menú en modo oscuro para que se vea bien */
       --chip-bg: #1e293b;   
       --chip-text: #cbd5e1;
       
       --bg-image: radial-gradient(at top, #1e293b 0%, #0b1120 100%);
       
       --danger: #ef4444;
+      
+      /* Color especial para OFERTAS (Dorado/Naranja) */
+      --promo: #fbbf24; 
     }
 
     [data-theme="light"] {
@@ -43,7 +45,7 @@
       --bg: #f3f4f6;        
       --card-bg: #ffffff;   
       
-      --primary: #0f172a;   /* Negro/Azul */
+      --primary: #0f172a;   
       --primary-text: #000000;
       
       --accent: #15803d;    
@@ -59,6 +61,7 @@
       --chip-text: #4b5563;
       
       --bg-image: none;
+      --promo: #d97706; /* Naranja más oscuro para día */
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -134,9 +137,9 @@
     .chip {
       padding: 8px 18px;
       border-radius: 99px; 
-      background: var(--chip-bg); /* Fondo sólido */
+      background: var(--chip-bg); 
       border: 1px solid var(--border);
-      color: var(--chip-text);    /* Color de letra claro */
+      color: var(--chip-text);    
       font-size: 13px; font-weight: 700;
       white-space: nowrap; cursor: pointer;
       display: flex; align-items: center; gap: 6px;
@@ -151,8 +154,15 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transform: translateY(-1px);
     }
-    /* Texto negro en activo si es modo oscuro para contraste */
     [data-theme="dark"] .chip.active { color: #000; font-weight: 800; }
+
+    /* ESTILO ESPECIAL PARA EL BOTÓN DE OFERTAS CUANDO ESTÁ ACTIVO */
+    .chip.promo-active {
+        background: var(--promo) !important;
+        border-color: var(--promo) !important;
+        color: #000 !important;
+        box-shadow: 0 0 15px rgba(251, 191, 36, 0.4) !important;
+    }
 
     .sub-bar .chip { 
         padding: 6px 14px; font-size: 11px; border-radius: 8px; 
@@ -312,8 +322,8 @@ const CONFIG_GID = "1488858707";
 const MY_PHONE = "50432429490"; 
 const WATERMARK_URL = "LOGO SDC - LETRAS 2.png"; 
 
-// 🚨 RESPALDO DE SEGURIDAD: Si falla Google Sheets, usaremos estas pestañas
-const BACKUP_SHEETS = ['gamer', 'pc', 'movil', 'streaming', 'cobertores', 'power'];
+// 🚨 AQUÍ AGREGAMOS 'ofertas' A LA LISTA DE RESPALDO
+const BACKUP_SHEETS = ['ofertas', 'gamer', 'pc', 'movil', 'streaming', 'cobertores', 'power'];
 
 /* ================= LÓGICA ================= */
 let products = [];
@@ -323,21 +333,24 @@ let currentSub = "";
 function getIconForCategory(catName) {
   if (!catName) return '📦';
   const name = catName.toLowerCase();
+  // 🔥 AQUÍ ESTÁ EL ÍCONO DE OFERTAS
+  if(name.includes('oferta') || name.includes('promo') || name.includes('mayorista')) return '🔥';
+  
   if(name.includes('gamer') || name.includes('juego')) return '🎮';
   if(name.includes('celular') || name.includes('móvil') || name.includes('phone') || name.includes('samsung') || name.includes('iphone')) return '📱';
   if(name.includes('pc') || name.includes('computadora')) return '🖥️';
   if(name.includes('tv') || name.includes('stream')) return '📺';
   if(name.includes('audio')) return '🎧';
   if(name.includes('power')) return '🔋';
+  if(name.includes('reloj')) return '⌚';
   return '📦';
 }
 
 function fetchConfig() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
   
-  // Intentamos cargar la config. Si falla en 3 segs, usamos el respaldo.
   const timeoutPromise = new Promise((_, reject) => 
-    setTimeout(() => reject(new Error("Tiempo de espera agotado")), 3000)
+    setTimeout(() => reject(new Error("Timeout")), 3000)
   );
 
   Promise.race([fetch(url), timeoutPromise])
@@ -347,12 +360,10 @@ function fetchConfig() {
       const sheetNames = json.table.rows
         .map(r => r.c[0] ? r.c[0].v : null)
         .filter(name => name && name.toLowerCase() !== 'sheet');
-      console.log("Hojas detectadas:", sheetNames);
       loadAllTabs(sheetNames);
     })
     .catch(e => {
-      console.warn("Usando respaldo manual por error:", e);
-      // SI FALLA, USAMOS LA LISTA MANUAL PARA QUE LA PÁGINA NO SE QUEDE PEGADA
+      console.warn("Usando respaldo manual...");
       loadAllTabs(BACKUP_SHEETS);
     });
 }
@@ -368,16 +379,12 @@ function fetchTab(sheetName) {
         if (!obj.categoria) obj.categoria = sheetName;
         return obj;
       }).filter(p => p.nombre);
-    }).catch(err => {
-        console.error("Error en hoja " + sheetName, err);
-        return [];
-    });
+    }).catch(err => []);
 }
 
 function loadAllTabs(sheetNames) {
   Promise.all(sheetNames.map(name => fetchTab(name))).then(results => {
       products = results.flat();
-      
       const loader = document.getElementById('loader');
       if (products.length === 0) {
           loader.innerHTML = "<p>No se encontraron productos.</p>";
@@ -403,14 +410,24 @@ function initCategories() {
   cats.forEach((c, i) => {
     const btn = document.createElement('div');
     btn.className = 'chip' + (i === 0 ? ' active' : '');
+    
+    // Si es ofertas, le añadimos clase especial
+    const isPromo = c.toLowerCase().includes('oferta') || c.toLowerCase().includes('mayorista');
+    if(isPromo && i === 0) btn.classList.add('promo-active');
+
     btn.innerHTML = `${getIconForCategory(c)} ${c}`; 
     btn.onclick = () => {
       currentCategory = c;
       currentSub = "";
       updateSubs();
       render();
-      document.querySelectorAll('.category-bar .chip').forEach(b => b.classList.remove('active'));
+      
+      document.querySelectorAll('.category-bar .chip').forEach(b => {
+          b.classList.remove('active');
+          b.classList.remove('promo-active');
+      });
       btn.classList.add('active');
+      if(isPromo) btn.classList.add('promo-active');
     };
     bar.appendChild(btn);
     if (i === 0) currentCategory = c;
