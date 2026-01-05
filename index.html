@@ -80,11 +80,6 @@
       color: var(--text);
       padding-bottom: 80px;
       transition: background 0.3s, color 0.3s;
-      /* Deshabilitar selección de texto global para más seguridad */
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
     }
 
     /* HEADER */
@@ -98,7 +93,7 @@
     }
 
     .brand { display: flex; align-items: center; gap: 10px; }
-    .brand img { height: 35px; border-radius: 6px; pointer-events: none; }
+    .brand img { height: 35px; border-radius: 6px; }
     .brand h1 {
       margin: 0; font-size: 16px; font-weight: 900;
       color: var(--text); text-transform: uppercase; letter-spacing: 1px;
@@ -142,8 +137,6 @@
       border: 1px solid var(--border); background: var(--card-bg); 
       color: var(--text); font-size: 15px; outline: none; font-weight: 600;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      user-select: text; /* Permitir escribir en el input */
-      -webkit-user-select: text;
     }
     .search-box input:focus { border-color: var(--primary); }
 
@@ -225,33 +218,21 @@
         box-shadow: 0 0 25px var(--promo-glow) !important; transform: scale(1.02);
     }
     
-    /* 🛡️ CONTENEDOR DE IMAGEN BLINDADO (LA TRAMPA) 🛡️ */
     .card-img-container {
       width: 100%; 
       aspect-ratio: 1/1; 
-      background-color: #fff; /* Fondo blanco por si la imagen tarda */
-      /* Aquí se cargará la imagen del producto como FONDO */
+      background-color: #fff; 
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      
       padding: 0; display: flex; align-items: center; justify-content: center;
       position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
     }
 
-    /* 🛡️ MARCA DE AGUA (ESTA ES LA IMAGEN QUE SE ROBAN) 🛡️ */
     .security-layer {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        position: absolute;
-        top: 0; left: 0;
-        z-index: 5;
-        opacity: 0.2; /* Transparente para ver el producto */
-        pointer-events: auto; /* Permite clic derecho (para que roben el logo) */
+        width: 100%; height: 100%; object-fit: contain; position: absolute;
+        top: 0; left: 0; z-index: 5; opacity: 0.2; pointer-events: auto;
     }
-    
-    /* En modo día la marca de agua se invierte para que se vea */
     [data-theme="light"] .security-layer { filter: invert(1); opacity: 0.1; }
 
     .card.agotado { opacity: 0.9; border-color: var(--danger); }
@@ -273,19 +254,23 @@
 
     .card-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
     
-    /* CARD ELEMENTS */
     .card h3 { 
       margin: 0; font-size: 14px; font-weight: 900; line-height: 1.3; 
       text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; 
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
       height: 38px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
+
+    /* === DESC (MEJORADO PARA LISTAS) === */
     .desc {
-        font-size: 11px; color: var(--text-muted); margin-bottom: 4px; line-height: 1.4;
-        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+        font-size: 12px; 
+        color: var(--text-muted); 
+        margin-bottom: 6px; 
+        line-height: 1.5;
+        /* Permitir saltos de línea automáticos */
+        white-space: pre-line; 
     }
     
-    /* PRECIOS */
     .price-bar {
         display: flex; align-items: center; justify-content: center; gap: 8px; 
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
@@ -505,7 +490,7 @@
     <div class="faq-item">
         <div class="faq-question" onclick="toggleFaq(this)">¿Hacen envíos a toda Honduras? <i class="fa-solid fa-chevron-down"></i></div>
         <div class="faq-answer">
-            ¡Sí! 🚚 Enviamos a todo el país mediante <b>C807, Forza y Cargo Expreso</b>. Si vives en Comayagua, contamos con servicio a domicilio o puedes retirar tu pedido directamente en nuestra tienda física.
+            ¡Claro que sí! 🚚 Realizamos envíos a todo el territorio nacional de Honduras a través de empresas de confianza como <b>C807, Forza y Cargo Expreso</b>. Si estás en Comayagua, ofrecemos servicio a domicilio o puedes retirar tu pedido personalmente en nuestra tienda física.
         </div>
     </div>
 
@@ -697,7 +682,11 @@ function render() {
     if(isAgotado) { ribbonHTML = `<div class="ribbon">AGOTADO</div>`; } 
     else if (isPromoCategory) { ribbonHTML = `<div class="ribbon-promo">🔥 HOT SALE</div>`; }
 
-    const descText = p.descripcion || p.descipcion || "";
+    // Procesamiento de descripción para listas
+    let rawDesc = p.descripcion || p.descipcion || "";
+    // Reemplaza símbolos comunes de listas por saltos de línea visuales
+    let descText = rawDesc.replace(/([►•\-])/g, '\n$1'); 
+
     let priceHTMLContent = "";
     if (p.precio_anterior && p.precio_anterior !== "") {
         priceHTMLContent = `<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
