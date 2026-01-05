@@ -11,39 +11,38 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    /* ============ ESTILOS CYBERPUNK (CSS) ============ */
+    /* ============ ESTILOS CYBERPUNK LIMPIOS (CSS) ============ */
     :root {
-      /* MODO OSCURO (CYBERPUNK) */
-      --bg: #020617;        
-      --card-bg: #1e293b;   
+      /* MODO OSCURO */
+      --bg: #050505;        
+      --card-bg: #141414;   
       
-      --primary: #06b6d4;   /* Cyan Neón */
-      --primary-glow: rgba(6, 182, 212, 0.6); /* Glow más intenso */
+      --primary: #00e5ff;   /* Cyan Brillante */
+      --primary-glow: rgba(0, 229, 255, 0.4); 
       
-      --accent: #39ff14;    /* Verde Neón Radiactivo para precios */
-      --accent-glow: rgba(57, 255, 20, 0.6);
+      --accent: #39ff14;    /* Verde Neón */
+      --accent-glow: rgba(57, 255, 20, 0.4);
 
-      --text: #f1f5f9;      
-      --text-muted: #94a3b8;
+      --text: #ffffff;      
+      --text-muted: #a3a3a3;
       
-      --border: #06b6d4; 
+      --border: #333333; 
     }
 
     [data-theme="light"] {
-      /* MODO CLARO (ALTO CONTRASTE) */
-      --bg: #e2e8f0;        
+      --bg: #f0f2f5;        
       --card-bg: #ffffff;   
       
-      --primary: #0284c7;   
-      --primary-glow: rgba(2, 132, 199, 0.2);
+      --primary: #007bff;   
+      --primary-glow: rgba(0, 123, 255, 0.2);
       
-      --accent: #00a86b;    /* Verde más oscuro para fondo blanco */
-      --accent-glow: rgba(0, 168, 107, 0.3);
+      --accent: #00c853;    
+      --accent-glow: rgba(0, 200, 83, 0.2);
 
-      --text: #0f172a;      
-      --text-muted: #475569;
+      --text: #1a1a1a;      
+      --text-muted: #555555;
       
-      --border: #cbd5e1; 
+      --border: #e0e0e0; 
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -52,289 +51,181 @@
       margin: 0;
       font-family: 'Outfit', sans-serif;
       background-color: var(--bg);
-      /* Fondo de malla tecnológica */
+      /* Rejilla sutil de fondo */
       background-image: 
-          linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
-      background-size: 30px 30px;
-      background-attachment: fixed;
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
       color: var(--text);
       padding-bottom: 80px;
-      transition: background 0.3s;
     }
 
     /* HEADER */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(30, 41, 59, 0.95); 
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(20, 20, 20, 0.95); 
       backdrop-filter: blur(10px);
-      border-bottom: 2px solid var(--border); 
+      border-bottom: 1px solid var(--border); 
       padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 0 20px var(--primary-glow);
+      display: flex; align-items: center; justify-content: space-between;
     }
 
     .brand { display: flex; align-items: center; gap: 10px; }
-    .brand img { height: 40px; border-radius: 8px; border: 1px solid var(--border); box-shadow: 0 0 10px var(--primary-glow); }
+    .brand img { height: 35px; border-radius: 6px; }
     .brand h1 {
-      margin: 0; font-size: 18px; font-weight: 800; line-height: 1.2;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px var(--primary-glow);
+      margin: 0; font-size: 16px; font-weight: 800;
+      color: var(--primary); text-transform: uppercase; letter-spacing: 1px;
     }
 
     .icon-btn {
-      background: rgba(0,0,0,0.3); 
-      border: 2px solid var(--border);
-      color: var(--primary); width: 40px; height: 40px; border-radius: 8px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text); width: 35px; height: 35px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.2s;
-      box-shadow: inset 0 0 10px var(--primary-glow);
+      cursor: pointer;
     }
-    
+
     /* BÚSQUEDA */
-    .search-container { padding: 20px 16px 10px; max-width: 800px; margin: 0 auto; }
+    .search-container { padding: 16px; max-width: 800px; margin: 0 auto; }
     .search-box { position: relative; display: flex; align-items: center; }
-    .search-box i { position: absolute; left: 16px; color: var(--primary); }
+    .search-box i { position: absolute; left: 14px; color: var(--primary); }
     .search-box input {
-      width: 100%; padding: 14px 16px 14px 45px; border-radius: 8px;
-      border: 2px solid var(--border); 
-      background: rgba(0,0,0,0.5);
-      color: var(--text); font-size: 16px; outline: none; transition: 0.3s;
-      font-weight: 600;
-      box-shadow: inset 0 0 10px var(--primary-glow);
+      width: 100%; padding: 12px 16px 12px 40px; border-radius: 8px;
+      border: 1px solid var(--border); background: #1a1a1a;
+      color: var(--text); font-size: 14px; outline: none; font-weight: 600;
     }
-    .search-box input:focus { 
-        border-color: var(--accent); 
-        box-shadow: 0 0 20px var(--accent-glow), inset 0 0 10px var(--accent-glow);
-    }
+    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
 
     /* CATEGORÍAS */
     .filters-wrapper {
-      position: sticky; top: 65px; z-index: 90;
-      background: var(--bg); 
-      padding: 15px 0; 
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      position: sticky; top: 60px; z-index: 90;
+      background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border);
     }
-
     .category-bar, .sub-bar {
-      display: flex; gap: 12px; overflow-x: auto; padding: 0 16px 10px;
+      display: flex; gap: 10px; overflow-x: auto; padding: 0 16px 8px;
       scrollbar-width: none;
     }
-    .category-bar::-webkit-scrollbar, .sub-bar::-webkit-scrollbar { display: none; }
-
-    /* CHIPS / BOTONES CYBER */
+    
     .chip {
-      padding: 12px 20px;
-      /* Forma angular futurista usando clip-path */
-      clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
-      background: rgba(6, 182, 212, 0.1); 
-      border: 2px solid var(--border);
+      padding: 8px 16px;
+      /* Diseño angular pero más limpio */
+      clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%, 0% 20%);
+      background: rgba(255,255,255,0.05); 
+      border-left: 3px solid var(--text-muted);
       color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 800;
-      white-space: nowrap;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.3s;
+      font-size: 12px; font-weight: 700;
+      white-space: nowrap; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
       text-transform: uppercase; 
-      letter-spacing: 1px;
     }
 
     .chip.active {
-      background: var(--primary);
-      color: #000; 
-      border-color: var(--primary);
-      box-shadow: 0 0 25px var(--primary-glow);
-      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+      background: var(--primary); color: #000; 
+      border-left-color: #fff;
+      box-shadow: 0 0 15px var(--primary-glow);
     }
 
     .sub-bar .chip { 
-        padding: 8px 16px; font-size: 12px; 
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); /* Recto para subcats */
-        border-radius: 20px;
+        padding: 6px 12px; font-size: 11px; border-radius: 4px; clip-path: none; border: 1px solid var(--border); border-left: 1px solid var(--border);
     }
-    .sub-bar .chip.active { background: var(--accent); border-color: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent-glow); }
+    .sub-bar .chip.active { background: var(--accent); border-color: var(--accent); color: #000; }
 
     /* GRID */
     .grid {
-      display: grid; 
-      grid-template-columns: repeat(2, 1fr); 
-      gap: 20px; 
-      padding: 30px 16px 100px; 
-      max-width: 1200px; 
-      margin: 0 auto;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; 
+      padding: 16px; max-width: 1200px; margin: 0 auto;
     }
-    @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; } }
+    @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; } }
 
-    /* TARJETA CYBERPUNK DEFINITIVA */
+    /* TARJETA */
     .card {
-      background: rgba(30, 41, 59, 0.8);
-      border: 2px solid var(--border); 
-      border-radius: 12px; /* Bordes menos redondeados */
-      overflow: hidden; 
-      display: flex; 
-      flex-direction: column;
-      position: relative;
-      animation: fadeIn 0.5s ease-out forwards;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 20px rgba(6, 182, 212, 0.1);
-      backdrop-filter: blur(5px);
-    }
-    
-    .card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 0 30px var(--accent-glow);
-        transform: translateY(-5px) scale(1.02);
-        transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      background: var(--card-bg);
+      border: 1px solid var(--border); 
+      border-radius: 12px; overflow: hidden; 
+      display: flex; flex-direction: column; position: relative;
+      animation: fadeIn 0.4s ease-out forwards;
     }
 
     /* IMAGEN */
     .card-img-container {
-      width: 100%; 
-      aspect-ratio: 1/1; 
-      background: rgba(0,0,0,0.8); /* Fondo oscuro para la imagen */
-      padding: 10px; 
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 2px solid var(--border);
-      /* Efecto de scanlines sobre la imagen */
-      background-image: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.5) 50%);
-      background-size: 100% 4px;
+      width: 100%; aspect-ratio: 1/1; background: #fff; 
+      padding: 0; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
     }
+    .product-img { width: 100%; height: 100%; object-fit: contain; z-index: 1; }
     
-    .product-img { 
-      width: 100%; height: 100%; object-fit: contain; transition: 0.3s; z-index: 1; filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
-    }
-
     .watermark-overlay {
-        position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%) rotate(-15deg);
-        width: 60%; height: auto; opacity: 0.3; 
-        z-index: 5; pointer-events: none; user-select: none;
-        filter: grayscale(100%) contrast(150%) brightness(200%); /* Marca blanca brillante */
+        position: absolute; width: 80%; opacity: 0.2; 
+        z-index: 2; pointer-events: none;
     }
 
     /* AGOTADO */
-    .card.agotado { border-color: #ff003c; opacity: 0.9; box-shadow: 0 0 20px rgba(255, 0, 60, 0.3); }
-    .card.agotado .product-img { filter: grayscale(100%) contrast(120%); opacity: 0.4; }
-
+    .card.agotado { opacity: 0.8; }
+    .card.agotado .product-img { filter: grayscale(100%); opacity: 0.6; }
     .ribbon {
-        position: absolute; top: 30px; left: -70px; width: 220px;
-        background: #ff003c; color: white;
-        text-align: center; font-size: 14px; font-weight: 900;
-        padding: 10px 0; transform: rotate(-45deg);
-        box-shadow: 0 0 20px #ff003c;
-        z-index: 10; letter-spacing: 3px; text-transform: uppercase;
-        border: 2px solid #fff;
-        text-shadow: 0 0 5px #fff;
+        position: absolute; top: 15px; left: -30px; width: 100px;
+        background: #ff003c; color: #fff; font-size: 10px; font-weight: 800;
+        padding: 4px 0; transform: rotate(-45deg); text-align: center;
+        z-index: 10; box-shadow: 0 0 10px #ff003c;
     }
 
-    .card-body { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; gap: 10px; position: relative; }
+    .card-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
     
     .card h3 { 
-      margin: 0; font-size: 16px; font-weight: 800; line-height: 1.3; 
+      margin: 0; font-size: 14px; font-weight: 700; line-height: 1.3; 
       overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
-      min-height: 42px; color: var(--text);
-      text-transform: uppercase; letter-spacing: 0.5px;
+      height: 36px; color: var(--text);
     }
     
-    /* === PRECIO CYBERPUNK "DATA BLOCK" (NUEVO) === */
-    .cyber-price-container {
+    /* === NUEVO PRECIO: BARRA DE ENERGÍA LIMPIA === */
+    .price-bar {
         display: flex;
-        align-items: stretch;
-        margin: 8px 0;
-        filter: drop-shadow(0 0 8px var(--accent-glow));
-        transform: skewX(-10deg); /* Inclinación agresiva */
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(0, 255, 0, 0.05); /* Fondo verde muy sutil */
+        border: 1px solid var(--accent);
+        border-radius: 6px;
+        padding: 6px 10px;
+        margin-top: auto; /* Empuja hacia abajo si hay espacio */
     }
-
-    .cyber-label-box {
-        background: var(--primary);
-        color: #000;
-        padding: 6px 12px;
-        font-size: 12px;
-        font-weight: 900;
-        text-transform: uppercase;
-        display: flex; align-items: center; justify-content: center;
-        border-right: 2px solid #000;
-        clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); /* Corte angular */
-    }
-    /* Deshacer la inclinación para el texto */
-    .cyber-label-box span { transform: skewX(10deg); } 
-
-    .cyber-value-box {
-        background: rgba(0,0,0,0.6);
-        border: 2px solid var(--accent);
-        border-left: none;
+    
+    .price-icon { color: var(--accent); font-size: 14px; }
+    
+    .price-value {
+        font-family: 'Outfit', sans-serif; /* Fuente normal, legible */
+        font-size: 18px; /* Tamaño grande pero no gigante */
+        font-weight: 800;
         color: var(--accent);
-        font-size: 22px; /* NÚMERO GIGANTE */
-        font-weight: 900;
-        padding: 4px 16px;
-        flex-grow: 1;
-        text-align: right;
-        text-shadow: 0 0 15px var(--accent); /* Resplandor extremo */
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace; /* Fuente tipo terminal */
-        clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%); /* Corte opuesto */
-        
-        /* Fondo de pantalla digital */
-        background-image: linear-gradient(transparent 90%, var(--accent-glow) 90%);
-        background-size: 100% 4px;
+        text-shadow: 0 0 8px var(--accent-glow);
     }
-     .cyber-value-box span { transform: skewX(10deg); display: block; }
 
-
-    
-    .desc { font-size: 12px; color: var(--text-muted); margin-bottom: auto; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; border-left: 2px solid var(--border); padding-left: 8px; }
-
-    /* BOTONES DE ACCIÓN */
+    /* BOTONES */
     .btn-ws {
-      margin-top: 12px; 
-      background: var(--accent); /* Botón de compra VERDE */
-      color: #000; 
-      border: none;
-      padding: 12px; 
-      /* Forma de botón de reactor */
-      clip-path: polygon(5% 0, 95% 0, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
-      font-weight: 900; 
-      font-size: 12px; 
-      white-space: nowrap; 
-      cursor: pointer; 
-      display: flex; align-items: center; justify-content: center; gap: 8px; 
-      width: 100%; text-decoration: none; transition: 0.2s;
-      box-shadow: 0 0 20px var(--accent-glow);
-      text-transform: uppercase; letter-spacing: 1px;
+      background: var(--primary); color: #000; border: none;
+      padding: 10px; border-radius: 6px; 
+      font-weight: 800; font-size: 12px; 
+      cursor: pointer; text-decoration: none; 
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px var(--primary-glow);
     }
     
-    .btn-ws:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--accent-glow); background: #fff; }
-    .btn-ws i { font-size: 16px; }
-
-    @media (min-width: 768px) {
-      .btn-ws { font-size: 14px; padding: 14px; }
+    .btn-ws:active { transform: scale(0.98); }
+    
+    .media-links { display: flex; gap: 8px; }
+    .media-btn {
+        flex: 1; background: #222; border: 1px solid #444; color: #fff;
+        padding: 6px; border-radius: 4px; font-size: 10px; font-weight: 700;
+        text-align: center; text-decoration: none; text-transform: uppercase;
     }
 
-    .btn-consultar {
-      background: #334155; color: #fff; border: 2px solid #475569;
-      box-shadow: none; clip-path: none; border-radius: 8px;
-    }
-    .btn-consultar:hover { background: #ef4444; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+    .float-ws { position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 200; }
 
-    /* LOADING */
-    #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-shadow: 0 0 10px var(--primary); }
-    .spinner { width: 50px; height: 50px; border: 6px solid rgba(6, 182, 212, 0.2); border-top-color: var(--primary); border-bottom-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; box-shadow: 0 0 30px var(--primary-glow); }
-
-    /* FLOAT BUTTON */
-    .float-ws { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #25D366; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 32px; box-shadow: 0 0 25px #25D366; z-index: 200; border: 2px solid #fff; transform: rotate(45deg); }
-    .float-ws i { transform: rotate(-45deg); }
-
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    
+    #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; color: var(--primary); }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -344,7 +235,7 @@
     <img src="logo.png" alt="SDC" onerror="this.style.display='none'"> 
     <div>
       <h1>Soluciones Digitales</h1>
-      <small style="color:var(--primary); font-size:11px; letter-spacing: 3px; font-weight:800; text-shadow: 0 0 10px var(--primary-glow);">// COMAYAGUA SYSTEM //</small>
+      <small style="color:var(--primary); font-size:10px; letter-spacing:1px; font-weight:700;">// SYSTEM ONLINE</small>
     </div>
   </div>
   <div class="icon-btn" id="themeToggle"><i class="fa-solid fa-moon"></i></div>
@@ -353,20 +244,20 @@
 <div class="search-container">
   <div class="search-box">
     <i class="fa-solid fa-search"></i>
-    <input id="searchInput" type="text" placeholder="INICIAR BÚSQUEDA DE PRODUCTO..." />
+    <input id="searchInput" type="text" placeholder="Buscar producto..." />
   </div>
 </div>
 
 <div class="filters-wrapper" id="filtersWrapper">
   <div class="category-bar" id="categoryBar">
-    <div class="chip active">INICIALIZANDO...</div>
+    <div class="chip active">Cargando...</div>
   </div>
   <div class="sub-bar" id="subBar"></div>
 </div>
 
 <div id="loader">
   <div class="spinner"></div>
-  <p>ACCEDIENDO AL INVENTARIO...</p>
+  <p>CARGANDO DATOS...</p>
 </div>
 
 <div class="grid" id="productGrid"></div>
@@ -380,9 +271,7 @@
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const CONFIG_GID = "1488858707"; 
 const MY_PHONE = "50432429490"; 
-
 const WATERMARK_URL = "LOGO SDC - LETRAS 2.png"; 
-
 
 /* ================= LÓGICA ================= */
 let products = [];
@@ -393,13 +282,12 @@ function getIconForCategory(catName) {
   if (!catName) return '📦';
   const name = catName.toLowerCase();
   if(name.includes('gamer') || name.includes('juego')) return '🎮';
-  if(name.includes('celular') || name.includes('móvil') || name.includes('phone') || name.includes('samsung') || name.includes('iphone')) return '📱';
-  if(name.includes('pc') || name.includes('computadora') || name.includes('laptop') || name.includes('usb') || name.includes('mouse')) return '🖥️';
+  if(name.includes('celular') || name.includes('móvil') || name.includes('phone')) return '📱';
+  if(name.includes('pc') || name.includes('computadora')) return '🖥️';
   if(name.includes('tv') || name.includes('stream')) return '📺';
-  if(name.includes('audio') || name.includes('audifonos') || name.includes('headset')) return '🎧';
-  if(name.includes('cobertor') || name.includes('funda') || name.includes('case')) return '🧤';
-  if(name.includes('power') || name.includes('carga') || name.includes('cable')) return '🔋';
-  if(name.includes('reloj') || name.includes('smart')) return '⌚';
+  if(name.includes('audio')) return '🎧';
+  if(name.includes('power')) return '🔋';
+  if(name.includes('reloj')) return '⌚';
   return '📦';
 }
 
@@ -437,7 +325,6 @@ function loadAllTabs(sheetNames) {
 
 fetchConfig();
 
-/* ================= VISUALIZACIÓN ================= */
 function initCategories() {
   const rawCats = products.map(p => p.categoria ? p.categoria.trim() : "Otros");
   const cats = [...new Set(rawCats)];
@@ -472,7 +359,7 @@ function updateSubs() {
 
   const allBtn = document.createElement('div');
   allBtn.className = 'chip active';
-  allBtn.textContent = 'TODO';
+  allBtn.textContent = 'Todo';
   allBtn.onclick = () => { currentSub = ""; render(); setActiveSub(allBtn); };
   bar.appendChild(allBtn);
 
@@ -503,10 +390,9 @@ function render() {
   });
 
   if(filtered.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px; color:var(--text-muted); border: 2px dashed var(--border); border-radius: 20px;">
-      <i class="fa-solid fa-ghost" style="font-size:60px; margin-bottom:20px; color:var(--primary); filter: drop-shadow(0 0 10px var(--primary-glow));"></i>
-      <p style="font-size:18px; font-weight:800; letter-spacing:1px;">NO SE ENCONTRARON DATOS</p>
-      <p style="font-size:12px;">INTENTA CON OTRA BÚSQUEDA</p>
+    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted)">
+      <i class="fa-solid fa-ghost" style="font-size:40px; margin-bottom:10px;"></i>
+      <p>NO SE ENCONTRARON PRODUCTOS</p>
     </div>`;
     return;
   }
@@ -515,9 +401,7 @@ function render() {
     const isAgotado = p.stock <= 0;
     
     let btnText = "PEDIR AHORA 🚀";
-    let btnClass = "btn-ws";
     let waMsg = "";
-    
     if(p.whatsapp && p.whatsapp.length > 5) {
         waMsg = p.whatsapp;
     } else {
@@ -525,26 +409,20 @@ function render() {
     }
 
     if (isAgotado) {
-        btnText = "PREGUNTAR DISPONIBILIDAD";
-        btnClass = "btn-ws btn-consultar";
-        waMsg = `Hola SDC, vi que el producto *${p.nombre}* está AGOTADO. ¿Podrían avisarme cuando esté disponible?`;
+        btnText = "CONSULTAR";
+        waMsg = `Hola SDC, el producto *${p.nombre}* está AGOTADO. Avísenme cuando llegue.`;
     }
 
     const waLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
     const card = document.createElement('div');
     card.className = isAgotado ? 'card agotado' : 'card';
-    
     const ribbonHTML = isAgotado ? `<div class="ribbon">AGOTADO</div>` : '';
 
-    // === NUEVO PRECIO CYBERPUNK "DATA BLOCK" ===
+    // PRECIO LIMPIO (BARRA HORIZONTAL)
     const priceHTML = `
-      <div class="cyber-price-container">
-        <div class="cyber-label-box">
-            <span>Precio</span>
-        </div>
-        <div class="cyber-value-box">
-            <span>Lps. ${p.precio || '0'}</span>
-        </div>
+      <div class="price-bar">
+        <i class="fa-solid fa-tag price-icon"></i>
+        <span class="price-value">Lps. ${p.precio || '0'}</span>
       </div>`;
 
     card.innerHTML = `
@@ -555,14 +433,15 @@ function render() {
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
-        ${priceHTML} <div class="desc">${p.descripcion || ""}</div>
         
-        <div class="media-links" style="display:flex; gap:10px; margin: 8px 0;">
-          ${p.tiktok ? `<a href="${p.tiktok}" target="_blank" style="color:#000; background:#00f2ea; padding:8px; border-radius:4px; font-size:11px; font-weight:900; text-decoration:none; flex:1; text-align:center; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); box-shadow: 0 0 10px var(--primary-glow); text-transform: uppercase;"><i class="fa-brands fa-tiktok"></i> TikTok</a>` : ""}
-          ${p.youtube ? `<a href="${p.youtube}" target="_blank" style="color:#fff; background:#ff0000; padding:8px; border-radius:4px; font-size:11px; font-weight:900; text-decoration:none; flex:1; text-align:center; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); box-shadow: 0 0 15px rgba(255,0,0,0.5); text-transform: uppercase;"><i class="fa-brands fa-youtube"></i> Video</a>` : ""}
+        <div class="media-links">
+          ${p.tiktok ? `<a href="${p.tiktok}" target="_blank" class="media-btn" style="border-color:#00f2ea; color:#00f2ea;"><i class="fa-brands fa-tiktok"></i> TikTok</a>` : ""}
+          ${p.youtube ? `<a href="${p.youtube}" target="_blank" class="media-btn" style="border-color:#ff0000; color:#ff0000;"><i class="fa-brands fa-youtube"></i> Video</a>` : ""}
         </div>
+        
+        ${priceHTML}
 
-        <a href="${waLink}" target="_blank" class="${btnClass}">
+        <a href="${waLink}" target="_blank" class="btn-ws" style="${isAgotado ? 'background:#333; color:#aaa; box-shadow:none;' : ''}">
            <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>
       </div>
