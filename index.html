@@ -207,22 +207,10 @@
 
     /* GRID */
     .grid {
-      display: grid; 
-      /* En móvil: 1 columna, ancho controlado */
-      grid-template-columns: 1fr; 
-      gap: 20px; 
-      padding: 10px 16px; 
-      max-width: 500px; 
-      margin: 0 auto; 
-      min-height: 200px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; 
+      padding: 10px 16px; max-width: 1200px; margin: 0 auto; min-height: 200px;
     }
-    @media (min-width: 768px) { 
-        .grid { 
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
-            gap: 24px; 
-            max-width: 1200px;
-        } 
-    }
+    @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; } }
 
     /* WELCOME STATE */
     .welcome-state {
@@ -256,15 +244,15 @@
     }
     [data-theme="light"] .security-layer { filter: invert(1); opacity: 0.1; }
 
-    /* 🔥 BOTÓN VIDEO FLOTANTE 🔥 */
+    /* 🔥 BOTÓN VIDEO FLOTANTE (MAYUSCULAS) 🔥 */
     .video-badge {
         position: absolute; bottom: 8px; right: 8px; z-index: 20;
         display: flex; align-items: center; gap: 5px;
-        padding: 6px 14px; border-radius: 20px;
-        font-size: 11px; font-weight: 800; color: #fff; text-decoration: none;
+        padding: 5px 12px; border-radius: 20px;
+        font-size: 10px; font-weight: 800; color: #fff; text-decoration: none;
         backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         transition: 0.2s; letter-spacing: 0.5px;
-        text-transform: uppercase;
+        text-transform: uppercase; /* MAYUSCULAS */
     }
     .video-badge:hover { transform: scale(1.05); }
     .video-badge.tiktok { background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255,255,255,0.2); }
@@ -287,54 +275,53 @@
         z-index: 10; box-shadow: -2px 2px 10px rgba(245, 158, 11, 0.5); letter-spacing: 1px;
     }
 
-    .card-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+    .card-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
     
     .card h3 { 
-      margin: 0; font-size: 16px; font-weight: 900; line-height: 1.3; 
+      margin: 0; font-size: 14px; font-weight: 900; line-height: 1.3; 
       text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; 
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
-      height: 42px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      height: 38px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* 🔥 DESC GLOBAL 🔥 */
+    /* 🔥 DESC SÚPER AJUSTADA (1.2) 🔥 */
     .desc {
         font-size: 12px; 
         font-weight: 500; 
         color: var(--text); 
         opacity: 0.9;
         margin-bottom: 0; 
-        line-height: 1.4; 
+        line-height: 1.2; 
         white-space: pre-line; 
     }
     
-    /* PRECIOS */
+    /* PRECIOS (CON MARGEN ARRIBA) */
     .price-bar {
         display: flex; align-items: center; justify-content: center; gap: 8px; 
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
-        border-radius: 12px; padding: 8px; 
-        margin-top: 10px;
+        border-radius: 8px; padding: 6px 8px; 
+        margin-top: 8px; /* Espacio extra aquí para separar del texto */
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
     .price-stack {
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        text-align: center; line-height: 1.1;
+        text-align: center; line-height: 1.2;
     }
     .p-label-small {
         font-size: 10px; font-weight: 700; text-transform: uppercase; 
         letter-spacing: 0.5px; margin-right: 3px; opacity: 0.8;
     }
     .old-price-row {
-        color: var(--text-muted); line-height: 1; margin-bottom: 2px;
+        color: var(--text-muted); line-height: 1; margin-bottom: 3px;
         white-space: nowrap; display: flex; align-items: center; justify-content: center;
     }
     .old-val { text-decoration: line-through; opacity: 0.7; font-size: 11px; }
-    
     .current-price-row {
-        font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 900;
+        font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 900;
         color: var(--accent); line-height: 1; white-space: nowrap;
     }
-    .price-icon { color: var(--accent); font-size: 16px; opacity: 0.8; }
+    .price-icon { color: var(--accent); font-size: 14px; opacity: 0.8; }
 
     .card.promo-mode .price-bar { background: var(--promo-bg); border-color: var(--promo-color); }
     .card.promo-mode .price-icon, .card.promo-mode .current-price-row { color: var(--promo-color); text-shadow: 0 0 10px var(--promo-glow); }
@@ -344,27 +331,12 @@
 
     .btn-ws {
       background: var(--primary); color: #fff; border: none;
-      padding: 12px; border-radius: 12px; font-weight: 800; font-size: 13px; 
+      padding: 10px; border-radius: 8px; font-weight: 800; font-size: 12px; 
       cursor: pointer; text-decoration: none; 
       display: flex; align-items: center; justify-content: center; gap: 6px;
       text-transform: uppercase; transition: 0.2s;
     }
     [data-theme="dark"] .btn-ws { color: #000; }
-
-    /* 📱 MODIFICACIONES SOLO PARA CELULAR ( < 768px ) 📱 */
-    @media (max-width: 767px) {
-        .desc {
-            font-size: 14.5px; /* LETRA MÁS GRANDE EN MOVIL */
-            line-height: 1.5; /* MÁS RESPIRACIÓN */
-        }
-        .current-price-row {
-            font-size: 28px; /* PRECIO GIGANTE EN MOVIL */
-        }
-        .old-price-row { font-size: 13px; margin-bottom: 4px; }
-        .price-bar { padding: 12px; }
-        .btn-ws { font-size: 14px; padding: 14px; }
-        .card h3 { font-size: 18px; height: auto; margin-bottom: 5px; }
-    }
     
     /* TESTIMONIOS */
     .testimonials-section {
@@ -508,6 +480,12 @@
     <h3 class="sec-title">⭐ Lo que dicen los Gamers</h3>
     <div class="testimonials-track">
         <div class="t-card">
+            <div class="t-header"><div class="t-avatar" style="background:var(--primary);">EP</div><div class="t-info"><h4>Elvis Peña</h4><span>Cliente</span></div></div>
+            <div class="t-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+            <p class="t-text">"Nos salvaron el evento de paintball 🔫 con los enfriadores para teléfono ❄️. Todo el día funcionando y sin fallas. 💯"</p>
+        </div>
+        
+        <div class="t-card">
             <div class="t-header"><div class="t-avatar">CA</div><div class="t-info"><h4>Carlos Alvarado</h4><span>Jugador de Free Fire</span></div></div>
             <div class="t-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
             <p class="t-text">"Compré los dedales gamer y la sensibilidad mejoró brutal. 100% recomendados aquí en Comayagua."</p>
@@ -623,8 +601,10 @@ function loadFromUrl() {
     const subParam = params.get('sub');
     
     if (catParam) {
+        // Si hay categoría en la URL, la activamos
         currentCategory = catParam;
         
+        // Buscamos el botón correspondiente y lo activamos visualmente
         const chips = document.querySelectorAll('.category-bar .chip');
         chips.forEach(chip => {
             if(chip.textContent.includes(catParam)) {
@@ -639,11 +619,13 @@ function loadFromUrl() {
             }
         });
 
+        // Cargamos subcategorías
         updateSubs(); 
 
         if (subParam) {
             currentSub = subParam;
-            setTimeout(() => { 
+            // Activamos subcategoría visualmente
+            setTimeout(() => { // Pequeño delay para asegurar que el DOM de subs existe
                 const subChips = document.querySelectorAll('.sub-bar .chip');
                 subChips.forEach(chip => {
                     if(chip.textContent === subParam) {
@@ -653,7 +635,7 @@ function loadFromUrl() {
                 });
             }, 50);
         }
-        render(); 
+        render(); // Renderizamos inmediatamente
     }
 }
 
@@ -710,7 +692,7 @@ function loadAllTabs(sheetNames) {
       else { 
           loader.style.display = 'none'; 
           initCategories(); 
-          loadFromUrl(); 
+          loadFromUrl(); // 🚀 AQUÍ ACTIVAMOS LA CARGA POR LINK
       }
     });
 }
@@ -732,7 +714,7 @@ function initCategories() {
     btn.onclick = () => {
       currentCategory = c; 
       currentSub = ""; 
-      updateUrl(); 
+      updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
       updateSubs(); 
       render();
       document.querySelectorAll('.category-bar .chip').forEach(b => { b.classList.remove('active'); b.classList.remove('promo-active'); });
@@ -754,7 +736,7 @@ function updateSubs() {
   allBtn.className = 'chip active'; allBtn.textContent = 'Todo';
   allBtn.onclick = () => { 
       currentSub = ""; 
-      updateUrl(); 
+      updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
       render(); 
       setActiveSub(allBtn); 
   };
@@ -764,7 +746,7 @@ function updateSubs() {
     btn.className = 'chip'; btn.textContent = s;
     btn.onclick = () => { 
         currentSub = s; 
-        updateUrl(); 
+        updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
         render(); 
         setActiveSub(btn); 
     };
@@ -819,7 +801,9 @@ function render() {
     if(isAgotado) { ribbonHTML = `<div class="ribbon">AGOTADO</div>`; } 
     else if (isPromoCategory) { ribbonHTML = `<div class="ribbon-promo">🔥 HOT SALE</div>`; }
 
+    // Procesamiento de descripción (APLANAMIENTO TOTAL)
     let rawDesc = p.descripcion || p.descipcion || "";
+    // Elimina todos los saltos de línea originales, reemplaza símbolos por saltos nuevos, y quita espacios
     let descText = rawDesc.replace(/(\r\n|\n|\r)/gm, " ").replace(/([►•\-★])/g, '\n$1').trim(); 
 
     let priceHTMLContent = "";
@@ -831,6 +815,7 @@ function render() {
 
     const priceHTML = `<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
+    // 🎥 LÓGICA DEL BOTÓN DE VIDEO (¡AHORA FLOTANTE Y MAYUSCULAS!)
     let videoBadge = "";
     if (p.tiktok) {
         videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
@@ -841,8 +826,7 @@ function render() {
     card.innerHTML = `
       <div class="card-img-container" style="background-image: url('${p.imagen}');">
         ${ribbonHTML}
-        ${videoBadge} 
-        <img src="${WATERMARK_URL}" class="security-layer" alt="SDC">
+        ${videoBadge} <img src="${WATERMARK_URL}" class="security-layer" alt="SDC">
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
