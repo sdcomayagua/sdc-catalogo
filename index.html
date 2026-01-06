@@ -244,18 +244,18 @@
     }
     [data-theme="light"] .security-layer { filter: invert(1); opacity: 0.1; }
 
-    /* 🔥 BOTÓN VIDEO SOBRE IMAGEN 🔥 */
+    /* 🔥 BOTÓN VIDEO FLOTANTE + TEXTO 🔥 */
     .video-badge {
         position: absolute; bottom: 8px; right: 8px; z-index: 20;
-        display: flex; align-items: center; gap: 4px;
-        padding: 4px 10px; border-radius: 20px;
-        font-size: 10px; font-weight: 700; color: #fff; text-decoration: none;
+        display: flex; align-items: center; gap: 5px;
+        padding: 5px 12px; border-radius: 20px;
+        font-size: 10px; font-weight: 800; color: #fff; text-decoration: none;
         backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        transition: 0.2s;
+        transition: 0.2s; letter-spacing: 0.5px;
     }
     .video-badge:hover { transform: scale(1.05); }
-    .video-badge.tiktok { background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255,255,255,0.2); }
-    .video-badge.youtube { background: rgba(255, 0, 0, 0.85); border: 1px solid rgba(255,0,0,0.3); }
+    .video-badge.tiktok { background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255,255,255,0.2); }
+    .video-badge.youtube { background: rgba(220, 38, 38, 0.95); border: 1px solid rgba(255,255,255,0.2); }
 
     .card.agotado { opacity: 0.9; border-color: var(--danger); }
     .card.agotado .card-img-container { filter: grayscale(100%); opacity: 0.6; }
@@ -274,7 +274,7 @@
         z-index: 10; box-shadow: -2px 2px 10px rgba(245, 158, 11, 0.5); letter-spacing: 1px;
     }
 
-    .card-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+    .card-body { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex-grow: 1; }
     
     .card h3 { 
       margin: 0; font-size: 14px; font-weight: 900; line-height: 1.3; 
@@ -283,14 +283,14 @@
       height: 38px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* 🔥 DESC CON ESPACIO CORRECTO (1.4) 🔥 */
+    /* 🔥 DESC SÚPER AJUSTADA (1.2) 🔥 */
     .desc {
-        font-size: 12.5px; 
+        font-size: 12px; 
         font-weight: 500; 
         color: var(--text); 
         opacity: 0.9;
-        margin-bottom: 4px; /* Un poco de margen */
-        line-height: 1.4; /* Espaciado "poquito" para que no se pegue */
+        margin-bottom: 0; 
+        line-height: 1.2; /* Líneas bien pegaditas */
         white-space: pre-line; 
     }
     
@@ -735,9 +735,9 @@ function render() {
     // 🎥 LÓGICA DEL BOTÓN DE VIDEO (¡AHORA FLOTANTE SOBRE LA IMAGEN!)
     let videoBadge = "";
     if (p.tiktok) {
-        videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>`;
+        videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> Ver Vídeo</a>`;
     } else if (p.youtube) {
-        videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>`;
+        videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> Ver Vídeo</a>`;
     }
 
     card.innerHTML = `
