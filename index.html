@@ -244,7 +244,7 @@
     }
     [data-theme="light"] .security-layer { filter: invert(1); opacity: 0.1; }
 
-    /* 🔥 BOTÓN VIDEO FLOTANTE + TEXTO 🔥 */
+    /* 🔥 BOTÓN VIDEO FLOTANTE (MAYUSCULAS) 🔥 */
     .video-badge {
         position: absolute; bottom: 8px; right: 8px; z-index: 20;
         display: flex; align-items: center; gap: 5px;
@@ -252,6 +252,7 @@
         font-size: 10px; font-weight: 800; color: #fff; text-decoration: none;
         backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         transition: 0.2s; letter-spacing: 0.5px;
+        text-transform: uppercase; /* MAYUSCULAS */
     }
     .video-badge:hover { transform: scale(1.05); }
     .video-badge.tiktok { background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255,255,255,0.2); }
@@ -290,14 +291,16 @@
         color: var(--text); 
         opacity: 0.9;
         margin-bottom: 0; 
-        line-height: 1.2; /* Líneas bien pegaditas */
+        line-height: 1.2; 
         white-space: pre-line; 
     }
     
+    /* PRECIOS (CON MARGEN ARRIBA) */
     .price-bar {
         display: flex; align-items: center; justify-content: center; gap: 8px; 
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
-        border-radius: 8px; padding: 6px 8px; margin-top: auto; 
+        border-radius: 8px; padding: 6px 8px; 
+        margin-top: 8px; /* Espacio extra aquí para separar del texto */
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
@@ -735,9 +738,9 @@ function render() {
     // 🎥 LÓGICA DEL BOTÓN DE VIDEO (¡AHORA FLOTANTE SOBRE LA IMAGEN!)
     let videoBadge = "";
     if (p.tiktok) {
-        videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> Ver Vídeo</a>`;
+        videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
     } else if (p.youtube) {
-        videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> Ver Vídeo</a>`;
+        videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
     }
 
     card.innerHTML = `
