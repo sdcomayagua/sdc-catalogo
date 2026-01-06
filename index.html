@@ -244,7 +244,7 @@
     }
     [data-theme="light"] .security-layer { filter: invert(1); opacity: 0.1; }
 
-    /* 🔥 BOTÓN VIDEO FLOTANTE (MAYUSCULAS) 🔥 */
+    /* 🔥 BOTÓN VIDEO FLOTANTE 🔥 */
     .video-badge {
         position: absolute; bottom: 8px; right: 8px; z-index: 20;
         display: flex; align-items: center; gap: 5px;
@@ -252,7 +252,7 @@
         font-size: 10px; font-weight: 800; color: #fff; text-decoration: none;
         backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         transition: 0.2s; letter-spacing: 0.5px;
-        text-transform: uppercase; /* MAYUSCULAS */
+        text-transform: uppercase;
     }
     .video-badge:hover { transform: scale(1.05); }
     .video-badge.tiktok { background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255,255,255,0.2); }
@@ -300,7 +300,7 @@
         display: flex; align-items: center; justify-content: center; gap: 8px; 
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
         border-radius: 8px; padding: 6px 8px; 
-        margin-top: 8px; /* Espacio extra aquí para separar del texto */
+        margin-top: 8px;
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
@@ -577,6 +577,62 @@ let products = [];
 let currentCategory = ""; 
 let currentSub = "";
 
+// ✅ LÓGICA DE URL PROFUNDA (DEEP LINKING) ✅
+function updateUrl() {
+  const url = new URL(window.location);
+  if (currentCategory) url.searchParams.set('cat', currentCategory);
+  else url.searchParams.delete('cat');
+  
+  if (currentSub) url.searchParams.set('sub', currentSub);
+  else url.searchParams.delete('sub');
+  
+  window.history.pushState({}, '', url);
+}
+
+function loadFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const catParam = params.get('cat');
+    const subParam = params.get('sub');
+    
+    if (catParam) {
+        // Si hay categoría en la URL, la activamos
+        currentCategory = catParam;
+        
+        // Buscamos el botón correspondiente y lo activamos visualmente
+        const chips = document.querySelectorAll('.category-bar .chip');
+        chips.forEach(chip => {
+            if(chip.textContent.includes(catParam)) {
+                document.querySelectorAll('.category-bar .chip').forEach(b => {
+                    b.classList.remove('active'); 
+                    b.classList.remove('promo-active'); 
+                });
+                chip.classList.add('active');
+                if(catParam.toLowerCase().includes('oferta') || catParam.toLowerCase().includes('mayorista')) {
+                    chip.classList.add('promo-active');
+                }
+            }
+        });
+
+        // Cargamos subcategorías
+        updateSubs(); 
+
+        if (subParam) {
+            currentSub = subParam;
+            // Activamos subcategoría visualmente
+            setTimeout(() => { // Pequeño delay para asegurar que el DOM de subs existe
+                const subChips = document.querySelectorAll('.sub-bar .chip');
+                subChips.forEach(chip => {
+                    if(chip.textContent === subParam) {
+                        document.querySelectorAll('.sub-bar .chip').forEach(b => b.classList.remove('active'));
+                        chip.classList.add('active');
+                    }
+                });
+            }, 50);
+        }
+        render(); // Renderizamos inmediatamente
+    }
+}
+
 function toggleFaq(element) {
     element.parentElement.classList.toggle('open');
 }
@@ -627,7 +683,11 @@ function loadAllTabs(sheetNames) {
       products = results.flat();
       const loader = document.getElementById('loader');
       if (products.length === 0) { loader.innerHTML = "<p>No se encontraron productos.</p>"; } 
-      else { loader.style.display = 'none'; initCategories(); render(); }
+      else { 
+          loader.style.display = 'none'; 
+          initCategories(); 
+          loadFromUrl(); // 🚀 AQUÍ ACTIVAMOS LA CARGA POR LINK
+      }
     });
 }
 
@@ -646,7 +706,11 @@ function initCategories() {
     if(isPromo && i === 0) btn.classList.add('promo-active');
     btn.innerHTML = `${getIconForCategory(c)} ${c}`; 
     btn.onclick = () => {
-      currentCategory = c; currentSub = ""; updateSubs(); render();
+      currentCategory = c; 
+      currentSub = ""; 
+      updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
+      updateSubs(); 
+      render();
       document.querySelectorAll('.category-bar .chip').forEach(b => { b.classList.remove('active'); b.classList.remove('promo-active'); });
       btn.classList.add('active'); if(isPromo) btn.classList.add('promo-active');
     };
@@ -664,12 +728,22 @@ function updateSubs() {
   bar.style.display = 'flex';
   const allBtn = document.createElement('div');
   allBtn.className = 'chip active'; allBtn.textContent = 'Todo';
-  allBtn.onclick = () => { currentSub = ""; render(); setActiveSub(allBtn); };
+  allBtn.onclick = () => { 
+      currentSub = ""; 
+      updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
+      render(); 
+      setActiveSub(allBtn); 
+  };
   bar.appendChild(allBtn);
   subs.forEach(s => {
     const btn = document.createElement('div');
     btn.className = 'chip'; btn.textContent = s;
-    btn.onclick = () => { currentSub = s; render(); setActiveSub(btn); };
+    btn.onclick = () => { 
+        currentSub = s; 
+        updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
+        render(); 
+        setActiveSub(btn); 
+    };
     bar.appendChild(btn);
   });
 }
@@ -723,7 +797,6 @@ function render() {
 
     // Procesamiento de descripción (APLANAMIENTO TOTAL)
     let rawDesc = p.descripcion || p.descipcion || "";
-    // Elimina todos los saltos de línea originales, reemplaza símbolos por saltos nuevos, y quita espacios
     let descText = rawDesc.replace(/(\r\n|\n|\r)/gm, " ").replace(/([►•\-★])/g, '\n$1').trim(); 
 
     let priceHTMLContent = "";
@@ -735,7 +808,7 @@ function render() {
 
     const priceHTML = `<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
-    // 🎥 LÓGICA DEL BOTÓN DE VIDEO (¡AHORA FLOTANTE SOBRE LA IMAGEN!)
+    // 🎥 LÓGICA DEL BOTÓN DE VIDEO (¡AHORA FLOTANTE Y MAYUSCULAS!)
     let videoBadge = "";
     if (p.tiktok) {
         videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
