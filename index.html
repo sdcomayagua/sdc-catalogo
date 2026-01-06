@@ -205,12 +205,25 @@
     }
     .sub-bar .chip.active { background: var(--text); border-color: var(--text); color: var(--bg); }
 
-    /* GRID */
+    /* 🔥 GRID MODIFICADO (1 COLUMNA EN MÓVIL) 🔥 */
     .grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; 
-      padding: 10px 16px; max-width: 1200px; margin: 0 auto; min-height: 200px;
+      display: grid; 
+      /* En móvil: 1 columna, ancho controlado */
+      grid-template-columns: 1fr; 
+      gap: 20px; 
+      padding: 10px 16px; 
+      max-width: 500px; /* Ancho máximo en móvil para que no se vea gigante */
+      margin: 0 auto; 
+      min-height: 200px;
     }
-    @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; } }
+    /* En PC/Tablet: Volvemos a varias columnas */
+    @media (min-width: 768px) { 
+        .grid { 
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            gap: 24px; 
+            max-width: 1200px;
+        } 
+    }
 
     /* WELCOME STATE */
     .welcome-state {
@@ -284,18 +297,18 @@
       height: 38px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* 🔥 DESC SÚPER AJUSTADA (1.2) 🔥 */
+    /* 🔥 DESC 🔥 */
     .desc {
         font-size: 12px; 
         font-weight: 500; 
         color: var(--text); 
         opacity: 0.9;
         margin-bottom: 0; 
-        line-height: 1.2; 
+        line-height: 1.4; 
         white-space: pre-line; 
     }
     
-    /* PRECIOS (CON MARGEN ARRIBA) */
+    /* PRECIOS */
     .price-bar {
         display: flex; align-items: center; justify-content: center; gap: 8px; 
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
