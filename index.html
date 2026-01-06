@@ -252,7 +252,7 @@
         font-size: 10px; font-weight: 800; color: #fff; text-decoration: none;
         backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         transition: 0.2s; letter-spacing: 0.5px;
-        text-transform: uppercase; /* MAYUSCULAS */
+        text-transform: uppercase;
     }
     .video-badge:hover { transform: scale(1.05); }
     .video-badge.tiktok { background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255,255,255,0.2); }
@@ -294,13 +294,27 @@
         line-height: 1.2; 
         white-space: pre-line; 
     }
+
+    /* 📸 BOTÓN DE GALERÍA (SUTIL) 📸 */
+    .btn-gallery {
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        width: 100%; padding: 6px; margin-top: 4px;
+        background: transparent;
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        color: var(--text-muted);
+        font-size: 10px; font-weight: 700; text-decoration: none;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        transition: 0.2s;
+    }
+    .btn-gallery:hover { background: var(--card-bg); border-color: var(--primary); color: var(--primary); }
     
     /* PRECIOS (CON MARGEN ARRIBA) */
     .price-bar {
         display: flex; align-items: center; justify-content: center; gap: 8px; 
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
         border-radius: 8px; padding: 6px 8px; 
-        margin-top: 8px; /* Espacio extra aquí para separar del texto */
+        margin-top: 6px; 
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
@@ -835,6 +849,12 @@ function render() {
         videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
     }
 
+    // 📸 LÓGICA DEL BOTÓN DE GALERÍA (SUTIL) 📸
+    let galleryBtn = "";
+    if (p.galeria) { // Revisa si hay link en la columna 'galeria'
+        galleryBtn = `<a href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
+    }
+
     card.innerHTML = `
       <div class="card-img-container" style="background-image: url('${p.imagen}');">
         ${ribbonHTML}
@@ -843,7 +863,8 @@ function render() {
       <div class="card-body">
         <h3>${p.nombre}</h3>
         <div class="desc">${descText}</div>
-        ${priceHTML}
+        
+        ${galleryBtn} ${priceHTML}
         <a href="${waLink}" target="_blank" class="btn-ws" style="${isAgotado ? 'background:#333; color:#aaa; box-shadow:none;' : ''}"><i class="fa-brands fa-whatsapp"></i> ${btnText}</a>
       </div>
     `;
