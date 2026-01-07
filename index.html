@@ -194,23 +194,10 @@
     .card.agotado .price-bar{background:rgba(239,68,68,.1);border-color:var(--danger)}
     .card.agotado .price-icon,.card.agotado .current-price-row{color:var(--danger);text-shadow:none}
     [data-theme="light"] .card.agotado .price-bar{background:#fef2f2;border-color:#fca5a5}
+    .price-subline{margin-top:4px;font-size:11px;font-weight:900;color:var(--text-muted);letter-spacing:.4px;text-transform:uppercase}
 
-    .price-subline{
-      margin-top:4px;
-      font-size:11px;
-      font-weight:900;
-      color:var(--text-muted);
-      letter-spacing:.4px;
-      text-transform:uppercase;
-    }
-
-    /* ✅ Selector automático de cantidad */
-    .qty-box{
-      margin-top:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:12px;padding:12px
-    }
-    .card.promo-mode .qty-box{
-      border-color:var(--promo-color);background:var(--promo-bg);box-shadow:0 0 15px var(--promo-glow)
-    }
+    .qty-box{margin-top:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:12px;padding:12px}
+    .card.promo-mode .qty-box{border-color:var(--promo-color);background:var(--promo-bg);box-shadow:0 0 15px var(--promo-glow)}
     .qty-title{
       font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);
       display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;text-align:center
@@ -223,21 +210,12 @@
     .qty-btn:hover{transform:translateY(-1px);border-color:var(--primary)}
     .qty-btn:active{transform:translateY(0)}
     .qty-val{
-      min-width:70px;
-      padding:10px 12px;border-radius:12px;border:1px solid var(--border);
-      background:rgba(255,255,255,.02);
-      text-align:center;font-weight:900;letter-spacing:.6px;text-transform:uppercase
+      min-width:70px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);
+      background:rgba(255,255,255,.02);text-align:center;font-weight:900;letter-spacing:.6px;text-transform:uppercase
     }
     [data-theme="light"] .qty-val{background:#f8fafc}
-    .qty-note{
-      margin-top:10px;
-      font-size:10px;font-weight:900;color:var(--text-muted);
-      text-transform:uppercase;letter-spacing:.5px;text-align:center;opacity:.95
-    }
-    .tiers-mini{
-      margin-top:10px;
-      display:flex;flex-wrap:wrap;gap:6px;justify-content:center
-    }
+    .qty-note{margin-top:10px;font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;text-align:center;opacity:.95}
+    .tiers-mini{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
     .tier-pill{
       font-size:10px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;
       padding:6px 10px;border-radius:999px;border:1px solid var(--border);color:var(--text-muted);background:rgba(255,255,255,.02)
@@ -266,10 +244,7 @@
     .t-info h4{margin:0;font-size:13px;color:var(--text)}
     .t-info span{font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase}
     .t-stars{color:#fbbf24;font-size:12px;margin-bottom:0}
-    .t-text{
-      font-size:12px;color:var(--text-muted);line-height:1.4;font-style:italic;margin:0;
-      text-align:justify;text-justify:inter-word;hyphens:auto
-    }
+    .t-text{font-size:12px;color:var(--text-muted);line-height:1.4;font-style:italic;margin:0;text-align:justify;text-justify:inter-word;hyphens:auto}
 
     .location-section{padding:20px 16px;margin-top:10px;text-align:center}
     .map-frame{width:100%;height:250px;border:2px solid var(--border);border-radius:16px;margin-bottom:15px;filter:grayscale(20%) contrast(1.1)}
@@ -454,7 +429,6 @@ let currentCategory="";
 let currentSub="";
 let ofertasOnly=false;
 
-/* ✅ guarda cantidad elegida por producto (por sesión) */
 const qtyPick={};
 
 function setCanonical(){
@@ -519,7 +493,6 @@ function isNewProduct(p){
   return diff>=0 && diff<=NEW_DAYS;
 }
 
-/* ✅ deep link: query + hash fallback */
 function parseDeepLink(){
   const params=new URLSearchParams(window.location.search);
   let cat=params.get('cat')||"";
@@ -602,7 +575,6 @@ function getIconForCategory(catName){
   return '📦';
 }
 
-/* ✅ WhatsApp (automatizado por cantidad) */
 function pluralizeUnit(unit, qty){
   const u=String(unit||"par").trim();
   if(qty===1) return u;
@@ -624,7 +596,7 @@ function buildWaLink(phone, msg){
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
-/* ✅ TESTIMONIOS (sheet) */
+/* TESTIMONIOS */
 function resolveAvatarColor(value){
   const v=String(value||"").trim().toLowerCase();
   if(v==="primary")return"var(--primary)";
@@ -700,7 +672,7 @@ function fetchTestimonials(){
   }).catch(()=>{});
 }
 
-/* ✅ FETCH PRODUCTOS */
+/* PRODUCTOS */
 function fetchConfig(){
   const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
   const timeoutPromise=new Promise((_,reject)=>setTimeout(()=>reject(new Error("Timeout")),7000));
@@ -740,12 +712,11 @@ function loadAllTabs(sheetNames){
   });
 }
 
-/* ✅ PROMOS POR CANTIDAD (MULTI) */
+/* PROMOS */
 function truthy(v){
   const s=String(v||"").trim().toLowerCase();
   return s==="1"||s==="si"||s==="sí"||s==="true"||s==="x"||s==="yes";
 }
-/* Lee promo1..promo10 (cant/precio) y opcional promoX_max */
 function getBulkTiers(p){
   const unit=String(p.unidad||"par").trim()||"par";
   const tiers=[];
@@ -763,41 +734,32 @@ function getBulkTiers(p){
     }
   }
   tiers.sort((a,b)=>a.min-b.min);
+
+  /* ✅ CLAVE: el último escalón es SIEMPRE abierto (12+), aunque tengas promo6_max=24 en Sheets */
+  if(tiers.length){ tiers[tiers.length-1].max=null; }
+
   return tiers;
 }
 function hasPromo(p, tiers){
   return String(p.precio_anterior||"").trim()!=="" || (tiers && tiers.length>0) || truthy(p.solo_ofertas);
 }
-function getMaxQtyAllowed(tiers){
-  if(!tiers || !tiers.length) return 1;
-  let max=0;
-  tiers.forEach(t=>{
-    const m = t.max ? t.max : t.min;
-    if(m>max) max=m;
-  });
-  return Math.max(1,max);
-}
-/* Regla: el precio de un escalón se aplica para qty >= min hasta antes del siguiente min (o hasta max si existe) */
 function getUnitPriceForQty(basePrice, tiers, qty){
   if(!tiers || !tiers.length || qty<=1) return {unitPrice: basePrice, applied: null};
 
-  // si hay un tier con max y qty cae dentro
-  const inMax = tiers.filter(t=>qty>=t.min && (!t.max || qty<=t.max));
-  if(inMax.length){
-    const best = inMax.sort((a,b)=>b.min-a.min)[0];
+  const inRange = tiers.filter(t=>qty>=t.min && (!t.max || qty<=t.max));
+  if(inRange.length){
+    const best = inRange.sort((a,b)=>b.min-a.min)[0];
     return {unitPrice: best.price, applied: best};
   }
-
-  // si qty está entre escalones, toma el mayor min <= qty
   const candidates = tiers.filter(t=>qty>=t.min);
   if(candidates.length){
     const best=candidates.sort((a,b)=>b.min-a.min)[0];
     return {unitPrice: best.price, applied: best};
   }
-
   return {unitPrice: basePrice, applied: null};
 }
 
+/* NORMALIZACIÓN */
 function normalizeProduct(p){
   const cat=(p.categoria?String(p.categoria).trim():"Otros");
   const sub=String(p.subcategoria||"").trim();
@@ -828,7 +790,6 @@ function normalizeProduct(p){
 
   return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_nombre:nombre,_desc:desc,_promo:promo,_nuevo:nuevo,_promoOnly:promoOnly,_tiers:tiers,_key:key};
 }
-
 function sortProducts(list){
   return list.sort((a,b)=>{
     if(a._agotado!==b._agotado) return a._agotado?1:-1;
@@ -838,7 +799,7 @@ function sortProducts(list){
   });
 }
 
-/* ✅ UI CHIPS */
+/* CHIPS */
 function makeClickableChip(el){
   el.setAttribute('role','button');
   el.setAttribute('tabindex','0');
@@ -939,7 +900,7 @@ function setActiveSub(btn){
   btn.classList.add('active');
 }
 
-/* ✅ HOME */
+/* HOME */
 function goHome(pushUrl=true){
   currentCategory=""; currentSub="";
   clearActiveCategoryChips();
@@ -951,7 +912,7 @@ function goHome(pushUrl=true){
 }
 document.getElementById('homeLink').addEventListener('click',(e)=>{ e.preventDefault(); goHome(true); });
 
-/* ✅ URL -> UI */
+/* URL -> UI */
 function loadFromUrl(){
   const {cat:catSlug, sub:subSlug, promo}=parseDeepLink();
   ofertasOnly = String(promo||"").trim()==="1";
@@ -995,7 +956,7 @@ function loadFromUrl(){
 }
 window.addEventListener('popstate',()=>{ if(products.length) loadFromUrl(); });
 
-/* ✅ BUSCADOR */
+/* BUSCADOR */
 const searchInput=document.getElementById('searchInput');
 const clearBtn=document.getElementById('clearSearchBtn');
 function setClearBtn(){ clearBtn.classList.toggle("show", searchInput.value.trim().length>0); }
@@ -1008,7 +969,7 @@ clearBtn.addEventListener("click",()=>{
 });
 searchInput.addEventListener("input",()=>{ setClearBtn(); });
 
-/* ✅ META */
+/* META */
 function setResultMeta(count, modeLabel){
   const meta=document.getElementById("resultMeta");
   const left=document.getElementById("resultLeft");
@@ -1039,21 +1000,16 @@ function setResultMeta(count, modeLabel){
   }
 }
 
-/* ✅ Helpers UI por cantidad */
+/* UI por cantidad */
 function formatMoney(n){
   const x = Math.round(Number(n)*100)/100;
   return Number.isInteger(x) ? String(x) : x.toFixed(2);
 }
-function tierLabel(t, nextMin){
-  if(t.max) return `${t.min}-${t.max}`;
-  if(nextMin) return `${t.min}+`;
-  return `${t.min}+`;
-}
 function buildTierPills(tiers){
   if(!tiers || !tiers.length) return "";
-  return tiers.map((t,idx)=>{
-    const next = tiers[idx+1] ? tiers[idx+1].min : null;
-    const label = t.max ? `${t.min}-${t.max}` : `${t.min}+`;
+  const lastMin = tiers[tiers.length-1].min;
+  return tiers.map((t)=>{
+    const label = (t.min===lastMin) ? `${t.min}+` : (t.max ? `${t.min}-${t.max}` : `${t.min}+`);
     return `<span class="tier-pill" data-min="${t.min}" data-max="${t.max||""}" data-price="${t.price}">${label}: <strong>Lps.${formatMoney(t.price)}</strong></span>`;
   }).join("");
 }
@@ -1063,30 +1019,27 @@ function updateCardForQty(card, p, qty){
   const tiers = p._tiers || [];
   const unit = (tiers[0] && tiers[0].unit) ? tiers[0].unit : (p.unidad || "par");
 
-  const maxAllowed = getMaxQtyAllowed(tiers);
-  const clamped = Math.max(1, Math.min(qty, maxAllowed));
-
-  qtyPick[p._key]=clamped;
+  const picked = Math.max(1, Math.min(qty, 999));
+  qtyPick[p._key]=picked;
 
   const qtyVal = card.querySelector(".qty-val");
-  if(qtyVal) qtyVal.textContent = `${clamped} ${pluralizeUnit(unit, clamped)}`;
+  if(qtyVal) qtyVal.textContent = `${picked} ${pluralizeUnit(unit, picked)}`;
 
-  const {unitPrice, applied} = getUnitPriceForQty(basePrice, tiers, clamped);
-  const finalUnitPrice = (clamped<=1) ? basePrice : unitPrice;
-  const total = (clamped<=1) ? basePrice : (clamped * finalUnitPrice);
+  const {unitPrice, applied} = getUnitPriceForQty(basePrice, tiers, picked);
+  const finalUnitPrice = (picked<=1) ? basePrice : unitPrice;
+  const total = (picked<=1) ? basePrice : (picked * finalUnitPrice);
 
   const priceStack = card.querySelector(".price-bar .price-stack");
   if(priceStack){
     priceStack.innerHTML = `
       <div class="current-price-row">Lps. ${formatMoney(total)}</div>
-      <div class="price-subline">${clamped} ${pluralizeUnit(unit, clamped)} x Lps. ${formatMoney(finalUnitPrice)} c/u</div>
+      <div class="price-subline">${picked} ${pluralizeUnit(unit, picked)} x Lps. ${formatMoney(finalUnitPrice)} c/u</div>
     `;
   }
 
-  // marcar el pill activo
   const pills = card.querySelectorAll(".tier-pill");
   pills.forEach(x=>x.classList.remove("active"));
-  if(applied && clamped>1){
+  if(applied && picked>1){
     pills.forEach(x=>{
       const min = parseInt(x.dataset.min,10);
       const max = x.dataset.max ? parseInt(x.dataset.max,10) : null;
@@ -1097,16 +1050,15 @@ function updateCardForQty(card, p, qty){
     });
   }
 
-  // WhatsApp
   const btn = card.querySelector(".btn-ws");
   if(btn){
-    const msg = buildWaTextQty(p._nombre, clamped, unit, finalUnitPrice);
+    const msg = buildWaTextQty(p._nombre, picked, unit, finalUnitPrice);
     btn.href = buildWaLink(MY_PHONE, msg);
-    btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${clamped} ${pluralizeUnit(unit, clamped).toUpperCase()} 🚀`;
+    btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${picked} ${pluralizeUnit(unit, picked).toUpperCase()} 🚀`;
   }
 }
 
-/* ✅ RENDER */
+/* RENDER */
 function render(){
   const grid=document.getElementById('productGrid');
   grid.innerHTML="";
@@ -1168,12 +1120,12 @@ function render(){
 
     const descText=String(p._desc||"").replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,'\n$1').trim();
 
-    // ✅ Precio base (si tiene tiers, arrancamos con 1 par = precio normal)
     const basePrice = parseFloat(p.precio||"0") || 0;
     const hasTiers = p._tiers && p._tiers.length>0;
     let priceHTMLContent="";
     if(hasTiers){
-      priceHTMLContent=`<div class="price-stack"><div class="current-price-row">Lps. ${formatMoney(basePrice)}</div><div class="price-subline">1 ${pluralizeUnit(p._tiers[0].unit,1)} x Lps. ${formatMoney(basePrice)} c/u</div></div>`;
+      const unit = p._tiers[0].unit || "par";
+      priceHTMLContent=`<div class="price-stack"><div class="current-price-row">Lps. ${formatMoney(basePrice)}</div><div class="price-subline">1 ${pluralizeUnit(unit,1)} x Lps. ${formatMoney(basePrice)} c/u</div></div>`;
     }else if(String(p.precio_anterior||"").trim()!==""){
       priceHTMLContent=`<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio||'0'}</div></div>`;
     }else{
@@ -1181,7 +1133,6 @@ function render(){
     }
     const priceHTML=`<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
-    // ✅ selector automático si hay tiers
     let qtyHTML="";
     if(hasTiers && !p._agotado){
       const pills=buildTierPills(p._tiers);
@@ -1240,7 +1191,6 @@ function render(){
       </div>
     `;
 
-    // ✅ Si tiene tiers, inicializa cantidad guardada (o 1) y actualiza total/WA
     if(hasTiers && !p._agotado){
       const startQty = qtyPick[p._key] || 1;
       updateCardForQty(card, p, startQty);
@@ -1250,14 +1200,14 @@ function render(){
   });
 }
 
-/* ✅ debounce search */
+/* Debounce search */
 let searchTimer=null;
 searchInput.addEventListener('input',()=>{
   clearTimeout(searchTimer);
   searchTimer=setTimeout(()=>{ updateUrl(false); render(); },120);
 });
 
-/* ✅ sticky scroll + ws */
+/* sticky + floating ws */
 window.addEventListener('scroll',()=>{
   const f=document.getElementById('filtersWrapper');
   window.scrollY>50?f.classList.add('scrolled'):f.classList.remove('scrolled');
@@ -1268,7 +1218,7 @@ window.addEventListener('scroll',()=>{
   else ws.classList.remove("expanded");
 },{passive:true});
 
-/* ✅ theme saved + system */
+/* Theme */
 const toggle=document.getElementById('themeToggle');
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme',theme);
@@ -1284,7 +1234,7 @@ toggle.onclick=()=>{
   applyTheme(next);
 };
 
-/* ✅ Click del selector + / − */
+/* Click +/− (SIN LÍMITE DE 24: el último tier 12+ aplica hasta 999) */
 document.getElementById("productGrid").addEventListener("click",(e)=>{
   const btn=e.target.closest(".qty-btn");
   if(!btn) return;
@@ -1298,24 +1248,19 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
   const key=keyBox.dataset.key;
   const act=btn.dataset.act;
 
-  // Buscar el producto real por key
   const pRaw = products.map(normalizeProduct).find(x=>x._key===key);
   if(!pRaw) return;
 
   let qty = qtyPick[key] || 1;
   qty = act==="plus" ? qty+1 : qty-1;
 
-  const maxAllowed=getMaxQtyAllowed(pRaw._tiers);
   if(qty<1) qty=1;
-  if(qty>maxAllowed){
-    qty=maxAllowed;
-    flashToast(`Máximo en oferta: ${maxAllowed} ${pluralizeUnit(pRaw._tiers[0].unit, maxAllowed)} ✅`);
-  }
+  if(qty>999) qty=999;
 
   updateCardForQty(card, pRaw, qty);
 });
 
-/* ✅ boot cache */
+/* Boot cache */
 function bootFromCache(){
   const cachedP=readCache(CACHE_PRODUCTS_KEY);
   if(Array.isArray(cachedP) && cachedP.length){
@@ -1331,7 +1276,6 @@ function bootFromCache(){
     renderTestimonials();
   }
 }
-
 bootFromCache();
 fetchConfig();
 fetchTestimonials();
