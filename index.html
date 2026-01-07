@@ -7,7 +7,6 @@
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
 
-  <!-- ✅ SEO / Share -->
   <meta name="description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
   <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
   <meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
@@ -17,7 +16,6 @@
   <meta name="theme-color" content="#0b1120" />
   <link rel="canonical" id="canonicalLink" href="" />
 
-  <!-- ✅ Pequeña mejora de carga sin afectar el diseño -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -115,14 +113,15 @@
     .sub-bar .chip{padding:6px 14px;font-size:11px;border-radius:8px;background:transparent;border:1px solid var(--border)}
     .sub-bar .chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
 
+    /* ✅ MÁS AIRE PARA MOSTRANDO / CATEGORÍA */
     .result-meta{
-      max-width:1200px;margin:0 auto;padding:2px 16px 0;color:var(--text-muted);
-      font-size:12px;font-weight:700;letter-spacing:.3px;display:none
+      max-width:1200px;margin:10px auto 10px;padding:10px 16px;
+      color:var(--text-muted);font-size:12px;font-weight:700;letter-spacing:.3px;display:none
     }
     .result-meta.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .result-left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .tiny-pill{
-      border:1px solid var(--border);background:rgba(255,255,255,.03);padding:5px 10px;border-radius:999px;
+      border:1px solid var(--border);background:rgba(255,255,255,.03);padding:6px 12px;border-radius:999px;
       color:var(--text-muted);font-size:11px;font-weight:800;text-transform:uppercase
     }
     [data-theme="light"] .tiny-pill{background:#f8fafc}
@@ -178,11 +177,8 @@
     .desc{font-size:13.5px;font-weight:500;color:var(--text);opacity:.9;margin-bottom:6px;line-height:1.6;white-space:pre-line;padding-left:5px}
 
     .cat-label{
-      display:inline-flex;align-items:center;gap:6px;
-      font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;
-      color:var(--text-muted);border:1px solid var(--border);
-      padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.03);
-      width:fit-content
+      display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;
+      color:var(--text-muted);border:1px solid var(--border);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.03);width:fit-content
     }
     [data-theme="light"] .cat-label{background:#f8fafc}
     .cat-label b{color:var(--text);opacity:.9}
@@ -207,23 +203,61 @@
     .card.agotado .price-icon,.card.agotado .current-price-row{color:var(--danger);text-shadow:none}
     [data-theme="light"] .card.agotado .price-bar{background:#fef2f2;border-color:#fca5a5}
 
+    /* ✅ PROMOS POR CANTIDAD */
+    .bulk-box{
+      margin-top:8px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      border-radius:10px;
+      padding:10px;
+    }
+    .card.promo-mode .bulk-box{
+      border-color:var(--promo-color);
+      background:var(--promo-bg);
+      box-shadow:0 0 15px var(--promo-glow);
+    }
+    .bulk-title{
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      color:var(--text-muted);
+      margin-bottom:6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .bulk-line{
+      font-size:12px;
+      font-weight:800;
+      color:var(--text);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:4px 6px;
+      border-radius:8px;
+    }
+    .bulk-line span:last-child{
+      font-weight:900;
+      color:var(--accent);
+    }
+    .card.promo-mode .bulk-line span:last-child{
+      color:var(--promo-color);
+      text-shadow:0 0 10px var(--promo-glow);
+    }
+
     .btn-ws{
       background:var(--primary);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;
       display:flex;align-items:center;justify-content:center;gap:6px;text-transform:uppercase;transition:.2s
     }
     [data-theme="dark"] .btn-ws{color:#000}
-    .agotado-hint{
-      margin-top:2px;font-size:11px;font-weight:700;color:var(--text-muted);
-      text-align:center;line-height:1.3
-    }
+    .agotado-hint{margin-top:2px;font-size:11px;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.3}
 
     .testimonials-section{padding:30px 16px;margin-top:20px;background:rgba(255,255,255,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     .sec-title{text-align:center;font-size:18px;font-weight:900;margin-bottom:20px;color:var(--text);text-transform:uppercase}
     .testimonials-track{display:flex;gap:15px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
-    .t-card{
-      min-width:260px;max-width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:15px;
-      display:flex;flex-direction:column;gap:8px;content-visibility:auto;contain:content;contain-intrinsic-size:240px
-    }
+    .t-card{min-width:260px;max-width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:8px;content-visibility:auto;contain:content;contain-intrinsic-size:240px}
     .t-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
     .t-avatar{width:35px;height:35px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
     [data-theme="dark"] .t-avatar{color:#000}
@@ -249,10 +283,7 @@
 
     footer{text-align:center;padding:30px 20px;color:var(--text-muted);font-size:12px;margin-top:20px;border-top:1px solid var(--border)}
     .social-bar{display:flex;justify-content:center;gap:15px;margin-bottom:20px}
-    .social-btn{
-      width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;text-decoration:none;
-      transition:.3s;box-shadow:0 4px 10px rgba(0,0,0,.3)
-    }
+    .social-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;text-decoration:none;transition:.3s;box-shadow:0 4px 10px rgba(0,0,0,.3)}
     .sb-insta{background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)}
     .sb-fb{background:#1877F2}
     .sb-tiktok{background:#000;border:1px solid #333}
@@ -262,10 +293,7 @@
       display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:200;
       text-decoration:none;overflow:hidden;transition:.25s;gap:10px;padding:0 18px
     }
-    .float-ws span{
-      font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translateX(8px);
-      transition:.25s
-    }
+    .float-ws span{font-size:12px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translateX(8px);transition:.25s}
     .float-ws.expanded{width:160px;justify-content:flex-start}
     .float-ws.expanded span{opacity:1;transform:translateX(0)}
 
@@ -346,7 +374,6 @@
     <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google" rel="noopener noreferrer">
       <i class="fa-solid fa-map-location-dot"></i> Google Maps
     </a>
-    <!-- ✅ FIX: Waze rel correcto -->
     <a href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes" target="_blank" class="btn-loc btn-waze" rel="noopener noreferrer">
       <i class="fa-brands fa-waze"></i> Waze
     </a>
@@ -406,18 +433,14 @@
 </a>
 
 <script>
-/* =======================
-   ✅ CONFIG
-======================= */
 const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const CONFIG_GID="1488858707";
 const MY_PHONE="50432429490";
 const BACKUP_SHEETS=['ofertas','gamer','pc','movil','streaming','cobertores','power'];
 const TESTIMONIALS_SHEET="testimonios";
 
-/* ✅ Features */
-const NEW_DAYS=7; // badge NUEVO
-const CACHE_PRODUCTS_KEY="sdc_products_cache_v2";
+const NEW_DAYS=7;
+const CACHE_PRODUCTS_KEY="sdc_products_cache_v3";
 const CACHE_TESTIMONIALS_KEY="sdc_testimonials_cache_v2";
 
 let products=[];
@@ -426,9 +449,6 @@ let currentCategory="";
 let currentSub="";
 let ofertasOnly=false;
 
-/* =======================
-   ✅ UTIL
-======================= */
 function setCanonical(){
   const el=document.getElementById("canonicalLink");
   if(!el) return;
@@ -447,7 +467,7 @@ function safeHttpUrl(u){
   if(!s) return "";
   if(s.startsWith("http://") || s.startsWith("https://")) return s;
   if(s.startsWith("www.")) return "https://"+s;
-  return ""; // bloquea links raros
+  return "";
 }
 function fixGithubRaw(url){
   let s=String(url||"");
@@ -455,37 +475,22 @@ function fixGithubRaw(url){
   return s;
 }
 function readCache(key){
-  try{
-    const raw=localStorage.getItem(key);
-    if(!raw) return null;
-    const obj=JSON.parse(raw);
-    if(!obj || !obj.d) return null;
-    return obj.d;
-  }catch{ return null; }
+  try{ const raw=localStorage.getItem(key); if(!raw) return null; const obj=JSON.parse(raw); if(!obj || !obj.d) return null; return obj.d; }
+  catch{ return null; }
 }
 function writeCache(key,data){
   try{ localStorage.setItem(key, JSON.stringify({t:Date.now(), d:data})); }catch{}
 }
+
 function parseDateAny(v){
   if(!v) return null;
-  if(v instanceof Date && !isNaN(v)) return v;
-
   if(typeof v==="string"){
     const s=v.trim();
-    // gviz: "Date(2026,0,6)"
     const m=s.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})/i);
     if(m) return new Date(Number(m[1]), Number(m[2]), Number(m[3]));
-    // ISO
-    const d1=new Date(s);
-    if(!isNaN(d1)) return d1;
-    // dd/mm/yyyy
+    const d1=new Date(s); if(!isNaN(d1)) return d1;
     const m2=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
     if(m2) return new Date(Number(m2[3]), Number(m2[2])-1, Number(m2[1]));
-    return null;
-  }
-  if(typeof v==="number"){
-    // por si algún día viene serial, lo ignoramos para no romper
-    return null;
   }
   return null;
 }
@@ -499,14 +504,8 @@ function isNewProduct(p){
   const diff=daysBetween(new Date(), d);
   return diff>=0 && diff<=NEW_DAYS;
 }
-function hasPromo(p){
-  return String(p.precio_anterior||"").trim()!=="";
-}
 
-/* =======================
-   ✅ DEEPLINK PERFECTO: query + hash fallback
-   + promo=1
-======================= */
+/* ✅ deep link: query + hash fallback */
 function parseDeepLink(){
   const params=new URLSearchParams(window.location.search);
   let cat=params.get('cat')||"";
@@ -546,17 +545,10 @@ function updateUrl(push=true){
   else history.replaceState({}, "", url);
 }
 
-/* =======================
-   ✅ COPIAR LINK (1 toque)
-======================= */
 async function copyCurrentLink(){
   const link=window.location.href;
-  try{
-    await navigator.clipboard.writeText(link);
-    flashToast("LINK COPIADO ✅");
-  }catch{
-    prompt("Copia este link:", link);
-  }
+  try{ await navigator.clipboard.writeText(link); flashToast("LINK COPIADO ✅"); }
+  catch{ prompt("Copia este link:", link); }
 }
 function flashToast(msg){
   const t=document.createElement("div");
@@ -580,8 +572,24 @@ function flashToast(msg){
 }
 document.getElementById("copyLinkBtn").addEventListener("click",copyCurrentLink);
 
+function toggleFaq(element){ element.parentElement.classList.toggle('open'); }
+
+function getIconForCategory(catName){
+  if(!catName) return '📦';
+  const name=catName.toLowerCase();
+  if(name.includes('oferta')||name.includes('promo')||name.includes('mayorista')) return '🔥';
+  if(name.includes('gamer')||name.includes('juego')) return '🎮';
+  if(name.includes('celular')||name.includes('móvil')||name.includes('phone')||name.includes('samsung')||name.includes('iphone')) return '📱';
+  if(name.includes('pc')||name.includes('computadora')) return '🖥️';
+  if(name.includes('tv')||name.includes('stream')) return '📺';
+  if(name.includes('audio')) return '🎧';
+  if(name.includes('power')) return '🔋';
+  if(name.includes('reloj')) return '⌚';
+  return '📦';
+}
+
 /* =======================
-   ✅ TESTIMONIOS (SHEET)
+   ✅ TESTIMONIOS (sheet)
 ======================= */
 function resolveAvatarColor(value){
   const v=String(value||"").trim().toLowerCase();
@@ -625,7 +633,9 @@ function renderTestimonials(){
 
     const text=document.createElement("p"); text.className="t-text"; text.textContent=`"${t.comentario}"`;
 
-    card.appendChild(header); card.appendChild(stars); card.appendChild(text);
+    card.appendChild(header);
+    card.appendChild(stars);
+    card.appendChild(text);
     track.appendChild(card);
   });
 }
@@ -653,32 +663,7 @@ function fetchTestimonials(){
 
     writeCache(CACHE_TESTIMONIALS_KEY, testimonials);
     renderTestimonials();
-  }).catch(()=>{
-    const track=document.getElementById("testimonialsTrack");
-    if(track && !testimonials.length) track.innerHTML=`<div class="t-card"><p class="t-text">Aún no hay testimonios cargados.</p></div>`;
-  });
-}
-
-/* =======================
-   ✅ FAQ
-======================= */
-function toggleFaq(element){ element.parentElement.classList.toggle('open'); }
-
-/* =======================
-   ✅ ICONOS
-======================= */
-function getIconForCategory(catName){
-  if(!catName)return'📦';
-  const name=catName.toLowerCase();
-  if(name.includes('oferta')||name.includes('promo')||name.includes('mayorista'))return'🔥';
-  if(name.includes('gamer')||name.includes('juego'))return'🎮';
-  if(name.includes('celular')||name.includes('móvil')||name.includes('phone')||name.includes('samsung')||name.includes('iphone'))return'📱';
-  if(name.includes('pc')||name.includes('computadora'))return'🖥️';
-  if(name.includes('tv')||name.includes('stream'))return'📺';
-  if(name.includes('audio'))return'🎧';
-  if(name.includes('power'))return'🔋';
-  if(name.includes('reloj'))return'⌚';
-  return'📦';
+  }).catch(()=>{});
 }
 
 /* =======================
@@ -692,8 +677,7 @@ function fetchConfig(){
     const sheetNames=json.table.rows.map(r=>r.c[0]?r.c[0].v:null).filter(name=>name&&name.toLowerCase()!=='sheet');
     const productSheets=sheetNames.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
     loadAllTabs(productSheets);
-  }).catch(e=>{
-    console.warn("Usando respaldo manual...",e);
+  }).catch(()=>{
     const productSheets=BACKUP_SHEETS.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
     loadAllTabs(productSheets);
   });
@@ -706,7 +690,7 @@ function fetchTab(sheetName){
     return json.table.rows.map(r=>{
       let obj={};
       r.c.forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
-      if(!obj.categoria)obj.categoria=sheetName;
+      if(!obj.categoria) obj.categoria=sheetName;
       return obj;
     }).filter(p=>p.nombre);
   }).catch(()=>[]);
@@ -716,17 +700,79 @@ function loadAllTabs(sheetNames){
     products=results.flat();
     const loader=document.getElementById('loader');
     if(products.length===0){ loader.innerHTML="<p>No se encontraron productos.</p>"; return; }
-
     writeCache(CACHE_PRODUCTS_KEY, products);
     loader.style.display='none';
-
     initCategories();
     loadFromUrl();
   });
 }
 
 /* =======================
-   ✅ CATEGORÍAS / SUBS + OFERTAS
+   ✅ PROMOS POR CANTIDAD + CONTROL OFERTAS
+======================= */
+function truthy(v){
+  const s=String(v||"").trim().toLowerCase();
+  return s==="1"||s==="si"||s==="sí"||s==="true"||s==="x"||s==="yes";
+}
+function getBulkTiers(p){
+  const unit=String(p.unidad||"par").trim() || "par";
+  const q1=p.promo1_cant ?? p.promo1_cantidad ?? p.promo_1_cant ?? p.promo_1_cantidad ?? p.cant_1 ?? "";
+  const a1=p.promo1_precio ?? p.promo_1_precio ?? p.precio_1 ?? "";
+  const q2=p.promo2_cant ?? p.promo2_cantidad ?? p.promo_2_cant ?? p.promo_2_cantidad ?? p.cant_2 ?? "";
+  const a2=p.promo2_precio ?? p.promo_2_precio ?? p.precio_2 ?? "";
+
+  const tiers=[];
+  const n1=parseInt(q1,10), n2=parseInt(q2,10);
+  const p1=parseFloat(a1), p2=parseFloat(a2);
+
+  if(Number.isFinite(n1) && n1>0 && Number.isFinite(p1)) tiers.push({qty:n1, price:p1, unit});
+  if(Number.isFinite(n2) && n2>0 && Number.isFinite(p2)) tiers.push({qty:n2, price:p2, unit});
+
+  return tiers;
+}
+function hasPromo(p, tiers){
+  return String(p.precio_anterior||"").trim()!=="" || (tiers && tiers.length>0) || truthy(p.solo_ofertas);
+}
+
+function normalizeProduct(p){
+  const cat=(p.categoria?String(p.categoria).trim():"Otros");
+  const sub=String(p.subcategoria||"").trim();
+
+  const stockRaw=String(p.stock??"").trim();
+  const stockNum=Number(stockRaw);
+  const hasStock=stockRaw!=="";
+  const agotado=hasStock?(Number.isFinite(stockNum)&&stockNum<=0):false;
+
+  const img=fixGithubRaw(safeHttpUrl(p.imagen) || p.imagen || "");
+  const gal=safeHttpUrl(p.galeria);
+  const tiktok=safeHttpUrl(p.tiktok);
+  const youtube=safeHttpUrl(p.youtube);
+
+  const orderVal=parseInt(p.orden||p.order||"999999",10);
+  const ord=Number.isFinite(orderVal)?orderVal:999999;
+
+  const nombre=String(p.nombre||"").trim();
+  const desc=String(p.descripcion||p.descipcion||"").trim();
+
+  const promoOnly=truthy(p.solo_ofertas);
+  const tiers=getBulkTiers(p);
+  const promo=hasPromo(p, tiers);
+  const nuevo=isNewProduct(p);
+
+  return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_nombre:nombre,_desc:desc,_promo:promo,_nuevo:nuevo,_promoOnly:promoOnly,_tiers:tiers};
+}
+
+function sortProducts(list){
+  return list.sort((a,b)=>{
+    if(a._agotado!==b._agotado) return a._agotado?1:-1;
+    if(a._promo!==b._promo) return a._promo?-1:1;
+    if(a._ord!==b._ord) return a._ord-b._ord;
+    return norm(a._nombre).localeCompare(norm(b._nombre));
+  });
+}
+
+/* =======================
+   ✅ UI CHIPS
 ======================= */
 function makeClickableChip(el){
   el.setAttribute('role','button');
@@ -740,8 +786,6 @@ function clearActiveCategoryChips(){
 function setActiveCategoryChip(btn){
   clearActiveCategoryChips();
   btn.classList.add('active');
-  const isPromo=(currentCategory||"").toLowerCase().includes('oferta')||(currentCategory||"").toLowerCase().includes('mayorista');
-  if(isPromo) btn.classList.add('promo-active');
 }
 function setOffersChipState(){
   const chip=document.getElementById("offersOnlyChip");
@@ -749,13 +793,21 @@ function setOffersChipState(){
   chip.classList.toggle("active", ofertasOnly);
   chip.classList.toggle("promo-active", ofertasOnly);
 }
+
+/* ✅ OCULTAR CATEGORÍAS OFERTAS/MAYORISTA PARA NO DUPLICAR */
+function isHiddenOffersCategory(catName){
+  const s=String(catName||"").toLowerCase();
+  return s.includes("oferta") || s.includes("mayorista") || s.includes("promo");
+}
+
 function initCategories(){
   const rawCats=products.map(p=>p.categoria?String(p.categoria).trim():"Otros");
-  const cats=[...new Set(rawCats)];
+  const uniqueCats=[...new Set(rawCats)];
+
+  const cats=uniqueCats.filter(c=>!isHiddenOffersCategory(c)); // ✅ aquí se quitan Ofertas duplicadas
   const bar=document.getElementById('categoryBar');
   bar.innerHTML="";
 
-  // ✅ Chip SOLO OFERTAS (global)
   const offersChip=document.createElement('div');
   offersChip.className='chip';
   offersChip.id="offersOnlyChip";
@@ -769,18 +821,12 @@ function initCategories(){
   makeClickableChip(offersChip);
   bar.appendChild(offersChip);
 
-  if(cats.length===0) return;
-
-  cats.forEach((c,i)=>{
+  cats.forEach((c)=>{
     const catName=String(c).trim();
     const btn=document.createElement('div');
     btn.className='chip cat-chip';
     btn.dataset.cat=catName;
     btn.dataset.slug=slugify(catName);
-
-    const isPromo=catName.toLowerCase().includes('oferta')||catName.toLowerCase().includes('mayorista');
-    if(isPromo&&i===0) btn.classList.add('promo-active');
-
     btn.innerHTML=`${getIconForCategory(catName)} ${catName}`;
     btn.onclick=()=>{
       currentCategory=catName; currentSub="";
@@ -796,13 +842,14 @@ function initCategories(){
   setOffersChipState();
   updateSubs();
 }
+
 function updateSubs(){
   const bar=document.getElementById('subBar');
   bar.innerHTML="";
   if(!currentCategory){ bar.style.display='none'; return; }
 
-  const currentCatProducts=products.filter(p=>(p.categoria?String(p.categoria).trim():"Otros")===currentCategory);
-  const subs=[...new Set(currentCatProducts.map(p=>p.subcategoria).filter(Boolean))];
+  const currentCatProducts=products.map(normalizeProduct).filter(p=>p._cat===currentCategory && (!p._promoOnly)); // ✅ NO mezclar promos-only
+  const subs=[...new Set(currentCatProducts.map(p=>p._sub).filter(Boolean))];
 
   if(subs.length===0){ bar.style.display='none'; return; }
   bar.style.display='flex';
@@ -835,10 +882,8 @@ function setActiveSub(btn){
 function goHome(pushUrl=true){
   currentCategory=""; currentSub="";
   clearActiveCategoryChips();
-
   const subBar=document.getElementById('subBar');
   subBar.innerHTML=""; subBar.style.display='none';
-
   updateUrl(pushUrl);
   render();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -892,17 +937,11 @@ function loadFromUrl(){
 window.addEventListener('popstate',()=>{ if(products.length) loadFromUrl(); });
 
 /* =======================
-   ✅ BUSCADOR ARREGLADO (GLOBAL + SIN ACENTOS)
-   - Si NO hay categoría: busca en TODO el catálogo
-   - Si hay categoría: busca dentro de esa categoría/sub
+   ✅ BUSCADOR
 ======================= */
 const searchInput=document.getElementById('searchInput');
 const clearBtn=document.getElementById('clearSearchBtn');
-
-function setClearBtn(){
-  const has=searchInput.value.trim().length>0;
-  clearBtn.classList.toggle("show", has);
-}
+function setClearBtn(){ clearBtn.classList.toggle("show", searchInput.value.trim().length>0); }
 clearBtn.addEventListener("click",()=>{
   searchInput.value="";
   setClearBtn();
@@ -913,7 +952,7 @@ clearBtn.addEventListener("click",()=>{
 searchInput.addEventListener("input",()=>{ setClearBtn(); });
 
 /* =======================
-   ✅ RESULT META
+   ✅ META
 ======================= */
 function setResultMeta(count, modeLabel){
   const meta=document.getElementById("resultMeta");
@@ -921,13 +960,9 @@ function setResultMeta(count, modeLabel){
   const right=document.getElementById("resultRight");
   if(!meta || !left || !right) return;
 
-  if(count===null){
-    meta.classList.remove("show");
-    return;
-  }
+  if(count===null){ meta.classList.remove("show"); return; }
   meta.classList.add("show");
-  left.innerHTML="";
-  right.textContent="";
+  left.innerHTML=""; right.textContent="";
 
   const a=document.createElement("div");
   a.className="tiny-pill";
@@ -947,48 +982,6 @@ function setResultMeta(count, modeLabel){
     c.textContent="Solo Ofertas ✅";
     left.appendChild(c);
   }
-
-  right.textContent="";
-}
-
-/* =======================
-   ✅ ORDER INTELIGENTE
-======================= */
-function normalizeProduct(p){
-  const cat=(p.categoria?String(p.categoria).trim():"Otros");
-  const sub=String(p.subcategoria||"").trim();
-  const stockRaw=String(p.stock??"").trim();
-  const stockNum=Number(stockRaw);
-  const hasStock=stockRaw!=="";
-  const agotado=hasStock?(Number.isFinite(stockNum)&&stockNum<=0):false;
-
-  const img=fixGithubRaw(safeHttpUrl(p.imagen) || p.imagen || "");
-  const gal=safeHttpUrl(p.galeria);
-  const tiktok=safeHttpUrl(p.tiktok);
-  const youtube=safeHttpUrl(p.youtube);
-
-  const orderVal=parseInt(p.orden||p.order||"999999",10);
-  const ord=Number.isFinite(orderVal)?orderVal:999999;
-
-  const promo=hasPromo(p);
-  const nuevo=isNewProduct(p);
-
-  const nombre=String(p.nombre||"").trim();
-  const desc=String(p.descripcion||p.descipcion||"").trim();
-
-  return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_promo:promo,_nuevo:nuevo,_nombre:nombre,_desc:desc};
-}
-function sortProducts(list){
-  return list.sort((a,b)=>{
-    // 1) En stock primero
-    if(a._agotado!==b._agotado) return a._agotado ? 1 : -1;
-    // 2) Ofertas primero (si ambos en stock)
-    if(a._promo!==b._promo) return a._promo ? -1 : 1;
-    // 3) Orden (si existe)
-    if(a._ord!==b._ord) return a._ord - b._ord;
-    // 4) Alfabético
-    return norm(a._nombre).localeCompare(norm(b._nombre));
-  });
 }
 
 /* =======================
@@ -1002,7 +995,6 @@ function render(){
   const q=norm(qRaw);
   const searching=q.length>0;
 
-  // ✅ Si no hay categoría y no está buscando -> pantalla bienvenida
   if(currentCategory==="" && !searching){
     setResultMeta(null,null);
     grid.innerHTML=`
@@ -1015,20 +1007,21 @@ function render(){
     return;
   }
 
-  // ✅ Base list: global si está buscando y no hay categoría; si hay categoría, dentro de la categoría
   let list=products.map(normalizeProduct);
 
-  // ✅ filtro solo ofertas
-  if(ofertasOnly){
-    list=list.filter(p=>p._promo);
+  /* ✅ Si NO estás en SOLO OFERTAS, NO mostramos los productos marcados "solo_ofertas" */
+  if(!ofertasOnly){
+    list=list.filter(p=>!p._promoOnly);
   }
 
-  // ✅ filtro categoría/sub (solo si hay categoría seleccionada)
+  if(ofertasOnly){
+    list=list.filter(p=>p._promo); // ofertas: todo lo promo (precio anterior o tiers o promoOnly)
+  }
+
   if(currentCategory){
     list=list.filter(p=>p._cat===currentCategory && (!currentSub || p._sub===currentSub));
   }
 
-  // ✅ búsqueda (global o por categoría), sin acentos
   if(searching){
     list=list.filter(p=>{
       const n=norm(p._nombre);
@@ -1039,10 +1032,8 @@ function render(){
     });
   }
 
-  // ✅ orden inteligente
   list=sortProducts(list);
 
-  // ✅ contadores/etiquetas
   const modeLabel = searching ? "Búsqueda" : (currentCategory ? `Categoría: ${currentCategory}` : "Catálogo");
   setResultMeta(list.length, modeLabel);
 
@@ -1050,8 +1041,6 @@ function render(){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)"><i class="fa-solid fa-ghost" style="font-size:40px;margin-bottom:10px;"></i><p>NO HAY RESULTADOS</p></div>`;
     return;
   }
-
-  const isPromoCategory = currentCategory ? (currentCategory.toLowerCase().includes('oferta')||currentCategory.toLowerCase().includes('mayorista')) : false;
 
   list.forEach(p=>{
     let btnText="PEDIR AHORA 🚀";
@@ -1061,19 +1050,16 @@ function render(){
     const waLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
     const card=document.createElement('div');
 
-    const promoMode = (isPromoCategory || p._promo) && !p._agotado;
+    const promoMode = (p._promo && !p._agotado);
     card.className=`card ${p._agotado?'agotado':''} ${promoMode?'promo-mode':''}`;
 
-    // ✅ ribbons (AGOTADO siempre manda)
     let ribbonHTML="";
     if(p._agotado) ribbonHTML+=`<div class="ribbon">AGOTADO</div>`;
     else if(promoMode) ribbonHTML+=`<div class="ribbon-promo">🔥 HOT SALE</div>`;
     if(!p._agotado && p._nuevo) ribbonHTML+=`<div class="ribbon-new">🆕 NUEVO</div>`;
 
-    // ✅ descripción bonita
     const descText=String(p._desc||"").replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,'\n$1').trim();
 
-    // ✅ precios
     let priceHTMLContent="";
     if(String(p.precio_anterior||"").trim()!==""){
       priceHTMLContent=`<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio||'0'}</div></div>`;
@@ -1082,21 +1068,29 @@ function render(){
     }
     const priceHTML=`<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
-    // ✅ video badge
+    let bulkHTML="";
+    if(p._tiers && p._tiers.length){
+      const unitLabel = (p._tiers[0].unit || "par");
+      const plural = (qty)=> qty===1 ? unitLabel : (unitLabel.endsWith("s") ? unitLabel : unitLabel+"es");
+      const lines = p._tiers.map(t=>{
+        return `<div class="bulk-line"><span>${t.qty} ${plural(t.qty)}</span><span>Lps. ${t.price} c/u</span></div>`;
+      }).join("");
+      bulkHTML=`
+        <div class="bulk-box">
+          <div class="bulk-title"><i class="fa-solid fa-bolt"></i> Promo por cantidad</div>
+          ${lines}
+        </div>
+      `;
+    }
+
     let videoBadge="";
     if(p._tiktok) videoBadge=`<a href="${p._tiktok}" target="_blank" class="video-badge tiktok" rel="noopener noreferrer"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
     else if(p._youtube) videoBadge=`<a href="${p._youtube}" target="_blank" class="video-badge youtube" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
 
-    // ✅ galería (sanitizada)
     let galleryBtn="";
     if(p._gal) galleryBtn=`<a href="${p._gal}" target="_blank" class="btn-gallery" rel="noopener noreferrer"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
 
-    // ✅ etiqueta de categoría cuando estás en búsqueda global
-    const catLabelHTML = (searching && !currentCategory) ? `<div class="cat-label">${getIconForCategory(p._cat)} <b>${p._cat}</b>${p._sub?` · ${p._sub}`:""}</div>` : "";
-
     const agotadoHint = p._agotado ? `<div class="agotado-hint">Escríbenos y te avisamos cuando regrese.</div>` : "";
-
-    // ✅ Ribbon fuera de imagen (para que NO se vea gris)
     const imgStyle = p._img ? `background-image:url('${p._img}');` : `background-image:none;`;
 
     card.innerHTML=`
@@ -1105,11 +1099,11 @@ function render(){
         ${videoBadge}
       </div>
       <div class="card-body">
-        ${catLabelHTML}
         <h3>${p._nombre}</h3>
         <div class="desc">${descText}</div>
         ${galleryBtn}
         ${priceHTML}
+        ${bulkHTML}
         <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-ws" style="${p._agotado?'background:#333;color:#aaa;box-shadow:none;':''}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>
@@ -1120,18 +1114,14 @@ function render(){
   });
 }
 
-/* =======================
-   ✅ SEARCH DEBOUNCE
-======================= */
+/* ✅ debounce search */
 let searchTimer=null;
 searchInput.addEventListener('input',()=>{
   clearTimeout(searchTimer);
   searchTimer=setTimeout(()=>{ updateUrl(false); render(); },120);
 });
 
-/* =======================
-   ✅ SCROLL + WhatsApp inteligente
-======================= */
+/* ✅ sticky scroll + ws */
 window.addEventListener('scroll',()=>{
   const f=document.getElementById('filtersWrapper');
   window.scrollY>50?f.classList.add('scrolled'):f.classList.remove('scrolled');
@@ -1142,9 +1132,7 @@ window.addEventListener('scroll',()=>{
   else ws.classList.remove("expanded");
 },{passive:true});
 
-/* =======================
-   ✅ TEMA (GUARDADO + SISTEMA)
-======================= */
+/* ✅ theme saved + system */
 const toggle=document.getElementById('themeToggle');
 function applyTheme(theme){
   document.documentElement.setAttribute('data-theme',theme);
@@ -1160,9 +1148,7 @@ toggle.onclick=()=>{
   applyTheme(next);
 };
 
-/* =======================
-   ✅ ARRANQUE ULTRA RÁPIDO: cache primero, luego Sheets
-======================= */
+/* ✅ boot cache */
 function bootFromCache(){
   const cachedP=readCache(CACHE_PRODUCTS_KEY);
   if(Array.isArray(cachedP) && cachedP.length){
@@ -1178,54 +1164,6 @@ function bootFromCache(){
     renderTestimonials();
   }
 }
-
-/* =======================
-   ✅ START
-======================= */
-function loadFromUrl(){
-  const {cat:catSlug, sub:subSlug, promo}=parseDeepLink();
-  ofertasOnly = String(promo||"").trim()==="1";
-  setOffersChipState();
-
-  // Si hay búsqueda en URL, no la uso (tú no pediste eso). Mantengo simple.
-
-  if(!catSlug){
-    currentCategory=""; currentSub="";
-    clearActiveCategoryChips();
-    const subBar=document.getElementById('subBar');
-    subBar.innerHTML=""; subBar.style.display='none';
-    updateUrl(false);
-    render();
-    return;
-  }
-
-  const catChip=[...document.querySelectorAll('.category-bar .chip.cat-chip')]
-    .find(chip=>chip.dataset && chip.dataset.slug===catSlug);
-
-  if(!catChip){
-    currentCategory=""; currentSub="";
-    updateUrl(false);
-    render();
-    return;
-  }
-
-  currentCategory=catChip.dataset.cat||""; currentSub="";
-  setActiveCategoryChip(catChip);
-  updateSubs();
-
-  if(subSlug){
-    const subChip=[...document.querySelectorAll('.sub-bar .chip')]
-      .find(chip=>chip.dataset && chip.dataset.slug===subSlug);
-    if(subChip && subChip.dataset.sub){ currentSub=subChip.dataset.sub; setActiveSub(subChip); }
-    else { const todo=document.querySelector('.sub-bar .chip[data-slug="todo"]'); if(todo) setActiveSub(todo); }
-  } else {
-    const todo=document.querySelector('.sub-bar .chip[data-slug="todo"]'); if(todo) setActiveSub(todo);
-  }
-
-  updateUrl(false);
-  render();
-}
-window.addEventListener('popstate',()=>{ if(products.length) loadFromUrl(); });
 
 bootFromCache();
 fetchConfig();
