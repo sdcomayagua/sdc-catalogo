@@ -2,9 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- ✅ Accesible (permite zoom) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
-  
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
 
   <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
@@ -13,6 +14,11 @@
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0b1120" />
 
+  <!-- ✅ Pequeña mejora de carga sin afectar el diseño -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -20,63 +26,63 @@
     /* ============ ESTILOS BASE ============ */
     :root {
       /* MODO OSCURO */
-      --bg: #0b1120;        
-      --card-bg: #151e32;   
-      
-      --primary: #38bdf8;   
+      --bg: #0b1120;
+      --card-bg: #151e32;
+
+      --primary: #38bdf8;
       --primary-text: #38bdf8;
-      
-      --accent: #2dd4bf;    
+
+      --accent: #2dd4bf;
       --accent-glow: rgba(45, 212, 191, 0.2);
 
-      --text: #f8fafc;      
-      --text-muted: #94a3b8; 
-      
-      --border: #1e293b;    
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+
+      --border: #1e293b;
       --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-      
-      --chip-bg: #1e293b;   
+
+      --chip-bg: #1e293b;
       --chip-text: #cbd5e1;
-      
+
       --bg-image: radial-gradient(at top, #1e293b 0%, #0b1120 100%);
-      
+
       --danger: #ef4444;
-      
+
       /* OFERTAS */
-      --promo-color: #ff6b00; 
+      --promo-color: #ff6b00;
       --promo-glow: rgba(255, 107, 0, 0.6);
       --promo-bg: rgba(255, 107, 0, 0.15);
     }
 
     [data-theme="light"] {
       /* MODO DÍA */
-      --bg: #f8fafc;        
-      --card-bg: #ffffff;   
-      
-      --primary: #0f172a;   
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+
+      --primary: #0f172a;
       --primary-text: #000000;
-      
-      --accent: #15803d;    
+
+      --accent: #15803d;
       --accent-glow: rgba(0,0,0,0);
 
-      --text: #1a1a1a;      
-      --text-muted: #64748b; 
-      
-      --border: #e2e8f0;    
-      --shadow-card: 0 4px 15px rgba(0,0,0,0.05); 
-      
+      --text: #1a1a1a;
+      --text-muted: #64748b;
+
+      --border: #e2e8f0;
+      --shadow-card: 0 4px 15px rgba(0,0,0,0.05);
+
       --chip-bg: #ffffff;
       --chip-text: #4b5563;
-      
+
       --bg-image: none;
-      
-      --promo-color: #ea580c; 
+
+      --promo-color: #ea580c;
       --promo-glow: rgba(234, 88, 12, 0.2);
       --promo-bg: #fff7ed;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
+
     body {
       margin: 0;
       font-family: 'Outfit', sans-serif;
@@ -89,23 +95,30 @@
       -webkit-user-select: none; user-select: none;
     }
 
+    /* ✅ Reduce “lag” en móvil sin cambiar el look en PC */
+    @media (max-width: 768px) {
+      body { background-attachment: scroll; }
+    }
+
     /* HEADER */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: var(--card-bg); 
-      border-bottom: 1px solid var(--border); 
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
       padding: 12px 16px;
       display: flex; align-items: center; justify-content: space-between;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
-    .brand { display: flex; align-items: center; gap: 10px; }
+    /* ✅ Hacer clic en el nombre/logo: volver a inicio */
+    .brand-link { text-decoration: none; color: inherit; }
+    .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .brand img { height: 40px; border-radius: 6px; pointer-events: none; }
     .brand h1 {
       margin: 0; font-size: 16px; font-weight: 900;
       color: var(--text); text-transform: uppercase; letter-spacing: 1px;
     }
-    .brand h1 span { color: var(--primary); } 
+    .brand h1 span { color: var(--primary); }
 
     .icon-btn {
       background: transparent; border: 1px solid var(--border);
@@ -121,12 +134,12 @@
         margin-bottom: 10px;
         position: relative;
     }
-    
+
     .hero-title {
         font-size: 28px; font-weight: 900; margin: 0 0 10px 0;
         line-height: 1.1; color: var(--text); text-transform: uppercase; letter-spacing: -0.5px;
     }
-    
+
     .hero-highlight {
         background: linear-gradient(-45deg, #38bdf8, #818cf8, #2dd4bf, #38bdf8);
         background-size: 300%;
@@ -147,7 +160,7 @@
     .search-box i { position: absolute; left: 14px; color: var(--text-muted); }
     .search-box input {
       width: 100%; padding: 14px 16px 14px 45px; border-radius: 16px;
-      border: 1px solid var(--border); background: var(--card-bg); 
+      border: 1px solid var(--border); background: var(--card-bg);
       color: var(--text); font-size: 15px; outline: none; font-weight: 600;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       user-select: text; -webkit-user-select: text;
@@ -170,7 +183,7 @@
     /* FILTERS */
     .filters-wrapper {
       position: sticky; top: 60px; z-index: 90;
-      background: var(--bg); padding: 15px 0 10px; 
+      background: var(--bg); padding: 15px 0 10px;
       border-bottom: 1px solid transparent; transition: 0.3s;
     }
     .filters-wrapper.scrolled {
@@ -181,14 +194,17 @@
       display: flex; gap: 10px; overflow-x: auto; padding: 0 16px 8px;
       scrollbar-width: none;
     }
-    
+
     .chip {
-      padding: 8px 18px; border-radius: 99px; background: var(--chip-bg); 
-      border: 1px solid var(--border); color: var(--chip-text);    
+      padding: 8px 18px; border-radius: 99px; background: var(--chip-bg);
+      border: 1px solid var(--border); color: var(--chip-text);
       font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; text-transform: uppercase; 
+      display: flex; align-items: center; gap: 6px; text-transform: uppercase;
       transition: all 0.2s;
+      outline: none;
     }
+    .chip:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+
     .chip.active {
       background: var(--primary); color: #fff; border-color: var(--primary);
       box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateY(-1px);
@@ -199,27 +215,24 @@
         border-color: #f59e0b !important; color: #fff !important;
         box-shadow: 0 0 20px rgba(245, 158, 11, 0.8) !important; animation: pulse 1.5s infinite;
     }
-    .sub-bar .chip { 
-        padding: 6px 14px; font-size: 11px; border-radius: 8px; 
+    .sub-bar .chip {
+        padding: 6px 14px; font-size: 11px; border-radius: 8px;
         background: transparent; border: 1px solid var(--border);
     }
     .sub-bar .chip.active { background: var(--text); border-color: var(--text); color: var(--bg); }
 
     /* GRID: MÓVIL (1 COLUMNA) vs PC (MULTICOLUMNA) */
     .grid {
-      display: grid; 
-      /* MÓVIL: 1 COLUMNA PARA QUE SE VEA GRANDE Y CLARO */
-      grid-template-columns: 1fr; 
-      gap: 16px; 
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
       padding: 10px 16px; max-width: 1200px; margin: 0 auto; min-height: 200px;
     }
-    
-    /* PC: MANTIENE EL DISEÑO DE SIEMPRE */
-    @media (min-width: 768px) { 
-        .grid { 
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-            gap: 24px; 
-        } 
+    @media (min-width: 768px) {
+        .grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 24px;
+        }
     }
 
     /* WELCOME STATE */
@@ -232,8 +245,8 @@
 
     /* TARJETA */
     .card {
-      background: var(--card-bg); border: 1px solid var(--border); 
-      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; 
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
       position: relative; animation: fadeIn 0.4s ease-out forwards;
       box-shadow: var(--shadow-card); transition: 0.3s;
     }
@@ -241,9 +254,9 @@
         border: 2px solid var(--promo-color) !important;
         box-shadow: 0 0 25px var(--promo-glow) !important; transform: scale(1.02);
     }
-    
+
     .card-img-container {
-      width: 100%; aspect-ratio: 1/1; background-color: #fff; 
+      width: 100%; aspect-ratio: 1/1; background-color: #fff;
       background-size: contain; background-position: center; background-repeat: no-repeat;
       padding: 0; display: flex; align-items: center; justify-content: center;
       position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
@@ -270,7 +283,7 @@
 
     .card.agotado { opacity: 0.9; border-color: var(--danger); }
     .card.agotado .card-img-container { filter: grayscale(100%); opacity: 0.6; }
-    
+
     .ribbon {
         position: absolute; top: 15px; left: -30px; width: 100px;
         background: var(--danger); color: #fff; font-size: 10px; font-weight: 800;
@@ -286,28 +299,28 @@
     }
 
     /* PADDING CARD */
-    .card-body { 
+    .card-body {
         padding: 16px;
-        display: flex; flex-direction: column; gap: 8px; flex-grow: 1; 
+        display: flex; flex-direction: column; gap: 8px; flex-grow: 1;
     }
-    
-    .card h3 { 
-      margin: 0; font-size: 16px; font-weight: 900; line-height: 1.3; 
-      text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; 
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
+
+    .card h3 {
+      margin: 0; font-size: 16px; font-weight: 900; line-height: 1.3;
+      text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
       height: 42px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
     /* 🔥 DESC RESTAURADA: GRANDE, LEGIBLE Y UN POCO A LA DERECHA 🔥 */
     .desc {
-        font-size: 13.5px; /* Letra grande y clara */
-        font-weight: 500; 
-        color: var(--text); 
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--text);
         opacity: 0.9;
-        margin-bottom: 6px; 
-        line-height: 1.6; /* Espaciado cómodo entre líneas */
+        margin-bottom: 6px;
+        line-height: 1.6;
         white-space: pre-line;
-        padding-left: 5px; /* Pequeño empujón a la derecha */
+        padding-left: 5px;
     }
 
     /* 📸 BOTÓN DE GALERÍA (SUTIL) 📸 */
@@ -323,13 +336,13 @@
         transition: 0.2s;
     }
     .btn-gallery:hover { background: var(--card-bg); border-color: var(--primary); color: var(--primary); }
-    
+
     /* PRECIOS (MAS VISIBLES) */
     .price-bar {
-        display: flex; align-items: center; justify-content: center; gap: 8px; 
+        display: flex; align-items: center; justify-content: center; gap: 8px;
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
-        border-radius: 8px; padding: 8px; 
-        margin-top: 10px; 
+        border-radius: 8px; padding: 8px;
+        margin-top: 10px;
     }
     [data-theme="light"] .price-bar { background: #f0fdf4; border-color: #dcfce7; }
 
@@ -338,7 +351,7 @@
         text-align: center; line-height: 1.2;
     }
     .p-label-small {
-        font-size: 10px; font-weight: 700; text-transform: uppercase; 
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
         letter-spacing: 0.5px; margin-right: 3px; opacity: 0.8;
     }
     .old-price-row {
@@ -346,11 +359,11 @@
         white-space: nowrap; display: flex; align-items: center; justify-content: center;
     }
     .old-val { text-decoration: line-through; opacity: 0.7; font-size: 12px; }
-    
+
     /* PRECIO ACTUAL DESTACADO */
     .current-price-row {
-        font-family: 'Outfit', sans-serif; 
-        font-size: 22px; /* MÁS GRANDE Y VISIBLE */
+        font-family: 'Outfit', sans-serif;
+        font-size: 22px;
         font-weight: 900;
         color: var(--accent); line-height: 1; white-space: nowrap;
     }
@@ -364,13 +377,13 @@
 
     .btn-ws {
       background: var(--primary); color: #fff; border: none;
-      padding: 12px; border-radius: 8px; font-weight: 800; font-size: 13px; 
-      cursor: pointer; text-decoration: none; 
+      padding: 12px; border-radius: 8px; font-weight: 800; font-size: 13px;
+      cursor: pointer; text-decoration: none;
       display: flex; align-items: center; justify-content: center; gap: 6px;
       text-transform: uppercase; transition: 0.2s;
     }
     [data-theme="dark"] .btn-ws { color: #000; }
-    
+
     /* TESTIMONIOS */
     .testimonials-section {
         padding: 30px 16px; margin-top: 20px; background: rgba(255,255,255,0.02);
@@ -389,7 +402,7 @@
         display: flex; flex-direction: column; gap: 8px;
     }
     .t-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
-    .t-avatar { 
+    .t-avatar {
         width: 35px; height: 35px; border-radius: 50%; background: var(--primary); color: #fff;
         display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
     }
@@ -439,7 +452,7 @@
 
     /* FOOTER & SOCIAL */
     footer { text-align: center; padding: 30px 20px; color: var(--text-muted); font-size: 12px; margin-top: 20px; border-top: 1px solid var(--border); }
-    
+
     .social-bar {
         display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;
     }
@@ -466,14 +479,18 @@
 <body>
 
 <header>
-  <div class="brand">
-    <img src="logo.png" alt="SDC" onerror="this.style.display='none'"> 
-    <div>
-      <h1>Soluciones <span>Digitales</span></h1>
-      <small style="color:var(--text-muted); font-size:10px; letter-spacing:1px; font-weight:700;">COMAYAGUA</small>
+  <!-- ✅ Click en nombre/logo: ir a inicio sin recargar -->
+  <a href="./" class="brand-link" id="homeLink" aria-label="Ir al inicio">
+    <div class="brand">
+      <img src="logo.png" alt="SDC" onerror="this.style.display='none'">
+      <div>
+        <h1>Soluciones <span>Digitales</span></h1>
+        <small style="color:var(--text-muted); font-size:10px; letter-spacing:1px; font-weight:700;">COMAYAGUA</small>
+      </div>
     </div>
-  </div>
-  <div class="icon-btn" id="themeToggle"><i class="fa-solid fa-sun"></i></div>
+  </a>
+
+  <div class="icon-btn" id="themeToggle" aria-label="Cambiar tema"><i class="fa-solid fa-sun"></i></div>
 </header>
 
 <div class="hero-section">
@@ -529,7 +546,7 @@
             <div class="t-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
             <p class="t-text">"Quedé muy satisfecho con el control 🎮 y los dedales. Tengo mejor jugabilidad en juegos como COD Mobile, Blood Strike y Free Fire 🔥. Buena calidad y excelente precio. 💯"</p>
         </div>
-        
+
         <div class="t-card">
             <div class="t-header"><div class="t-avatar">CA</div><div class="t-info"><h4>Carlos Alvarado</h4><span>Jugador de Free Fire</span></div></div>
             <div class="t-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
@@ -556,7 +573,7 @@
 <div class="location-section">
     <h3 class="sec-title">📍 Base de Operaciones</h3>
     <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1933.2843779837946!2d-87.6289189153322!3d14.454458000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6585356521890d%3A0x5e9e0d326671793d!2sInkmortal%20Tattoo%20Comayagua!5e0!3m2!1ses!2shn!4v1709660000000!5m2!1ses!2shn" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    
+
     <div class="location-btns">
         <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google">
             <i class="fa-solid fa-map-location-dot"></i> Google Maps
@@ -569,7 +586,7 @@
 
 <div class="faq-section">
     <h3 class="sec-title" style="margin-top:20px;">❓ Preguntas Frecuentes</h3>
-    
+
     <div class="faq-item">
         <div class="faq-question" onclick="toggleFaq(this)">¿Hacen envíos a toda Honduras? <i class="fa-solid fa-chevron-down"></i></div>
         <div class="faq-answer">
@@ -619,75 +636,98 @@
 
 <script>
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const CONFIG_GID = "1488858707"; 
-const MY_PHONE = "50432429490"; 
-const WATERMARK_URL = "LOGO SDC - LETRAS 2.png"; 
+const CONFIG_GID = "1488858707";
+const MY_PHONE = "50432429490";
+const WATERMARK_URL = "LOGO SDC - LETRAS 2.png";
 const BACKUP_SHEETS = ['ofertas', 'gamer', 'pc', 'movil', 'streaming', 'cobertores', 'power'];
 
 let products = [];
-let currentCategory = ""; 
+let currentCategory = "";
 let currentSub = "";
 
-// ✅ LÓGICA DE URL PROFUNDA (DEEP LINKING) ✅
-function updateUrl() {
+/* =======================
+   ✅ LINK PERFECTO (SLUGS)
+======================= */
+function slugify(s) {
+  return String(s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function updateUrl(push = true) {
   const url = new URL(window.location);
-  if (currentCategory) url.searchParams.set('cat', currentCategory);
+  const catSlug = currentCategory ? slugify(currentCategory) : "";
+  const subSlug = currentSub ? slugify(currentSub) : "";
+
+  if (catSlug) url.searchParams.set('cat', catSlug);
   else url.searchParams.delete('cat');
-  
-  if (currentSub) url.searchParams.set('sub', currentSub);
+
+  if (subSlug) url.searchParams.set('sub', subSlug);
   else url.searchParams.delete('sub');
-  
-  window.history.pushState({}, '', url);
+
+  if (push) window.history.pushState({}, '', url);
+  else window.history.replaceState({}, '', url);
 }
 
 function loadFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const catParam = params.get('cat');
-    const subParam = params.get('sub');
-    
-    if (catParam) {
-        // Si hay categoría en la URL, la activamos
-        currentCategory = catParam;
-        
-        // Buscamos el botón correspondiente y lo activamos visualmente
-        const chips = document.querySelectorAll('.category-bar .chip');
-        chips.forEach(chip => {
-            if(chip.textContent.includes(catParam)) {
-                document.querySelectorAll('.category-bar .chip').forEach(b => {
-                    b.classList.remove('active'); 
-                    b.classList.remove('promo-active'); 
-                });
-                chip.classList.add('active');
-                if(catParam.toLowerCase().includes('oferta') || catParam.toLowerCase().includes('mayorista')) {
-                    chip.classList.add('promo-active');
-                }
-            }
-        });
+  const params = new URLSearchParams(window.location.search);
+  const catSlug = params.get('cat');
+  const subSlug = params.get('sub');
 
-        // Cargamos subcategorías
-        updateSubs(); 
+  if (!catSlug) {
+    goHome(false);
+    return;
+  }
 
-        if (subParam) {
-            currentSub = subParam;
-            // Activamos subcategoría visualmente
-            setTimeout(() => { // Pequeño delay para asegurar que el DOM de subs existe
-                const subChips = document.querySelectorAll('.sub-bar .chip');
-                subChips.forEach(chip => {
-                    if(chip.textContent === subParam) {
-                        document.querySelectorAll('.sub-bar .chip').forEach(b => b.classList.remove('active'));
-                        chip.classList.add('active');
-                    }
-                });
-            }, 50);
-        }
-        render(); // Renderizamos inmediatamente
+  const catChip = [...document.querySelectorAll('.category-bar .chip')]
+    .find(chip => chip.dataset && chip.dataset.slug === catSlug);
+
+  if (!catChip) {
+    goHome(false);
+    return;
+  }
+
+  // Activar categoría
+  currentCategory = catChip.dataset.cat || "";
+  currentSub = "";
+  setActiveCategoryChip(catChip);
+
+  updateSubs();
+
+  if (subSlug) {
+    const subChip = [...document.querySelectorAll('.sub-bar .chip')]
+      .find(chip => chip.dataset && chip.dataset.slug === subSlug);
+
+    if (subChip && subChip.dataset.sub) {
+      currentSub = subChip.dataset.sub;
+      setActiveSub(subChip);
     }
+  } else {
+    // Por defecto "Todo"
+    const todo = document.querySelector('.sub-bar .chip[data-slug="todo"]');
+    if (todo) setActiveSub(todo);
+  }
+
+  render();
 }
 
+window.addEventListener('popstate', () => {
+  // back/forward: aplicar filtros del URL
+  if (products.length) loadFromUrl();
+});
+
+/* =======================
+   ✅ FAQ
+======================= */
 function toggleFaq(element) {
-    element.parentElement.classList.toggle('open');
+  element.parentElement.classList.toggle('open');
 }
 
+/* =======================
+   ✅ ICONOS
+======================= */
 function getIconForCategory(catName) {
   if (!catName) return '📦';
   const name = catName.toLowerCase();
@@ -702,22 +742,34 @@ function getIconForCategory(catName) {
   return '📦';
 }
 
+/* =======================
+   ✅ FETCH CONFIG / TABS
+======================= */
 function fetchConfig() {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
-  const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+  // ✅ Timeout un poco más alto para datos móviles (sin afectar layout)
+  const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 7000));
+
   Promise.race([fetch(url), timeoutPromise])
     .then(r => r.text())
     .then(t => {
       const json = JSON.parse(t.substring(47, t.length - 2));
-      const sheetNames = json.table.rows.map(r => r.c[0] ? r.c[0].v : null).filter(name => name && name.toLowerCase() !== 'sheet');
+      const sheetNames = json.table.rows
+        .map(r => r.c[0] ? r.c[0].v : null)
+        .filter(name => name && name.toLowerCase() !== 'sheet');
       loadAllTabs(sheetNames);
     })
-    .catch(e => { console.warn("Usando respaldo manual..."); loadAllTabs(BACKUP_SHEETS); });
+    .catch(e => {
+      console.warn("Usando respaldo manual...", e);
+      loadAllTabs(BACKUP_SHEETS);
+    });
 }
 
 function fetchTab(sheetName) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  return fetch(url).then(r => r.text()).then(t => {
+  return fetch(url)
+    .then(r => r.text())
+    .then(t => {
       const json = JSON.parse(t.substring(47, t.length - 2));
       const cols = json.table.cols.map(c => c && c.label ? c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "col");
       return json.table.rows.map(r => {
@@ -726,75 +778,147 @@ function fetchTab(sheetName) {
         if (!obj.categoria) obj.categoria = sheetName;
         return obj;
       }).filter(p => p.nombre);
-    }).catch(err => []);
+    })
+    .catch(err => []);
 }
 
 function loadAllTabs(sheetNames) {
   Promise.all(sheetNames.map(name => fetchTab(name))).then(results => {
-      products = results.flat();
-      const loader = document.getElementById('loader');
-      if (products.length === 0) { loader.innerHTML = "<p>No se encontraron productos.</p>"; } 
-      else { 
-          loader.style.display = 'none'; 
-          initCategories(); 
-          loadFromUrl(); // 🚀 AQUÍ ACTIVAMOS LA CARGA POR LINK
-      }
-    });
+    products = results.flat();
+    const loader = document.getElementById('loader');
+
+    if (products.length === 0) {
+      loader.innerHTML = "<p>No se encontraron productos.</p>";
+      return;
+    }
+
+    loader.style.display = 'none';
+    initCategories();
+
+    // ✅ Aplicar URL (link compartido) sin empujar historial
+    loadFromUrl();
+  });
 }
 
 fetchConfig();
 
+/* =======================
+   ✅ CATEGORÍAS + SUBS
+======================= */
+function makeClickableChip(el) {
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      el.click();
+    }
+  };
+  return el;
+}
+
+function clearActiveCategoryChips() {
+  document.querySelectorAll('.category-bar .chip').forEach(b => {
+    b.classList.remove('active');
+    b.classList.remove('promo-active');
+  });
+}
+
+function setActiveCategoryChip(btn) {
+  clearActiveCategoryChips();
+  btn.classList.add('active');
+
+  const isPromo = (currentCategory || "").toLowerCase().includes('oferta') || (currentCategory || "").toLowerCase().includes('mayorista');
+  if (isPromo) btn.classList.add('promo-active');
+}
+
 function initCategories() {
-  const rawCats = products.map(p => p.categoria ? p.categoria.trim() : "Otros");
+  const rawCats = products.map(p => p.categoria ? String(p.categoria).trim() : "Otros");
   const cats = [...new Set(rawCats)];
+
   const bar = document.getElementById('categoryBar');
   bar.innerHTML = "";
-  if(cats.length === 0) return;
+
+  if (cats.length === 0) return;
+
   cats.forEach((c, i) => {
+    const catName = String(c).trim();
     const btn = document.createElement('div');
     btn.className = 'chip';
-    const isPromo = c.toLowerCase().includes('oferta') || c.toLowerCase().includes('mayorista');
-    if(isPromo && i === 0) btn.classList.add('promo-active');
-    btn.innerHTML = `${getIconForCategory(c)} ${c}`; 
+    btn.dataset.cat = catName;
+    btn.dataset.slug = slugify(catName);
+
+    const isPromo = catName.toLowerCase().includes('oferta') || catName.toLowerCase().includes('mayorista');
+    if (isPromo && i === 0) btn.classList.add('promo-active');
+
+    btn.innerHTML = `${getIconForCategory(catName)} ${catName}`;
     btn.onclick = () => {
-      currentCategory = c; 
-      currentSub = ""; 
-      updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
-      updateSubs(); 
+      currentCategory = catName;
+      currentSub = "";
+      setActiveCategoryChip(btn);
+      updateSubs();
+      updateUrl(true); // ✅ URL perfecta para compartir
       render();
-      document.querySelectorAll('.category-bar .chip').forEach(b => { b.classList.remove('active'); b.classList.remove('promo-active'); });
-      btn.classList.add('active'); if(isPromo) btn.classList.add('promo-active');
     };
+
+    makeClickableChip(btn);
     bar.appendChild(btn);
   });
+
+  // No seleccionamos categoría por defecto: "inicio"
   updateSubs();
 }
 
 function updateSubs() {
-  const currentCatProducts = products.filter(p => (p.categoria ? p.categoria.trim() : "Otros") === currentCategory);
-  const subs = [...new Set(currentCatProducts.map(p => p.subcategoria).filter(Boolean))];
   const bar = document.getElementById('subBar');
   bar.innerHTML = "";
-  if(subs.length === 0) { bar.style.display = 'none'; return; }
+
+  if (!currentCategory) {
+    bar.style.display = 'none';
+    return;
+  }
+
+  const currentCatProducts = products.filter(p => (p.categoria ? String(p.categoria).trim() : "Otros") === currentCategory);
+  const subs = [...new Set(currentCatProducts.map(p => p.subcategoria).filter(Boolean))];
+
+  if (subs.length === 0) {
+    bar.style.display = 'none';
+    return;
+  }
+
   bar.style.display = 'flex';
+
+  // "Todo"
   const allBtn = document.createElement('div');
-  allBtn.className = 'chip active'; allBtn.textContent = 'Todo';
-  allBtn.onclick = () => { 
-      currentSub = ""; 
-      updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
-      render(); 
-      setActiveSub(allBtn); 
+  allBtn.className = 'chip active';
+  allBtn.textContent = 'Todo';
+  allBtn.dataset.sub = "";
+  allBtn.dataset.slug = "todo";
+  allBtn.onclick = () => {
+    currentSub = "";
+    updateUrl(true);
+    render();
+    setActiveSub(allBtn);
   };
+  makeClickableChip(allBtn);
   bar.appendChild(allBtn);
+
   subs.forEach(s => {
+    const subName = String(s).trim();
     const btn = document.createElement('div');
-    btn.className = 'chip'; btn.textContent = s;
-    btn.onclick = () => { 
-        currentSub = s; 
-        updateUrl(); // 🚀 ACTUALIZAR URL AL CLIC
-        render(); 
-        setActiveSub(btn); 
+    btn.className = 'chip';
+    btn.textContent = subName;
+    btn.dataset.sub = subName;
+    btn.dataset.slug = slugify(subName);
+
+    btn.onclick = () => {
+      currentSub = subName;
+      updateUrl(true);
+      render();
+      setActiveSub(btn);
     };
+
+    makeClickableChip(btn);
     bar.appendChild(btn);
   });
 }
@@ -804,29 +928,68 @@ function setActiveSub(btn) {
   btn.classList.add('active');
 }
 
+/* =======================
+   ✅ INICIO (HOME)
+======================= */
+function goHome(pushUrl = true) {
+  currentCategory = "";
+  currentSub = "";
+
+  // limpiar UI
+  clearActiveCategoryChips();
+  const subBar = document.getElementById('subBar');
+  subBar.innerHTML = "";
+  subBar.style.display = 'none';
+
+  // opcional: mantener el texto de búsqueda (yo lo limpio para inicio más limpio)
+  document.getElementById('searchInput').value = "";
+
+  // actualizar URL
+  updateUrl(pushUrl);
+
+  // render
+  render();
+
+  // ir arriba
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Click en marca => inicio sin recargar (pero el href "./" queda como respaldo)
+document.getElementById('homeLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  goHome(true);
+});
+
+/* =======================
+   ✅ RENDER
+======================= */
 function render() {
   const grid = document.getElementById('productGrid');
   grid.innerHTML = "";
 
   if (currentCategory === "") {
-      grid.innerHTML = `
-        <div class="welcome-state">
-            <div class="welcome-icon"><i class="fa-solid fa-hand-pointer"></i></div>
-            <h3 class="welcome-title">¡Empieza tu búsqueda!</h3>
-            <p class="welcome-text">Selecciona una categoría arriba (Gamer, PC, Móvil...) para ver nuestro catálogo.</p>
-        </div>
-      `;
-      return;
+    grid.innerHTML = `
+      <div class="welcome-state">
+          <div class="welcome-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+          <h3 class="welcome-title">¡Empieza tu búsqueda!</h3>
+          <p class="welcome-text">Selecciona una categoría arriba (Gamer, PC, Móvil...) para ver nuestro catálogo.</p>
+      </div>
+    `;
+    return;
   }
 
   const q = document.getElementById('searchInput').value.toLowerCase();
   const filtered = products.filter(p => {
-    const pCat = p.categoria ? p.categoria.trim() : "Otros";
-    return (pCat === currentCategory) && (!currentSub || p.subcategoria == currentSub) &&
-           (p.nombre.toLowerCase().includes(q) || (p.descripcion && p.descripcion.toLowerCase().includes(q)));
+    const pCat = p.categoria ? String(p.categoria).trim() : "Otros";
+    const name = (p.nombre || "").toLowerCase();
+    const desc = (p.descripcion || p.descipcion || "").toLowerCase();
+
+    return (pCat === currentCategory) &&
+           (!currentSub || p.subcategoria == currentSub) &&
+           (name.includes(q) || desc.includes(q));
   });
 
-  if(filtered.length === 0) {
+  if (filtered.length === 0) {
     grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted)"><i class="fa-solid fa-ghost" style="font-size:40px; margin-bottom:10px;"></i><p>NO HAY RESULTADOS</p></div>`;
     return;
   }
@@ -834,62 +997,77 @@ function render() {
   const isPromoCategory = currentCategory.toLowerCase().includes('oferta') || currentCategory.toLowerCase().includes('mayorista');
 
   filtered.forEach(p => {
-    const isAgotado = p.stock <= 0;
+    // ✅ FIX: stock vacío ya NO marca como agotado
+    const stockRaw = String(p.stock ?? "").trim();
+    const stockNum = Number(stockRaw);
+    const hasStockValue = stockRaw !== "";
+    const isAgotado = hasStockValue ? (Number.isFinite(stockNum) && stockNum <= 0) : false;
+
     let btnText = "PEDIR AHORA 🚀";
-    let waMsg = p.whatsapp && p.whatsapp.length > 5 ? p.whatsapp : `Hola SDC, me interesa: *${p.nombre}*`;
-    if (isAgotado) { btnText = "CONSULTAR"; waMsg = `Hola SDC, el producto *${p.nombre}* está AGOTADO. Avísenme cuando llegue.`; }
+    let waMsg = p.whatsapp && String(p.whatsapp).length > 5 ? p.whatsapp : `Hola SDC, me interesa: *${p.nombre}*`;
+
+    if (isAgotado) {
+      btnText = "CONSULTAR";
+      waMsg = `Hola SDC, el producto *${p.nombre}* está AGOTADO. Avísenme cuando llegue.`;
+    }
+
     const waLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
     const card = document.createElement('div');
     card.className = `card ${isAgotado ? 'agotado' : ''} ${isPromoCategory && !isAgotado ? 'promo-mode' : ''}`;
-    
+
     let ribbonHTML = "";
-    if(isAgotado) { ribbonHTML = `<div class="ribbon">AGOTADO</div>`; } 
-    else if (isPromoCategory) { ribbonHTML = `<div class="ribbon-promo">🔥 HOT SALE</div>`; }
+    if (isAgotado) ribbonHTML = `<div class="ribbon">AGOTADO</div>`;
+    else if (isPromoCategory) ribbonHTML = `<div class="ribbon-promo">🔥 HOT SALE</div>`;
 
     // Procesamiento de descripción (APLANAMIENTO TOTAL + AUTOCORRECCION)
     let rawDesc = p.descripcion || p.descipcion || "";
-    let descText = rawDesc.replace(/(\r\n|\n|\r)/gm, " ").replace(/([►•\-★])/g, '\n$1').trim(); 
+    let descText = String(rawDesc).replace(/(\r\n|\n|\r)/gm, " ").replace(/([►•\-★])/g, '\n$1').trim();
 
     // AUTO-CORRECTOR DE IMÁGENES GITHUB
     let imgUrl = p.imagen;
-    if (imgUrl && imgUrl.includes('github.com') && imgUrl.includes('/blob/')) {
-        imgUrl = imgUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+    if (imgUrl && String(imgUrl).includes('github.com') && String(imgUrl).includes('/blob/')) {
+      imgUrl = String(imgUrl).replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
     }
 
     let priceHTMLContent = "";
     if (p.precio_anterior && p.precio_anterior !== "") {
-        priceHTMLContent = `<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
+      priceHTMLContent = `<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
     } else {
-        priceHTMLContent = `<div class="price-stack"><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
+      priceHTMLContent = `<div class="price-stack"><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
     }
 
     const priceHTML = `<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
-    // 🎥 LÓGICA DEL BOTÓN DE VIDEO (¡AHORA FLOTANTE Y MAYUSCULAS!)
+    // 🎥 BOTÓN VIDEO
     let videoBadge = "";
     if (p.tiktok) {
-        videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
+      videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok" rel="noopener"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
     } else if (p.youtube) {
-        videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
+      videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube" rel="noopener"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
     }
 
-    // 📸 LÓGICA DEL BOTÓN DE GALERÍA (SUTIL) 📸
+    // 📸 BOTÓN GALERÍA
     let galleryBtn = "";
-    if (p.galeria) { 
-        galleryBtn = `<a href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
+    if (p.galeria) {
+      galleryBtn = `<a href="${p.galeria}" target="_blank" class="btn-gallery" rel="noopener"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
     }
 
     card.innerHTML = `
       <div class="card-img-container" style="background-image: url('${imgUrl}');">
         ${ribbonHTML}
-        ${videoBadge} <img src="${WATERMARK_URL}" class="security-layer" alt="SDC">
+        ${videoBadge}
+        <img src="${WATERMARK_URL}" class="security-layer" alt="SDC">
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
         <div class="desc">${descText}</div>
-        
-        ${galleryBtn} ${priceHTML}
-        <a href="${waLink}" target="_blank" class="btn-ws" style="${isAgotado ? 'background:#333; color:#aaa; box-shadow:none;' : ''}"><i class="fa-brands fa-whatsapp"></i> ${btnText}</a>
+
+        ${galleryBtn}
+        ${priceHTML}
+
+        <a href="${waLink}" target="_blank" rel="noopener" class="btn-ws" style="${isAgotado ? 'background:#333; color:#aaa; box-shadow:none;' : ''}">
+          <i class="fa-brands fa-whatsapp"></i> ${btnText}
+        </a>
       </div>
     `;
     grid.appendChild(card);
@@ -897,17 +1075,33 @@ function render() {
 }
 
 document.getElementById('searchInput').addEventListener('input', render);
+
 window.addEventListener('scroll', () => {
   const f = document.getElementById('filtersWrapper');
   window.scrollY > 50 ? f.classList.add('scrolled') : f.classList.remove('scrolled');
-});
+}, { passive: true });
+
+/* =======================
+   ✅ TEMA (GUARDADO + SISTEMA)
+======================= */
 const toggle = document.getElementById('themeToggle');
-let dark = false; 
-document.documentElement.setAttribute('data-theme', 'light');
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  toggle.innerHTML = (theme === 'dark')
+    ? '<i class="fa-solid fa-moon"></i>'
+    : '<i class="fa-solid fa-sun"></i>';
+}
+
+const savedTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(savedTheme || (systemPrefersDark ? 'dark' : 'light'));
+
 toggle.onclick = () => {
-  dark = !dark;
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  toggle.innerHTML = dark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
 };
 </script>
 </body>
