@@ -846,10 +846,15 @@ function render() {
     if(isAgotado) { ribbonHTML = `<div class="ribbon">AGOTADO</div>`; } 
     else if (isPromoCategory) { ribbonHTML = `<div class="ribbon-promo">🔥 HOT SALE</div>`; }
 
-    // Procesamiento de descripción (APLANAMIENTO TOTAL)
+    // Procesamiento de descripción (APLANAMIENTO TOTAL + AUTOCORRECCION)
     let rawDesc = p.descripcion || p.descipcion || "";
-    // Elimina todos los saltos de línea originales, reemplaza símbolos por saltos nuevos, y quita espacios
     let descText = rawDesc.replace(/(\r\n|\n|\r)/gm, " ").replace(/([►•\-★])/g, '\n$1').trim(); 
+
+    // AUTO-CORRECTOR DE IMÁGENES GITHUB
+    let imgUrl = p.imagen;
+    if (imgUrl && imgUrl.includes('github.com') && imgUrl.includes('/blob/')) {
+        imgUrl = imgUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+    }
 
     let priceHTMLContent = "";
     if (p.precio_anterior && p.precio_anterior !== "") {
@@ -870,12 +875,12 @@ function render() {
 
     // 📸 LÓGICA DEL BOTÓN DE GALERÍA (SUTIL) 📸
     let galleryBtn = "";
-    if (p.galeria) { // Revisa si hay link en la columna 'galeria'
+    if (p.galeria) { 
         galleryBtn = `<a href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
     }
 
     card.innerHTML = `
-      <div class="card-img-container" style="background-image: url('${p.imagen}');">
+      <div class="card-img-container" style="background-image: url('${imgUrl}');">
         ${ribbonHTML}
         ${videoBadge} <img src="${WATERMARK_URL}" class="security-layer" alt="SDC">
       </div>
