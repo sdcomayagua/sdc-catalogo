@@ -113,8 +113,9 @@
     .sub-bar .chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
 
     .result-meta{
-      max-width:1200px;margin:10px auto 10px;padding:12px 16px;
-      color:var(--text-muted);font-size:12px;font-weight:700;letter-spacing:.3px;display:none
+      max-width:1200px;margin:12px auto 12px;padding:14px 16px;
+      color:var(--text-muted);font-size:12px;font-weight:700;letter-spacing:.3px;display:none;
+      scroll-margin-top:140px;
     }
     .result-meta.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .result-left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -124,7 +125,10 @@
     }
     [data-theme="light"] .tiny-pill{background:#f8fafc}
 
-    .grid{display:grid;grid-template-columns:1fr;gap:16px;padding:10px 16px;max-width:1200px;margin:0 auto;min-height:200px}
+    .grid{
+      display:grid;grid-template-columns:1fr;gap:16px;padding:10px 16px;max-width:1200px;margin:0 auto;min-height:200px;
+      scroll-margin-top:140px;
+    }
     @media(min-width:768px){.grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px}}
 
     .welcome-state{grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-muted)}
@@ -215,14 +219,18 @@
     }
     [data-theme="light"] .qty-val{background:#f8fafc}
     .qty-note{margin-top:10px;font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;text-align:center;opacity:.95}
+
     .tiers-mini{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
     .tier-pill{
       font-size:10px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;
-      padding:6px 10px;border-radius:999px;border:1px solid var(--border);color:var(--text-muted);background:rgba(255,255,255,.02)
+      padding:6px 10px;border-radius:999px;border:1px solid var(--border);
+      color:var(--text-muted);background:rgba(255,255,255,.02);
+      cursor:pointer;user-select:none
     }
     .tier-pill strong{color:var(--text)}
     .card.promo-mode .tier-pill strong{color:var(--promo-color)}
     .tier-pill.active{border-color:var(--promo-color);box-shadow:0 0 0 3px rgba(255,107,0,.12)}
+    .tier-pill:active{transform:scale(.98)}
 
     .btn-ws{
       background:var(--primary);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;
@@ -300,7 +308,8 @@
   </a>
 
   <div class="header-actions">
-    <div class="icon-btn" id="copyLinkBtn" aria-label="Copiar link para compartir" title="Copiar link"><i class="fa-solid fa-link"></i></div>
+    <div class="icon-btn" id="shareBtn" aria-label="Compartir" title="Compartir"><i class="fa-solid fa-share-nodes"></i></div>
+    <div class="icon-btn" id="copyLinkBtn" aria-label="Copiar link" title="Copiar link"><i class="fa-solid fa-link"></i></div>
     <div class="icon-btn" id="themeToggle" aria-label="Cambiar tema"><i class="fa-solid fa-sun"></i></div>
   </div>
 </header>
@@ -422,6 +431,7 @@ const TESTIMONIALS_SHEET="testimonios";
 const NEW_DAYS=7;
 const CACHE_PRODUCTS_KEY="sdc_products_cache_v5";
 const CACHE_TESTIMONIALS_KEY="sdc_testimonials_cache_v2";
+const LAST_STATE_KEY="sdc_last_state_v1"; // ✅ (1) guardar última categoría/sub/promo
 
 let products=[];
 let testimonials=[];
@@ -441,8 +451,16 @@ setCanonical();
 function slugify(s){
   return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
 }
-function norm(s){
+function normBase(s){
   return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim();
+}
+/* ✅ (4) búsqueda más inteligente: quita símbolos, "lps", puntuación */
+function normSearch(s){
+  let x=normBase(s);
+  x=x.replace(/\b(lps|lempira|lempiras|honduras|hn)\b/g," ");
+  x=x.replace(/[^a-z0-9\s]+/g," ");
+  x=x.replace(/\s+/g," ").trim();
+  return x;
 }
 function safeHttpUrl(u){
   const s=String(u||"").trim();
@@ -493,12 +511,35 @@ function isNewProduct(p){
   return diff>=0 && diff<=NEW_DAYS;
 }
 
+/* ✅ (1) Guardar/leer último estado (si no hay link compartido) */
+function saveLastState(){
+  try{
+    const st={cat:currentCategory||"", sub:currentSub||"", promo:ofertasOnly?1:0};
+    localStorage.setItem(LAST_STATE_KEY, JSON.stringify(st));
+  }catch{}
+}
+function readLastState(){
+  try{
+    const raw=localStorage.getItem(LAST_STATE_KEY);
+    if(!raw) return null;
+    const st=JSON.parse(raw);
+    if(!st) return null;
+    return {cat:String(st.cat||""), sub:String(st.sub||""), promo:st.promo?1:0};
+  }catch{ return null; }
+}
+function hasExplicitLink(){
+  const p=new URLSearchParams(window.location.search);
+  const hasQ = p.has("cat") || p.has("sub") || p.has("promo");
+  const hasH = (window.location.hash||"").trim().length>0;
+  return hasQ || hasH;
+}
+
 function parseDeepLink(){
   const params=new URLSearchParams(window.location.search);
   let cat=params.get('cat')||"";
   let sub=params.get('sub')||"";
   let promo=params.get('promo')||"";
-  if(cat || promo) return {cat,sub,promo};
+  if(cat || promo || sub) return {cat,sub,promo};
 
   const h=window.location.hash||"";
   if(h.startsWith("#/")){
@@ -530,6 +571,8 @@ function updateUrl(push=true){
 
   if(push) history.pushState({}, "", url);
   else history.replaceState({}, "", url);
+
+  saveLastState(); // ✅ (1)
 }
 
 async function copyCurrentLink(){
@@ -537,6 +580,20 @@ async function copyCurrentLink(){
   try{ await navigator.clipboard.writeText(link); flashToast("LINK COPIADO ✅"); }
   catch{ prompt("Copia este link:", link); }
 }
+
+/* ✅ (2) Compartir nativo + fallback a copiar */
+async function shareCurrentLink(){
+  const link=window.location.href;
+  const title=document.title || "Catálogo SDC";
+  try{
+    if(navigator.share){
+      await navigator.share({title, text:"Mira este producto/categoría en el catálogo SDC", url: link});
+      return;
+    }
+  }catch{ /* cancelado */ }
+  await copyCurrentLink();
+}
+
 function flashToast(msg){
   const t=document.createElement("div");
   t.textContent=msg;
@@ -557,7 +614,9 @@ function flashToast(msg){
   setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity .25s"},1200);
   setTimeout(()=>{t.remove()},1600);
 }
+
 document.getElementById("copyLinkBtn").addEventListener("click",copyCurrentLink);
+document.getElementById("shareBtn").addEventListener("click",shareCurrentLink);
 
 function toggleFaq(element){ element.parentElement.classList.toggle('open'); }
 
@@ -594,6 +653,13 @@ function buildWaTextQty(productName, qty, unit, unitPrice){
 }
 function buildWaLink(phone, msg){
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+}
+
+/* ✅ (3) scroll al grid / resultados */
+function scrollToResults(){
+  const target=document.getElementById("resultMeta") || document.getElementById("productGrid");
+  if(!target) return;
+  target.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
 /* TESTIMONIOS */
@@ -708,7 +774,7 @@ function loadAllTabs(sheetNames){
     writeCache(CACHE_PRODUCTS_KEY, products);
     loader.style.display='none';
     initCategories();
-    loadFromUrl();
+    loadFromUrlOrLastState(); // ✅ (1)
   });
 }
 
@@ -734,10 +800,7 @@ function getBulkTiers(p){
     }
   }
   tiers.sort((a,b)=>a.min-b.min);
-
-  /* ✅ CLAVE: el último escalón es SIEMPRE abierto (12+), aunque tengas promo6_max=24 en Sheets */
-  if(tiers.length){ tiers[tiers.length-1].max=null; }
-
+  if(tiers.length){ tiers[tiers.length-1].max=null; } // ✅ el último tier es 12+ (sin límite)
   return tiers;
 }
 function hasPromo(p, tiers){
@@ -788,14 +851,16 @@ function normalizeProduct(p){
   const keyBase = `${cat}|${sub}|${nombre}|${String(p.precio||"")}|${String(p.precio_anterior||"")}|${img}|${String(p._sheet||"")}`;
   const key = `${slugify(cat)}_${hashStr(keyBase)}`;
 
-  return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_nombre:nombre,_desc:desc,_promo:promo,_nuevo:nuevo,_promoOnly:promoOnly,_tiers:tiers,_key:key};
+  const searchable = normSearch(`${nombre} ${desc} ${cat} ${sub}`);
+
+  return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_nombre:nombre,_desc:desc,_promo:promo,_nuevo:nuevo,_promoOnly:promoOnly,_tiers:tiers,_key:key,_search:searchable};
 }
 function sortProducts(list){
   return list.sort((a,b)=>{
     if(a._agotado!==b._agotado) return a._agotado?1:-1;
     if(a._promo!==b._promo) return a._promo?-1:1;
     if(a._ord!==b._ord) return a._ord-b._ord;
-    return norm(a._nombre).localeCompare(norm(b._nombre));
+    return normBase(a._nombre).localeCompare(normBase(b._nombre));
   });
 }
 
@@ -841,6 +906,7 @@ function initCategories(){
     setOffersChipState();
     updateUrl(true);
     render();
+    scrollToResults(); // ✅ (3)
   };
   makeClickableChip(offersChip);
   bar.appendChild(offersChip);
@@ -858,6 +924,7 @@ function initCategories(){
       updateSubs();
       updateUrl(true);
       render();
+      scrollToResults(); // ✅ (3)
     };
     makeClickableChip(btn);
     bar.appendChild(btn);
@@ -881,7 +948,7 @@ function updateSubs(){
   const allBtn=document.createElement('div');
   allBtn.className='chip active'; allBtn.textContent='Todo';
   allBtn.dataset.sub=""; allBtn.dataset.slug="todo";
-  allBtn.onclick=()=>{ currentSub=""; updateUrl(true); render(); setActiveSub(allBtn); };
+  allBtn.onclick=()=>{ currentSub=""; updateUrl(true); render(); setActiveSub(allBtn); scrollToResults(); };
   makeClickableChip(allBtn);
   bar.appendChild(allBtn);
 
@@ -890,7 +957,7 @@ function updateSubs(){
     const btn=document.createElement('div');
     btn.className='chip'; btn.textContent=subName;
     btn.dataset.sub=subName; btn.dataset.slug=slugify(subName);
-    btn.onclick=()=>{ currentSub=subName; updateUrl(true); render(); setActiveSub(btn); };
+    btn.onclick=()=>{ currentSub=subName; updateUrl(true); render(); setActiveSub(btn); scrollToResults(); };
     makeClickableChip(btn);
     bar.appendChild(btn);
   });
@@ -912,7 +979,7 @@ function goHome(pushUrl=true){
 }
 document.getElementById('homeLink').addEventListener('click',(e)=>{ e.preventDefault(); goHome(true); });
 
-/* URL -> UI */
+/* URL/LAST STATE -> UI */
 function loadFromUrl(){
   const {cat:catSlug, sub:subSlug, promo}=parseDeepLink();
   ofertasOnly = String(promo||"").trim()==="1";
@@ -954,7 +1021,34 @@ function loadFromUrl(){
   updateUrl(false);
   render();
 }
-window.addEventListener('popstate',()=>{ if(products.length) loadFromUrl(); });
+function loadFromUrlOrLastState(){
+  if(hasExplicitLink()){
+    loadFromUrl();
+    return;
+  }
+  const st=readLastState();
+  if(st && (st.cat || st.promo)){
+    ofertasOnly=!!st.promo;
+    setOffersChipState();
+    if(st.cat){
+      const chip=[...document.querySelectorAll('.category-bar .chip.cat-chip')].find(c=>c.dataset && c.dataset.cat===st.cat);
+      if(chip){
+        currentCategory=st.cat;
+        setActiveCategoryChip(chip);
+        updateSubs();
+        if(st.sub){
+          const subChip=[...document.querySelectorAll('.sub-bar .chip')].find(c=>c.dataset && c.dataset.sub===st.sub);
+          if(subChip){ currentSub=st.sub; setActiveSub(subChip); }
+        }
+      }
+    }
+    updateUrl(false);
+    render();
+    return;
+  }
+  loadFromUrl();
+}
+window.addEventListener('popstate',()=>{ if(products.length) loadFromUrlOrLastState(); });
 
 /* BUSCADOR */
 const searchInput=document.getElementById('searchInput');
@@ -1010,7 +1104,7 @@ function buildTierPills(tiers){
   const lastMin = tiers[tiers.length-1].min;
   return tiers.map((t)=>{
     const label = (t.min===lastMin) ? `${t.min}+` : (t.max ? `${t.min}-${t.max}` : `${t.min}+`);
-    return `<span class="tier-pill" data-min="${t.min}" data-max="${t.max||""}" data-price="${t.price}">${label}: <strong>Lps.${formatMoney(t.price)}</strong></span>`;
+    return `<span class="tier-pill" data-min="${t.min}" data-max="${t.max||""}" data-price="${t.price}" role="button" tabindex="0">${label}: <strong>Lps.${formatMoney(t.price)}</strong></span>`;
   }).join("");
 }
 
@@ -1064,7 +1158,7 @@ function render(){
   grid.innerHTML="";
 
   const qRaw=searchInput.value;
-  const q=norm(qRaw);
+  const q=normSearch(qRaw);
   const searching=q.length>0;
 
   if(currentCategory==="" && !searching){
@@ -1091,13 +1185,7 @@ function render(){
     list=list.filter(p=>p._cat===currentCategory && (!currentSub || p._sub===currentSub));
   }
   if(searching){
-    list=list.filter(p=>{
-      const n=norm(p._nombre);
-      const d=norm(p._desc);
-      const c=norm(p._cat);
-      const s=norm(p._sub);
-      return n.includes(q) || d.includes(q) || c.includes(q) || s.includes(q);
-    });
+    list=list.filter(p=>p._search.includes(q));
   }
 
   list=sortProducts(list);
@@ -1166,6 +1254,7 @@ function render(){
 
     const card=document.createElement('div');
     card.className=`card ${p._agotado?'agotado':''} ${isPromoMode?'promo-mode':''}`;
+    card.dataset.key=p._key;
 
     const agotadoHint = p._agotado ? `<div class="agotado-hint">Escríbenos y te avisamos cuando regrese.</div>` : "";
     const imgStyle = p._img ? `background-image:url('${p._img}');` : `background-image:none;`;
@@ -1200,11 +1289,15 @@ function render(){
   });
 }
 
-/* Debounce search */
+/* Debounce search + scroll when searching */
 let searchTimer=null;
 searchInput.addEventListener('input',()=>{
   clearTimeout(searchTimer);
-  searchTimer=setTimeout(()=>{ updateUrl(false); render(); },120);
+  searchTimer=setTimeout(()=>{
+    updateUrl(false);
+    render();
+    if(searchInput.value.trim().length>0) scrollToResults(); // ✅ (3)
+  },120);
 });
 
 /* sticky + floating ws */
@@ -1234,8 +1327,24 @@ toggle.onclick=()=>{
   applyTheme(next);
 };
 
-/* Click +/− (SIN LÍMITE DE 24: el último tier 12+ aplica hasta 999) */
+/* Click +/− + ✅ NUEVO: click en las “cajitas” (tier-pill) */
 document.getElementById("productGrid").addEventListener("click",(e)=>{
+  const grid=document.getElementById("productGrid");
+
+  // ✅ pill tocable
+  const pill=e.target.closest(".tier-pill");
+  if(pill && grid.contains(pill)){
+    const card=pill.closest(".card");
+    if(!card || card.classList.contains("agotado")) return;
+    const key=card.dataset.key || (card.querySelector(".qty-box")?.dataset.key);
+    const pRaw=products.map(normalizeProduct).find(x=>x._key===key);
+    if(!pRaw) return;
+    const min=parseInt(pill.dataset.min,10) || 1;
+    updateCardForQty(card, pRaw, min);
+    return;
+  }
+
+  // +/- buttons
   const btn=e.target.closest(".qty-btn");
   if(!btn) return;
 
@@ -1253,11 +1362,20 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
 
   let qty = qtyPick[key] || 1;
   qty = act==="plus" ? qty+1 : qty-1;
-
   if(qty<1) qty=1;
   if(qty>999) qty=999;
 
   updateCardForQty(card, pRaw, qty);
+});
+
+/* también permite Enter/Espacio en pills */
+document.getElementById("productGrid").addEventListener("keydown",(e)=>{
+  const pill=e.target.closest(".tier-pill");
+  if(!pill) return;
+  if(e.key==="Enter" || e.key===" "){
+    e.preventDefault();
+    pill.click();
+  }
 });
 
 /* Boot cache */
@@ -1268,7 +1386,7 @@ function bootFromCache(){
     const loader=document.getElementById('loader');
     loader.style.display='none';
     initCategories();
-    loadFromUrl();
+    loadFromUrlOrLastState();
   }
   const cachedT=readCache(CACHE_TESTIMONIALS_KEY);
   if(Array.isArray(cachedT) && cachedT.length){
@@ -1279,6 +1397,9 @@ function bootFromCache(){
 bootFromCache();
 fetchConfig();
 fetchTestimonials();
+
+const clearBtn=document.getElementById('clearSearchBtn');
+function setClearBtn(){ clearBtn.classList.toggle("show", searchInput.value.trim().length>0); }
 setClearBtn();
 render();
 </script>
