@@ -6,9 +6,9 @@
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
-  <meta name="description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
+  <meta name="description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Atención directa por WhatsApp." />
   <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
-  <meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
+  <meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. ¡Equípate con lo mejor!" />
   <meta property="og:image" content="https://raw.githubusercontent.com/sdcomayagua/sdc-catalogo/94d9f2b52faa08cccf5bfff9c50f2b8458ea4b04/PORTADA%20-%20SDC%20-%202026.png" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -19,7 +19,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <!-- Outfit reducido a 3 pesos -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
@@ -58,7 +59,6 @@
       background:transparent;border:1px solid var(--border);color:var(--text);width:35px;height:35px;border-radius:50%;
       display:flex;align-items:center;justify-content:center;cursor:pointer
     }
-    .header-actions{display:flex;gap:10px;align-items:center}
 
     .hero-section{padding:40px 20px 20px;text-align:center;margin-bottom:10px;position:relative}
     .hero-title{font-size:28px;font-weight:900;margin:0 0 10px;line-height:1.1;color:var(--text);text-transform:uppercase;letter-spacing:-.5px}
@@ -78,7 +78,7 @@
     .search-box i{position:absolute;left:14px;color:var(--text-muted)}
     .search-box input{
       width:100%;padding:14px 44px 14px 45px;border-radius:16px;border:1px solid var(--border);background:var(--card-bg);
-      color:var(--text);font-size:15px;outline:none;font-weight:600;box-shadow:0 4px 10px rgba(0,0,0,.05);user-select:text;-webkit-user-select:text
+      color:var(--text);font-size:15px;outline:none;font-weight:700;box-shadow:0 4px 10px rgba(0,0,0,.05);user-select:text;-webkit-user-select:text
     }
     .search-box input:focus{border-color:var(--primary)}
     .clear-search{
@@ -87,19 +87,9 @@
     }
     .clear-search.show{display:flex}
 
-    .suggestions-wrap{margin-top:10px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
-    .s-chip{
-      padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.02);
-      color:var(--text-muted);font-size:11px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none;
-      display:flex;align-items:center;gap:6px
-    }
-    [data-theme="light"] .s-chip{background:#fff}
-    .s-chip:active{transform:scale(.98)}
-    .s-chip i{opacity:.9}
-
     .trust-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px;max-width:800px;margin:25px auto}
     .trust-item{
-      display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:600;color:var(--text-muted);
+      display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:700;color:var(--text-muted);
       background:var(--card-bg);padding:10px;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 5px rgba(0,0,0,.02)
     }
     .trust-item i{color:var(--accent);font-size:14px}
@@ -142,7 +132,7 @@
 
     .welcome-state{grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-muted)}
     .welcome-icon{font-size:50px;margin-bottom:20px;color:var(--primary);opacity:.8;animation:bounce 2s infinite}
-    .welcome-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:10px}
+    .welcome-title{font-size:18px;font-weight:900;color:var(--text);margin-bottom:10px}
     .welcome-text{font-size:13px;max-width:340px;margin:0 auto;line-height:1.5}
 
     .card{
@@ -153,15 +143,20 @@
     .card.promo-mode{border:2px solid var(--promo-color)!important;box-shadow:0 0 25px var(--promo-glow)!important;transform:scale(1.02)}
     .card.focus{outline:2px solid var(--primary);box-shadow:0 0 0 4px rgba(56,189,248,.18), var(--shadow-card)}
     .card-img-container{
-      width:100%;aspect-ratio:1/1;background-color:#fff;background-size:contain;background-position:center;background-repeat:no-repeat;
-      padding:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)
+      width:100%;aspect-ratio:1/1;background-color:#fff;padding:0;display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;border-bottom:1px solid var(--border)
     }
+    .p-img{width:100%;height:100%;object-fit:contain;display:block}
+    .img-fallback{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:38px;opacity:.55
+    }
+
     .card.agotado .card-img-container{filter:grayscale(100%);opacity:.6}
     .card.agotado{opacity:.98;border-color:var(--danger)}
 
     .video-badge{
       position:absolute;bottom:8px;right:8px;z-index:20;display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;
-      font-size:10px;font-weight:800;color:#fff;text-decoration:none;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.3);
+      font-size:10px;font-weight:900;color:#fff;text-decoration:none;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.3);
       transition:.2s;letter-spacing:.5px;text-transform:uppercase
     }
     .video-badge:hover{transform:scale(1.05)}
@@ -170,14 +165,12 @@
 
     .ribbon{
       position:absolute;top:15px;left:-30px;width:105px;background:var(--danger);color:#fff;font-size:10px;font-weight:900;padding:4px 0;
-      transform:rotate(-45deg);text-align:center;z-index:30;box-shadow:0 2px 5px rgba(0,0,0,.2);
-      text-shadow:0 2px 6px rgba(0,0,0,.45)
+      transform:rotate(-45deg);text-align:center;z-index:30;box-shadow:0 2px 5px rgba(0,0,0,.2);text-shadow:0 2px 6px rgba(0,0,0,.45)
     }
     .ribbon-promo{
       position:absolute;top:0;right:0;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-size:10px;font-weight:900;padding:6px 12px;
       border-bottom-left-radius:12px;z-index:30;box-shadow:-2px 2px 10px rgba(245,158,11,.5);letter-spacing:1px
     }
-
     .low-stock-badge{
       position:absolute;bottom:8px;left:8px;z-index:25;
       background:rgba(239,68,68,.92);border:1px solid rgba(255,255,255,.18);
@@ -199,21 +192,21 @@
       margin:0;font-size:16px;font-weight:900;line-height:1.3;text-transform:uppercase;letter-spacing:.5px;overflow:hidden;
       display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;height:42px;color:var(--text);text-shadow:0 1px 2px rgba(0,0,0,.3)
     }
-    .desc{font-size:13.5px;font-weight:500;color:var(--text);opacity:.9;margin-bottom:2px;line-height:1.6;white-space:pre-line;padding-left:5px}
+    .desc{font-size:13.5px;font-weight:400;color:var(--text);opacity:.9;margin-bottom:2px;line-height:1.6;white-space:pre-line;padding-left:5px}
 
     .btn-gallery{
       display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;margin-top:6px;background:transparent;border:1px dashed var(--border);
-      border-radius:8px;color:var(--text-muted);font-size:11px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.5px;transition:.2s
+      border-radius:8px;color:var(--text-muted);font-size:11px;font-weight:900;text-decoration:none;text-transform:uppercase;letter-spacing:.5px;transition:.2s
     }
     .btn-gallery:hover{background:var(--card-bg);border-color:var(--primary);color:var(--primary)}
 
     .price-bar{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:8px;margin-top:10px}
     [data-theme="light"] .price-bar{background:#f0fdf4;border-color:#dcfce7}
     .price-stack{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.2}
-    .p-label-small{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:3px;opacity:.8}
+    .p-label-small{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;margin-right:3px;opacity:.8}
     .old-price-row{color:var(--text-muted);line-height:1;margin-bottom:3px;white-space:nowrap;display:flex;align-items:center;justify-content:center}
     .old-val{text-decoration:line-through;opacity:.7;font-size:12px}
-    .current-price-row{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:var(--accent);line-height:1;white-space:nowrap}
+    .current-price-row{font-size:22px;font-weight:900;color:var(--accent);line-height:1;white-space:nowrap}
     .price-icon{color:var(--accent);font-size:16px;opacity:.8}
     .card.promo-mode .price-bar{background:var(--promo-bg);border-color:var(--promo-color)}
     .card.promo-mode .price-icon,.card.promo-mode .current-price-row{color:var(--promo-color);text-shadow:0 0 10px var(--promo-glow)}
@@ -224,24 +217,14 @@
 
     .qty-box{margin-top:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:12px;padding:12px}
     .card.promo-mode .qty-box{border-color:var(--promo-color);background:var(--promo-bg);box-shadow:0 0 15px var(--promo-glow)}
-    .qty-title{
-      font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);
-      display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;text-align:center
-    }
+    .qty-title{font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;text-align:center}
     .qty-row{display:flex;align-items:center;justify-content:center;gap:12px}
-    .qty-btn{
-      width:42px;height:38px;border-radius:12px;border:1px solid var(--border);background:transparent;
-      color:var(--text);font-weight:900;font-size:18px;cursor:pointer;transition:.15s
-    }
+    .qty-btn{width:42px;height:38px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text);font-weight:900;font-size:18px;cursor:pointer;transition:.15s}
     .qty-btn:hover{transform:translateY(-1px);border-color:var(--primary)}
     .qty-btn:active{transform:translateY(0)}
-    .qty-val{
-      min-width:70px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);
-      background:rgba(255,255,255,.02);text-align:center;font-weight:900;letter-spacing:.6px;text-transform:uppercase
-    }
+    .qty-val{min-width:70px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);text-align:center;font-weight:900;letter-spacing:.6px;text-transform:uppercase}
     [data-theme="light"] .qty-val{background:#f8fafc}
     .qty-note{margin-top:10px;font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;text-align:center;opacity:.95}
-
     .tiers-mini{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
     .tier-pill{
       font-size:10px;font-weight:900;letter-spacing:.4px;text-transform:uppercase;
@@ -255,7 +238,7 @@
     .tier-pill:active{transform:scale(.98)}
 
     .btn-ws{
-      background:var(--primary);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;
+      background:var(--primary);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:900;font-size:13px;cursor:pointer;text-decoration:none;
       display:flex;align-items:center;justify-content:center;gap:6px;text-transform:uppercase;transition:.2s
     }
     [data-theme="dark"] .btn-ws{color:#000}
@@ -264,28 +247,37 @@
     .testimonials-section{padding:30px 16px;margin-top:20px;background:rgba(255,255,255,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     .sec-title{text-align:center;font-size:18px;font-weight:900;margin-bottom:20px;color:var(--text);text-transform:uppercase}
     .testimonials-track{display:flex;gap:15px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
-    .t-card{
-      min-width:260px;max-width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:15px;
-      display:flex;flex-direction:column;gap:8px;content-visibility:auto;contain:content;contain-intrinsic-size:240px
-    }
+    .t-card{min-width:260px;max-width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:8px;content-visibility:auto;contain:content;contain-intrinsic-size:240px}
     .t-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
-    .t-avatar{width:35px;height:35px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+    .t-avatar{width:35px;height:35px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
     [data-theme="dark"] .t-avatar{color:#000}
-    .t-info h4{margin:0;font-size:13px;color:var(--text)}
-    .t-info span{font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase}
+    .t-info h4{margin:0;font-size:13px;color:var(--text);font-weight:900}
+    .t-info span{font-size:10px;color:var(--accent);font-weight:700;text-transform:uppercase}
     .t-stars{color:#fbbf24;font-size:12px;margin-bottom:0}
     .t-text{font-size:12px;color:var(--text-muted);line-height:1.4;font-style:italic;margin:0;text-align:justify;text-justify:inter-word;hyphens:auto}
 
     .location-section{padding:20px 16px;margin-top:10px;text-align:center}
     .map-frame{width:100%;height:250px;border:2px solid var(--border);border-radius:16px;margin-bottom:15px;filter:grayscale(20%) contrast(1.1)}
+    .map-placeholder{
+      width:100%;height:250px;border:2px solid var(--border);border-radius:16px;margin-bottom:15px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.02)
+    }
+    .map-placeholder i{font-size:34px;color:var(--primary);opacity:.8}
+    .map-placeholder p{margin:0;color:var(--text-muted);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+    .map-load-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:var(--card-bg);
+      color:var(--text);font-weight:900;font-size:12px;text-transform:uppercase;cursor:pointer
+    }
+    .map-load-btn:hover{border-color:var(--primary);transform:translateY(-1px)}
     .location-btns{display:flex;gap:10px;justify-content:center}
-    .btn-loc{flex:1;padding:12px;border-radius:12px;font-weight:800;font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;text-transform:uppercase;transition:.2s}
+    .btn-loc{flex:1;padding:12px;border-radius:12px;font-weight:900;font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;text-transform:uppercase;transition:.2s}
     .btn-google{background:#4285F4;color:#fff;box-shadow:0 4px 10px rgba(66,133,244,.3)}
     .btn-waze{background:#33ccff;color:#fff;box-shadow:0 4px 10px rgba(51,204,255,.3)}
 
     .faq-section{padding:20px 16px;max-width:800px;margin:0 auto}
     .faq-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
-    .faq-question{padding:15px;font-size:14px;font-weight:700;color:var(--text);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:.2s}
+    .faq-question{padding:15px;font-size:14px;font-weight:900;color:var(--text);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:.2s}
     .faq-question:hover{background:rgba(255,255,255,.03)}
     .faq-answer{padding:0 15px 15px;font-size:13px;color:var(--text-muted);line-height:1.5;display:none;text-align:justify}
     .faq-item.open .faq-answer{display:block}
@@ -329,11 +321,7 @@
     </div>
   </a>
 
-  <div class="header-actions">
-    <div class="icon-btn" id="shareBtn" aria-label="Compartir" title="Compartir"><i class="fa-solid fa-share-nodes"></i></div>
-    <div class="icon-btn" id="copyLinkBtn" aria-label="Copiar link" title="Copiar link"><i class="fa-solid fa-link"></i></div>
-    <div class="icon-btn" id="themeToggle" aria-label="Cambiar tema"><i class="fa-solid fa-sun"></i></div>
-  </div>
+  <div class="icon-btn" id="themeToggle" aria-label="Cambiar tema"><i class="fa-solid fa-sun"></i></div>
 </header>
 
 <div class="hero-section">
@@ -347,7 +335,6 @@
     <input id="searchInput" type="text" placeholder="Buscar producto..." aria-label="Buscar producto" />
     <button class="clear-search" id="clearSearchBtn" aria-label="Limpiar búsqueda"><i class="fa-solid fa-xmark"></i></button>
   </div>
-  <div class="suggestions-wrap" id="suggestionsBar"></div>
 </div>
 
 <div class="trust-grid">
@@ -381,7 +368,18 @@
 
 <div class="location-section">
   <h3 class="sec-title">📍 Base de Operaciones</h3>
-  <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1933.2843779837946!2d-87.6289189153322!3d14.454458000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6585356521890d%3A0x5e9e0d326671793d!2sInkmortal%20Tattoo%20Comayagua!5e0!3m2!1ses!2shn!4v1709660000000!5m2!1ses!2shn" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+  <!-- MAPA BAJO DEMANDA -->
+  <div class="map-placeholder" id="mapPlaceholder">
+    <i class="fa-solid fa-map-location-dot"></i>
+    <p>Mapa desactivado para cargar más rápido</p>
+    <button class="map-load-btn" id="loadMapBtn" type="button">
+      <i class="fa-solid fa-bolt"></i> Cargar mapa
+    </button>
+  </div>
+
+  <div id="mapMount"></div>
+
   <div class="location-btns">
     <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google" rel="noopener noreferrer">
       <i class="fa-solid fa-map-location-dot"></i> Google Maps
@@ -394,34 +392,26 @@
 
 <div class="faq-section">
   <h3 class="sec-title" style="margin-top:20px;">❓ Preguntas Frecuentes</h3>
+
+  <!-- SOLO 3 FAQ -->
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Hacen envíos a toda Honduras? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
-      ¡Claro que sí! 🚚 Realizamos envíos a todo el territorio nacional de Honduras a través de empresas de confianza como <b>C807, Forza y Cargo Expreso</b>. Si estás en Comayagua, ofrecemos servicio a domicilio o puedes retirar tu pedido personalmente en nuestra tienda física.
+      ¡Claro que sí! 🚚 Realizamos envíos a todo el territorio nacional de Honduras a través de empresas de confianza como <b>C807, Forza y Cargo Expreso</b>.
     </div>
   </div>
-  <div class="faq-item">
-    <div class="faq-question" onclick="toggleFaq(this)">¿Dónde están ubicados? <i class="fa-solid fa-chevron-down"></i></div>
-    <div class="faq-answer">
-      Estamos dentro de <b>Inkmortal Tattoo Comayagua</b> 📍, en la Colonia Piedras Bonitas. Estamos contiguo a la Farmacia Regis y justo al lado de la Clínica de Licores. ¡Te esperamos!
-    </div>
-  </div>
+
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
-      Aceptamos <b>Efectivo</b> y <b>Transferencia Bancaria</b> 💳. Puedes transferir a nuestras cuentas en <b>BAC, Occidente, Ficohsa, Banpaís y Atlántida</b>. También aceptamos pagos vía <b>PayPal y Tigo Money</b>.
+      Aceptamos <b>Efectivo</b> y <b>Transferencia Bancaria</b> 💳. También aceptamos pagos vía <b>PayPal y Tigo Money</b>.
     </div>
   </div>
+
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Tienen garantía los productos? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
-      ¡Claro que sí! 🛡️ Cada producto es probado antes de ser enviado para garantizar su funcionamiento. Además, cuentan con garantía por desperfectos de fábrica. Compra con total seguridad.
-    </div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-question" onclick="toggleFaq(this)">¿Cómo puedo comprar? <i class="fa-solid fa-chevron-down"></i></div>
-    <div class="faq-answer">
-      ¡Es muy sencillo! 🛒 Elige tu producto favorito, toca el botón <b>"PEDIR AHORA 🚀"</b> y serás redirigido a nuestro WhatsApp. Allí coordinaremos tu pago y envío en minutos.
+      ¡Claro que sí! 🛡️ Cada producto es probado antes de ser enviado. Además, cuentan con garantía por desperfectos de fábrica.
     </div>
   </div>
 </div>
@@ -445,23 +435,11 @@ const CONFIG_GID="1488858707";
 const MY_PHONE="50432429490";
 const BACKUP_SHEETS=['ofertas','gamer','pc','movil','streaming','cobertores','power'];
 const TESTIMONIALS_SHEET="testimonios";
-
 const LOW_STOCK_AT=3;
 
-const CACHE_PRODUCTS_KEY="sdc_products_cache_v7";
-const CACHE_TESTIMONIALS_KEY="sdc_testimonials_cache_v2";
+const CACHE_PRODUCTS_KEY="sdc_products_cache_v8";
+const CACHE_TESTIMONIALS_KEY="sdc_testimonials_cache_v3";
 const LAST_STATE_KEY="sdc_last_state_v3";
-
-const SUGGESTIONS=[
-  {t:"Dedales",i:"fa-solid fa-hand-fist"},
-  {t:"Gatillos",i:"fa-solid fa-bullseye"},
-  {t:"Enfriador",i:"fa-solid fa-snowflake"},
-  {t:"Power Bank",i:"fa-solid fa-battery-full"},
-  {t:"Cargador",i:"fa-solid fa-plug"},
-  {t:"Audífonos",i:"fa-solid fa-headphones"},
-  {t:"Mouse",i:"fa-solid fa-computer-mouse"},
-  {t:"Teclado",i:"fa-solid fa-keyboard"}
-];
 
 let products=[];
 let testimonials=[];
@@ -469,7 +447,6 @@ let currentCategory="";
 let currentSub="";
 let ofertasOnly=false;
 let focusPid="";
-
 const qtyPick={};
 
 function setCanonical(){
@@ -606,22 +583,6 @@ function buildProductUrl(pid){
   return url.toString();
 }
 
-async function copyCurrentLink(){
-  const link=window.location.href;
-  try{ await navigator.clipboard.writeText(link); flashToast("LINK COPIADO ✅"); }
-  catch{ prompt("Copia este link:", link); }
-}
-async function shareCurrentLink(){
-  const link=window.location.href;
-  const title=document.title || "Catálogo SDC";
-  try{
-    if(navigator.share){
-      await navigator.share({title, text:"Mira este producto/categoría en el catálogo SDC", url: link});
-      return;
-    }
-  }catch{}
-  await copyCurrentLink();
-}
 async function shareOrCopy(link, title){
   try{
     if(navigator.share){
@@ -653,9 +614,6 @@ function flashToast(msg){
   setTimeout(()=>{t.style.opacity="0";t.style.transition="opacity .25s"},1200);
   setTimeout(()=>{t.remove()},1600);
 }
-
-document.getElementById("copyLinkBtn").addEventListener("click",copyCurrentLink);
-document.getElementById("shareBtn").addEventListener("click",shareCurrentLink);
 
 function toggleFaq(element){ element.parentElement.classList.toggle('open'); }
 
@@ -699,7 +657,7 @@ function scrollToResults(){
   target.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
-/* TESTIMONIOS */
+/* TESTIMONIOS (limitado a 8) */
 function resolveAvatarColor(value){
   const v=String(value||"").trim().toLowerCase();
   if(v==="primary")return"var(--primary)";
@@ -721,30 +679,20 @@ function renderTestimonials(){
     track.innerHTML=`<div class="t-card"><p class="t-text">Aún no hay testimonios.</p></div>`;
     return;
   }
-  testimonials.forEach((t,idx)=>{
+  testimonials.slice(0,8).forEach((t,idx)=>{
     const card=document.createElement("div");
     card.className="t-card";
     const avatarColor=resolveAvatarColor(t.color)||(idx%2===0?"var(--primary)":"var(--accent)");
     const initials=t.iniciales?t.iniciales.toUpperCase():makeInitials(t.nombre);
 
-    const header=document.createElement("div"); header.className="t-header";
-    const avatar=document.createElement("div"); avatar.className="t-avatar"; avatar.style.background=avatarColor; avatar.textContent=initials;
-
-    const info=document.createElement("div"); info.className="t-info";
-    const h4=document.createElement("h4"); h4.textContent=t.nombre;
-    const span=document.createElement("span"); span.textContent=t.rol;
-    info.appendChild(h4); info.appendChild(span);
-
-    header.appendChild(avatar); header.appendChild(info);
-
-    const stars=document.createElement("div"); stars.className="t-stars";
-    for(let i=0;i<t.estrellas;i++){ const star=document.createElement("i"); star.className="fa-solid fa-star"; stars.appendChild(star); }
-
-    const text=document.createElement("p"); text.className="t-text"; text.textContent=`"${t.comentario}"`;
-
-    card.appendChild(header);
-    card.appendChild(stars);
-    card.appendChild(text);
+    card.innerHTML = `
+      <div class="t-header">
+        <div class="t-avatar" style="background:${avatarColor}">${initials}</div>
+        <div class="t-info"><h4>${t.nombre}</h4><span>${t.rol}</span></div>
+      </div>
+      <div class="t-stars">${"<i class='fa-solid fa-star'></i>".repeat(t.estrellas)}</div>
+      <p class="t-text">"${t.comentario}"</p>
+    `;
     track.appendChild(card);
   });
 }
@@ -782,11 +730,13 @@ function fetchConfig(){
   Promise.race([fetch(url),timeoutPromise]).then(r=>r.text()).then(t=>{
     const json=JSON.parse(t.substring(47,t.length-2));
     const sheetNames=json.table.rows.map(r=>r.c[0]?r.c[0].v:null).filter(name=>name&&name.toLowerCase()!=='sheet');
-    const productSheets=sheetNames.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
-    loadAllTabs(productSheets);
+
+    const filtered = sheetNames.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
+    const finalSheets = filtered.length ? filtered : BACKUP_SHEETS.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
+    loadAllTabs(finalSheets);
   }).catch(()=>{
-    const productSheets=BACKUP_SHEETS.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
-    loadAllTabs(productSheets);
+    const finalSheets=BACKUP_SHEETS.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
+    loadAllTabs(finalSheets);
   });
 }
 function fetchTab(sheetName){
@@ -845,7 +795,6 @@ function hasPromo(p, tiers){
 }
 function getUnitPriceForQty(basePrice, tiers, qty){
   if(!tiers || !tiers.length || qty<=1) return {unitPrice: basePrice, applied: null};
-
   const inRange = tiers.filter(t=>qty>=t.min && (!t.max || qty<=t.max));
   if(inRange.length){
     const best = inRange.sort((a,b)=>b.min-a.min)[0];
@@ -1079,10 +1028,8 @@ function loadFromUrl(){
   render();
 }
 function loadFromUrlOrLastState(){
-  if(hasExplicitLink()){
-    loadFromUrl();
-    return;
-  }
+  if(hasExplicitLink()){ loadFromUrl(); return; }
+
   const st=readLastState();
   if(st && (st.cat || st.promo)){
     ofertasOnly=!!st.promo;
@@ -1119,27 +1066,6 @@ clearSearchBtn.addEventListener("click",()=>{
   searchInput.focus();
 });
 setClearBtn();
-
-/* sugerencias */
-function renderSuggestions(){
-  const bar=document.getElementById("suggestionsBar");
-  if(!bar) return;
-  bar.innerHTML="";
-  SUGGESTIONS.forEach(s=>{
-    const b=document.createElement("div");
-    b.className="s-chip";
-    b.innerHTML=`<i class="${s.i}"></i> ${s.t}`;
-    b.onclick=()=>{
-      searchInput.value=s.t;
-      setClearBtn();
-      updateUrl(false);
-      render();
-      scrollToResults();
-    };
-    bar.appendChild(b);
-  });
-}
-renderSuggestions();
 
 function setResultMeta(count, modeLabel){
   const meta=document.getElementById("resultMeta");
@@ -1248,7 +1174,6 @@ function render(){
   }
 
   let list=products.map(normalizeProduct);
-
   if(!ofertasOnly){ list=list.filter(p=>!p._promoOnly); }
   if(ofertasOnly){ list=list.filter(p=>p._promo); }
   if(currentCategory){ list=list.filter(p=>p._cat===currentCategory && (!currentSub || p._sub===currentSub)); }
@@ -1327,13 +1252,19 @@ function render(){
     card.dataset.pid=p._pid||"";
 
     const agotadoHint = p._agotado ? `<div class="agotado-hint">Escríbenos y te avisamos cuando regrese.</div>` : "";
-    const imgStyle = p._img ? `background-image:url('${p._img}');` : `background-image:none;`;
+
+    const imgSrc = p._img ? p._img : "";
+    const imgHTML = imgSrc
+      ? `<img class="p-img" src="${imgSrc}" alt="${p._nombre}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.parentElement.querySelector('.img-fallback').style.display='flex';">`
+      : `<span class="img-fallback" style="display:flex"><i class="fa-regular fa-image"></i></span>`;
 
     card.innerHTML=`
       ${ribbonHTML}
-      <div class="card-img-container" style="${imgStyle}">
+      <div class="card-img-container">
         ${lowStock}
         ${videoBadge}
+        ${imgHTML}
+        <div class="img-fallback" style="display:${imgSrc?'none':'flex'}"><i class="fa-regular fa-image"></i></div>
       </div>
       <div class="card-body">
         <div class="title-row">
@@ -1418,7 +1349,7 @@ toggle.onclick=()=>{
   applyTheme(next);
 };
 
-/* Click +/− + click en pills + compartir producto */
+/* Click +/− + click pills + compartir producto */
 document.getElementById("productGrid").addEventListener("click",(e)=>{
   const grid=document.getElementById("productGrid");
 
@@ -1427,10 +1358,7 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
     const card=shareBtn.closest(".card");
     if(!card) return;
     const pid=String(card.dataset.pid||"").trim();
-    if(!pid){
-      flashToast("Agrega un ID en Google Sheets para link perfecto.");
-      return;
-    }
+    if(!pid){ flashToast("Agrega un ID en Google Sheets para link perfecto."); return; }
     const link=buildProductUrl(pid);
     const title=card.querySelector("h3")?.textContent || "Producto SDC";
     shareOrCopy(link, title);
@@ -1474,10 +1402,17 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
 document.getElementById("productGrid").addEventListener("keydown",(e)=>{
   const pill=e.target.closest(".tier-pill");
   if(!pill) return;
-  if(e.key==="Enter" || e.key===" "){
-    e.preventDefault();
-    pill.click();
-  }
+  if(e.key==="Enter" || e.key===" "){ e.preventDefault(); pill.click(); }
+});
+
+/* MAPA BAJO DEMANDA */
+const MAP_IFRAME_SRC="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1933.2843779837946!2d-87.6289189153322!3d14.454458000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6585356521890d%3A0x5e9e0d326671793d!2sInkmortal%20Tattoo%20Comayagua!5e0!3m2!1ses!2shn!4v1709660000000!5m2!1ses!2shn";
+document.getElementById("loadMapBtn").addEventListener("click",()=>{
+  const mount=document.getElementById("mapMount");
+  const ph=document.getElementById("mapPlaceholder");
+  if(!mount || !ph) return;
+  ph.style.display="none";
+  mount.innerHTML=`<iframe class="map-frame" src="${MAP_IFRAME_SRC}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
 });
 
 /* Boot cache */
@@ -1499,7 +1434,6 @@ function bootFromCache(){
 bootFromCache();
 fetchConfig();
 fetchTestimonials();
-
 render();
 </script>
 </body>
