@@ -266,6 +266,9 @@
       position: relative; overflow: hidden; border-bottom: 1px solid var(--border);
     }
 
+    /* ✅ Imagen en gris si está agotado, pero SIN afectar el ribbon */
+    .card.agotado .card-img-container { filter: grayscale(100%); opacity: 0.6; }
+
     /* 🔥 BOTÓN VIDEO FLOTANTE (MAYUSCULAS) 🔥 */
     .video-badge {
       position: absolute; bottom: 8px; right: 8px; z-index: 20;
@@ -280,21 +283,21 @@
     .video-badge.tiktok { background: rgba(0, 0, 0, 0.9); border: 1px solid rgba(255,255,255,0.2); }
     .video-badge.youtube { background: rgba(220, 38, 38, 0.95); border: 1px solid rgba(255,255,255,0.2); }
 
-    .card.agotado { opacity: 0.9; border-color: var(--danger); }
-    .card.agotado .card-img-container { filter: grayscale(100%); opacity: 0.6; }
+    .card.agotado { opacity: 0.95; border-color: var(--danger); }
 
     .ribbon {
       position: absolute; top: 15px; left: -30px; width: 100px;
-      background: var(--danger); color: #fff; font-size: 10px; font-weight: 800;
+      background: var(--danger); color: #fff; font-size: 10px; font-weight: 900;
       padding: 4px 0; transform: rotate(-45deg); text-align: center;
-      z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 30; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.45);
     }
     .ribbon-promo {
       position: absolute; top: 0; right: 0;
       background: linear-gradient(135deg, #f59e0b, #ea580c);
       color: #fff; font-size: 10px; font-weight: 900;
       padding: 6px 12px; border-bottom-left-radius: 12px;
-      z-index: 10; box-shadow: -2px 2px 10px rgba(245, 158, 11, 0.5); letter-spacing: 1px;
+      z-index: 30; box-shadow: -2px 2px 10px rgba(245, 158, 11, 0.5); letter-spacing: 1px;
     }
 
     /* PADDING CARD */
@@ -310,7 +313,6 @@
       height: 42px; color: var(--text); text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* 🔥 DESC RESTAURADA: GRANDE, LEGIBLE Y UN POCO A LA DERECHA 🔥 */
     .desc {
       font-size: 13.5px;
       font-weight: 500;
@@ -322,7 +324,6 @@
       padding-left: 5px;
     }
 
-    /* 📸 BOTÓN DE GALERÍA (SUTIL) 📸 */
     .btn-gallery {
       display: flex; align-items: center; justify-content: center; gap: 6px;
       width: 100%; padding: 8px; margin-top: 6px;
@@ -336,7 +337,6 @@
     }
     .btn-gallery:hover { background: var(--card-bg); border-color: var(--primary); color: var(--primary); }
 
-    /* PRECIOS */
     .price-bar {
       display: flex; align-items: center; justify-content: center; gap: 8px;
       background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
@@ -359,7 +359,6 @@
     }
     .old-val { text-decoration: line-through; opacity: 0.7; font-size: 12px; }
 
-    /* PRECIO ACTUAL DESTACADO */
     .current-price-row {
       font-family: 'Outfit', sans-serif;
       font-size: 22px;
@@ -408,11 +407,7 @@
     [data-theme="dark"] .t-avatar { color: #000; }
     .t-info h4 { margin: 0; font-size: 13px; color: var(--text); }
     .t-info span { font-size: 10px; color: var(--accent); font-weight: 600; text-transform: uppercase; }
-
-    /* ✅ Quitar espacio extra debajo de estrellas */
     .t-stars { color: #fbbf24; font-size: 12px; margin-bottom: 0; }
-
-    /* ✅ Texto justificado + sin margen extra */
     .t-text {
       font-size: 12px;
       color: var(--text-muted);
@@ -487,7 +482,6 @@
 <body>
 
 <header>
-  <!-- ✅ Click en nombre/logo: ir a inicio sin recargar -->
   <a href="./" class="brand-link" id="homeLink" aria-label="Ir al inicio">
     <div class="brand">
       <img src="logo.png" alt="SDC" onerror="this.style.display='none'">
@@ -534,7 +528,6 @@
 
 <div class="grid" id="productGrid"></div>
 
-<!-- ✅ TESTIMONIOS DESDE GOOGLE SHEETS -->
 <div class="testimonials-section">
   <h3 class="sec-title">⭐ Lo que dicen los Gamers</h3>
   <div class="testimonials-track" id="testimonialsTrack">
@@ -552,7 +545,7 @@
     <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google" rel="noopener">
       <i class="fa-solid fa-map-location-dot"></i> Google Maps
     </a>
-    <a href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes" target="_blank" class="btn-loc btn-waze" rel="noopener">
+    <a href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes" target="_blank" class="btn-loc btn-waze" rel="noopener>
       <i class="fa-brands fa-waze"></i> Waze
     </a>
   </div>
@@ -609,141 +602,97 @@
 <a class="float-ws" href="https://wa.me/50432429490" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
 
 <script>
-/* =======================
-   ✅ CONFIG
-======================= */
-const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const CONFIG_GID = "1488858707";
-const MY_PHONE = "50432429490";
-const BACKUP_SHEETS = ['ofertas', 'gamer', 'pc', 'movil', 'streaming', 'cobertores', 'power'];
+const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const CONFIG_GID="1488858707";
+const MY_PHONE="50432429490";
+const BACKUP_SHEETS=['ofertas','gamer','pc','movil','streaming','cobertores','power'];
+const TESTIMONIALS_SHEET="testimonios";
 
-/* ✅ Hoja nueva para testimonios */
-const TESTIMONIALS_SHEET = "testimonios";
+let products=[];
+let testimonials=[];
+let currentCategory="";
+let currentSub="";
 
-let products = [];
-let testimonials = [];
-
-let currentCategory = "";
-let currentSub = "";
-
-/* =======================
-   ✅ LINK PERFECTO (SLUGS)
-======================= */
-function slugify(s) {
-  return String(s || "")
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+function slugify(s){
+  return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+}
+function updateUrl(push=true){
+  const url=new URL(window.location);
+  const catSlug=currentCategory?slugify(currentCategory):"";
+  const subSlug=currentSub?slugify(currentSub):"";
+  catSlug?url.searchParams.set('cat',catSlug):url.searchParams.delete('cat');
+  subSlug?url.searchParams.set('sub',subSlug):url.searchParams.delete('sub');
+  push?window.history.pushState({},'',url):window.history.replaceState({},'',url);
 }
 
-function updateUrl(push = true) {
-  const url = new URL(window.location);
-  const catSlug = currentCategory ? slugify(currentCategory) : "";
-  const subSlug = currentSub ? slugify(currentSub) : "";
-
-  if (catSlug) url.searchParams.set('cat', catSlug);
-  else url.searchParams.delete('cat');
-
-  if (subSlug) url.searchParams.set('sub', subSlug);
-  else url.searchParams.delete('sub');
-
-  if (push) window.history.pushState({}, '', url);
-  else window.history.replaceState({}, '', url);
+function resolveAvatarColor(value){
+  const v=String(value||"").trim().toLowerCase();
+  if(v==="primary")return"var(--primary)";
+  if(v==="accent")return"var(--accent)";
+  if(v)return value;
+  return"var(--primary)";
 }
-
-/* =======================
-   ✅ TESTIMONIOS (SHEETS)
-======================= */
-function resolveAvatarColor(value) {
-  const v = String(value || "").trim().toLowerCase();
-  if (v === "primary") return "var(--primary)";
-  if (v === "accent") return "var(--accent)";
-  if (v) return value; // hex o color válido
-  return "var(--primary)";
+function makeInitials(name){
+  const parts=String(name||"").trim().split(/\s+/).filter(Boolean);
+  if(parts.length===0)return"SD";
+  const a=parts[0][0]||"",b=parts[1]?(parts[1][0]||""):"";
+  return(a+b).toUpperCase();
 }
-
-function makeInitials(name) {
-  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "SD";
-  const a = parts[0][0] || "";
-  const b = parts[1] ? (parts[1][0] || "") : "";
-  return (a + b).toUpperCase();
+function fetchTestimonials(){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(TESTIMONIALS_SHEET)}`;
+  fetch(url).then(r=>r.text()).then(t=>{
+    const json=JSON.parse(t.substring(47,t.length-2));
+    const cols=json.table.cols.map(c=>c&&c.label?c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,""):"col");
+    testimonials=json.table.rows.map(r=>{
+      let obj={};
+      r.c.forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
+      return obj;
+    }).filter(x=>x.nombre&&(x.comentario||x.texto));
+    testimonials=testimonials.map(x=>({
+      nombre:String(x.nombre||"").trim(),
+      rol:String(x.rol||"Cliente").trim(),
+      comentario:String(x.comentario||x.texto||"").trim(),
+      estrellas:Math.max(1,Math.min(5,parseInt(x.estrellas||"5",10)||5)),
+      iniciales:String(x.iniciales||"").trim(),
+      color:String(x.color||"").trim(),
+      orden:parseInt(x.orden||"9999",10)||9999
+    })).sort((a,b)=>a.orden-b.orden);
+    renderTestimonials();
+  }).catch(()=>{
+    const track=document.getElementById("testimonialsTrack");
+    if(track)track.innerHTML=`<div class="t-card"><p class="t-text">Aún no hay testimonios cargados.</p></div>`;
+  });
 }
-
-function fetchTestimonials() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(TESTIMONIALS_SHEET)}`;
-
-  fetch(url)
-    .then(r => r.text())
-    .then(t => {
-      const json = JSON.parse(t.substring(47, t.length - 2));
-      const cols = json.table.cols.map(c =>
-        c && c.label
-          ? c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-          : "col"
-      );
-
-      testimonials = json.table.rows.map(r => {
-        let obj = {};
-        r.c.forEach((c, i) => obj[cols[i]] = c ? (c.v === null ? "" : c.v) : "");
-        return obj;
-      }).filter(x => x.nombre && (x.comentario || x.texto));
-
-      testimonials = testimonials.map(x => ({
-        nombre: String(x.nombre || "").trim(),
-        rol: String(x.rol || "Cliente").trim(),
-        comentario: String(x.comentario || x.texto || "").trim(),
-        estrellas: Math.max(1, Math.min(5, parseInt(x.estrellas || "5", 10) || 5)),
-        iniciales: String(x.iniciales || "").trim(),
-        color: String(x.color || "").trim(),
-        orden: parseInt(x.orden || "9999", 10) || 9999
-      })).sort((a,b) => a.orden - b.orden);
-
-      renderTestimonials();
-    })
-    .catch(() => {
-      const track = document.getElementById("testimonialsTrack");
-      if (track) {
-        track.innerHTML = `<div class="t-card"><p class="t-text">Aún no hay testimonios cargados.</p></div>`;
-      }
-    });
-}
-
-function renderTestimonials() {
-  const track = document.getElementById("testimonialsTrack");
-  if (!track) return;
-
-  track.innerHTML = "";
-
-  if (!testimonials.length) {
-    track.innerHTML = `<div class="t-card"><p class="t-text">Aún no hay testimonios.</p></div>`;
+function renderTestimonials(){
+  const track=document.getElementById("testimonialsTrack");
+  if(!track)return;
+  track.innerHTML="";
+  if(!testimonials.length){
+    track.innerHTML=`<div class="t-card"><p class="t-text">Aún no hay testimonios.</p></div>`;
     return;
   }
+  testimonials.forEach((t,idx)=>{
+    const card=document.createElement("div");
+    card.className="t-card";
+    const avatarColor=resolveAvatarColor(t.color)||(idx%2===0?"var(--primary)":"var(--accent)");
+    const initials=t.iniciales?t.iniciales.toUpperCase():makeInitials(t.nombre);
 
-  testimonials.forEach((t, idx) => {
-    const card = document.createElement("div");
-    card.className = "t-card";
+    const header=document.createElement("div");
+    header.className="t-header";
 
-    const avatarColor = resolveAvatarColor(t.color) || (idx % 2 === 0 ? "var(--primary)" : "var(--accent)");
-    const initials = t.iniciales ? t.iniciales.toUpperCase() : makeInitials(t.nombre);
+    const avatar=document.createElement("div");
+    avatar.className="t-avatar";
+    avatar.style.background=avatarColor;
+    avatar.textContent=initials;
 
-    const header = document.createElement("div");
-    header.className = "t-header";
+    const info=document.createElement("div");
+    info.className="t-info";
 
-    const avatar = document.createElement("div");
-    avatar.className = "t-avatar";
-    avatar.style.background = avatarColor;
-    avatar.textContent = initials;
+    const h4=document.createElement("h4");
+    h4.textContent=t.nombre;
 
-    const info = document.createElement("div");
-    info.className = "t-info";
-
-    const h4 = document.createElement("h4");
-    h4.textContent = t.nombre;
-
-    const span = document.createElement("span");
-    span.textContent = t.rol;
+    const span=document.createElement("span");
+    span.textContent=t.rol;
 
     info.appendChild(h4);
     info.appendChild(span);
@@ -751,17 +700,17 @@ function renderTestimonials() {
     header.appendChild(avatar);
     header.appendChild(info);
 
-    const stars = document.createElement("div");
-    stars.className = "t-stars";
-    for (let i = 0; i < t.estrellas; i++) {
-      const star = document.createElement("i");
-      star.className = "fa-solid fa-star";
+    const stars=document.createElement("div");
+    stars.className="t-stars";
+    for(let i=0;i<t.estrellas;i++){
+      const star=document.createElement("i");
+      star.className="fa-solid fa-star";
       stars.appendChild(star);
     }
 
-    const text = document.createElement("p");
-    text.className = "t-text";
-    text.textContent = `"${t.comentario}"`;
+    const text=document.createElement("p");
+    text.className="t-text";
+    text.textContent=`"${t.comentario}"`;
 
     card.appendChild(header);
     card.appendChild(stars);
@@ -771,305 +720,172 @@ function renderTestimonials() {
   });
 }
 
-/* =======================
-   ✅ URL -> UI
-======================= */
-function loadFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const catSlug = params.get('cat');
-  const subSlug = params.get('sub');
-
-  if (!catSlug) {
-    goHome(false);
-    return;
-  }
-
-  const catChip = [...document.querySelectorAll('.category-bar .chip')]
-    .find(chip => chip.dataset && chip.dataset.slug === catSlug);
-
-  if (!catChip) {
-    goHome(false);
-    return;
-  }
-
-  currentCategory = catChip.dataset.cat || "";
-  currentSub = "";
-
+function loadFromUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const catSlug=params.get('cat');
+  const subSlug=params.get('sub');
+  if(!catSlug){goHome(false);return;}
+  const catChip=[...document.querySelectorAll('.category-bar .chip')].find(chip=>chip.dataset&&chip.dataset.slug===catSlug);
+  if(!catChip){goHome(false);return;}
+  currentCategory=catChip.dataset.cat||"";
+  currentSub="";
   setActiveCategoryChip(catChip);
   updateSubs();
-
-  if (subSlug) {
-    const subChip = [...document.querySelectorAll('.sub-bar .chip')]
-      .find(chip => chip.dataset && chip.dataset.slug === subSlug);
-
-    if (subChip && subChip.dataset.sub) {
-      currentSub = subChip.dataset.sub;
-      setActiveSub(subChip);
-    } else {
-      const todo = document.querySelector('.sub-bar .chip[data-slug="todo"]');
-      if (todo) setActiveSub(todo);
-    }
-  } else {
-    const todo = document.querySelector('.sub-bar .chip[data-slug="todo"]');
-    if (todo) setActiveSub(todo);
-  }
-
+  if(subSlug){
+    const subChip=[...document.querySelectorAll('.sub-bar .chip')].find(chip=>chip.dataset&&chip.dataset.slug===subSlug);
+    if(subChip&&subChip.dataset.sub){currentSub=subChip.dataset.sub;setActiveSub(subChip);}
+    else {const todo=document.querySelector('.sub-bar .chip[data-slug="todo"]');if(todo)setActiveSub(todo);}
+  } else {const todo=document.querySelector('.sub-bar .chip[data-slug="todo"]');if(todo)setActiveSub(todo);}
   render();
 }
+window.addEventListener('popstate',()=>{if(products.length)loadFromUrl();});
 
-window.addEventListener('popstate', () => {
-  if (products.length) loadFromUrl();
-});
-
-/* =======================
-   ✅ FAQ
-======================= */
-function toggleFaq(element) {
-  element.parentElement.classList.toggle('open');
+function toggleFaq(element){element.parentElement.classList.toggle('open');}
+function getIconForCategory(catName){
+  if(!catName)return'📦';
+  const name=catName.toLowerCase();
+  if(name.includes('oferta')||name.includes('promo')||name.includes('mayorista'))return'🔥';
+  if(name.includes('gamer')||name.includes('juego'))return'🎮';
+  if(name.includes('celular')||name.includes('móvil')||name.includes('phone')||name.includes('samsung')||name.includes('iphone'))return'📱';
+  if(name.includes('pc')||name.includes('computadora'))return'🖥️';
+  if(name.includes('tv')||name.includes('stream'))return'📺';
+  if(name.includes('audio'))return'🎧';
+  if(name.includes('power'))return'🔋';
+  if(name.includes('reloj'))return'⌚';
+  return'📦';
 }
 
-/* =======================
-   ✅ ICONOS
-======================= */
-function getIconForCategory(catName) {
-  if (!catName) return '📦';
-  const name = catName.toLowerCase();
-  if(name.includes('oferta') || name.includes('promo') || name.includes('mayorista')) return '🔥';
-  if(name.includes('gamer') || name.includes('juego')) return '🎮';
-  if(name.includes('celular') || name.includes('móvil') || name.includes('phone') || name.includes('samsung') || name.includes('iphone')) return '📱';
-  if(name.includes('pc') || name.includes('computadora')) return '🖥️';
-  if(name.includes('tv') || name.includes('stream')) return '📺';
-  if(name.includes('audio')) return '🎧';
-  if(name.includes('power')) return '🔋';
-  if(name.includes('reloj')) return '⌚';
-  return '📦';
+function fetchConfig(){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
+  const timeoutPromise=new Promise((_,reject)=>setTimeout(()=>reject(new Error("Timeout")),7000));
+  Promise.race([fetch(url),timeoutPromise]).then(r=>r.text()).then(t=>{
+    const json=JSON.parse(t.substring(47,t.length-2));
+    const sheetNames=json.table.rows.map(r=>r.c[0]?r.c[0].v:null).filter(name=>name&&name.toLowerCase()!=='sheet');
+    const productSheets=sheetNames.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
+    loadAllTabs(productSheets);
+    fetchTestimonials();
+  }).catch(e=>{
+    console.warn("Usando respaldo manual...",e);
+    const productSheets=BACKUP_SHEETS.filter(n=>slugify(n)!==slugify(TESTIMONIALS_SHEET));
+    loadAllTabs(productSheets);
+    fetchTestimonials();
+  });
 }
-
-/* =======================
-   ✅ FETCH PRODUCTOS
-======================= */
-function fetchConfig() {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CONFIG_GID}`;
-
-  // ✅ Timeout un poco más alto para datos móviles
-  const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 7000));
-
-  Promise.race([fetch(url), timeoutPromise])
-    .then(r => r.text())
-    .then(t => {
-      const json = JSON.parse(t.substring(47, t.length - 2));
-      const sheetNames = json.table.rows
-        .map(r => r.c[0] ? r.c[0].v : null)
-        .filter(name => name && name.toLowerCase() !== 'sheet');
-
-      // ✅ Evita que "testimonios" se meta en categorías si algún día lo agregas al config
-      const productSheets = sheetNames.filter(n => slugify(n) !== slugify(TESTIMONIALS_SHEET));
-
-      loadAllTabs(productSheets);
-      fetchTestimonials();
-    })
-    .catch(e => {
-      console.warn("Usando respaldo manual...", e);
-      const productSheets = BACKUP_SHEETS.filter(n => slugify(n) !== slugify(TESTIMONIALS_SHEET));
-      loadAllTabs(productSheets);
-      fetchTestimonials();
-    });
+function fetchTab(sheetName){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  return fetch(url).then(r=>r.text()).then(t=>{
+    const json=JSON.parse(t.substring(47,t.length-2));
+    const cols=json.table.cols.map(c=>c&&c.label?c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,""):"col");
+    return json.table.rows.map(r=>{
+      let obj={};
+      r.c.forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
+      if(!obj.categoria)obj.categoria=sheetName;
+      return obj;
+    }).filter(p=>p.nombre);
+  }).catch(()=>[]);
 }
-
-function fetchTab(sheetName) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  return fetch(url)
-    .then(r => r.text())
-    .then(t => {
-      const json = JSON.parse(t.substring(47, t.length - 2));
-      const cols = json.table.cols.map(c => c && c.label ? c.label.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "col");
-      return json.table.rows.map(r => {
-        let obj = {};
-        r.c.forEach((c, i) => obj[cols[i]] = c ? (c.v === null ? "" : c.v) : "");
-        if (!obj.categoria) obj.categoria = sheetName;
-        return obj;
-      }).filter(p => p.nombre);
-    })
-    .catch(() => []);
-}
-
-function loadAllTabs(sheetNames) {
-  Promise.all(sheetNames.map(name => fetchTab(name))).then(results => {
-    products = results.flat();
-    const loader = document.getElementById('loader');
-
-    if (products.length === 0) {
-      loader.innerHTML = "<p>No se encontraron productos.</p>";
-      return;
-    }
-
-    loader.style.display = 'none';
+function loadAllTabs(sheetNames){
+  Promise.all(sheetNames.map(name=>fetchTab(name))).then(results=>{
+    products=results.flat();
+    const loader=document.getElementById('loader');
+    if(products.length===0){loader.innerHTML="<p>No se encontraron productos.</p>";return;}
+    loader.style.display='none';
     initCategories();
-
-    // ✅ Activar filtros por URL (link compartido) sin meter un historial extra
     loadFromUrl();
   });
 }
 
-/* =======================
-   ✅ CATEGORÍAS + SUBS
-======================= */
-function makeClickableChip(el) {
-  el.setAttribute('role', 'button');
-  el.setAttribute('tabindex', '0');
-  el.onkeydown = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      el.click();
-    }
-  };
+function makeClickableChip(el){
+  el.setAttribute('role','button');
+  el.setAttribute('tabindex','0');
+  el.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}};
   return el;
 }
-
-function clearActiveCategoryChips() {
-  document.querySelectorAll('.category-bar .chip').forEach(b => {
-    b.classList.remove('active');
-    b.classList.remove('promo-active');
-  });
+function clearActiveCategoryChips(){
+  document.querySelectorAll('.category-bar .chip').forEach(b=>{b.classList.remove('active');b.classList.remove('promo-active');});
 }
-
-function setActiveCategoryChip(btn) {
+function setActiveCategoryChip(btn){
   clearActiveCategoryChips();
   btn.classList.add('active');
-
-  const isPromo = (currentCategory || "").toLowerCase().includes('oferta') || (currentCategory || "").toLowerCase().includes('mayorista');
-  if (isPromo) btn.classList.add('promo-active');
+  const isPromo=(currentCategory||"").toLowerCase().includes('oferta')||(currentCategory||"").toLowerCase().includes('mayorista');
+  if(isPromo)btn.classList.add('promo-active');
 }
-
-function initCategories() {
-  const rawCats = products.map(p => p.categoria ? String(p.categoria).trim() : "Otros");
-  const cats = [...new Set(rawCats)];
-
-  const bar = document.getElementById('categoryBar');
-  bar.innerHTML = "";
-
-  if (cats.length === 0) return;
-
-  cats.forEach((c, i) => {
-    const catName = String(c).trim();
-    const btn = document.createElement('div');
-    btn.className = 'chip';
-    btn.dataset.cat = catName;
-    btn.dataset.slug = slugify(catName);
-
-    const isPromo = catName.toLowerCase().includes('oferta') || catName.toLowerCase().includes('mayorista');
-    if (isPromo && i === 0) btn.classList.add('promo-active');
-
-    btn.innerHTML = `${getIconForCategory(catName)} ${catName}`;
-    btn.onclick = () => {
-      currentCategory = catName;
-      currentSub = "";
-      setActiveCategoryChip(btn);
-      updateSubs();
-      updateUrl(true);
-      render();
-    };
-
+function initCategories(){
+  const rawCats=products.map(p=>p.categoria?String(p.categoria).trim():"Otros");
+  const cats=[...new Set(rawCats)];
+  const bar=document.getElementById('categoryBar');
+  bar.innerHTML="";
+  if(cats.length===0)return;
+  cats.forEach((c,i)=>{
+    const catName=String(c).trim();
+    const btn=document.createElement('div');
+    btn.className='chip';
+    btn.dataset.cat=catName;
+    btn.dataset.slug=slugify(catName);
+    const isPromo=catName.toLowerCase().includes('oferta')||catName.toLowerCase().includes('mayorista');
+    if(isPromo&&i===0)btn.classList.add('promo-active');
+    btn.innerHTML=`${getIconForCategory(catName)} ${catName}`;
+    btn.onclick=()=>{currentCategory=catName;currentSub="";setActiveCategoryChip(btn);updateSubs();updateUrl(true);render();};
     makeClickableChip(btn);
     bar.appendChild(btn);
   });
-
   updateSubs();
 }
+function updateSubs(){
+  const bar=document.getElementById('subBar');
+  bar.innerHTML="";
+  if(!currentCategory){bar.style.display='none';return;}
+  const currentCatProducts=products.filter(p=>(p.categoria?String(p.categoria).trim():"Otros")===currentCategory);
+  const subs=[...new Set(currentCatProducts.map(p=>p.subcategoria).filter(Boolean))];
+  if(subs.length===0){bar.style.display='none';return;}
+  bar.style.display='flex';
 
-function updateSubs() {
-  const bar = document.getElementById('subBar');
-  bar.innerHTML = "";
-
-  if (!currentCategory) {
-    bar.style.display = 'none';
-    return;
-  }
-
-  const currentCatProducts = products.filter(p => (p.categoria ? String(p.categoria).trim() : "Otros") === currentCategory);
-  const subs = [...new Set(currentCatProducts.map(p => p.subcategoria).filter(Boolean))];
-
-  if (subs.length === 0) {
-    bar.style.display = 'none';
-    return;
-  }
-
-  bar.style.display = 'flex';
-
-  const allBtn = document.createElement('div');
-  allBtn.className = 'chip active';
-  allBtn.textContent = 'Todo';
-  allBtn.dataset.sub = "";
-  allBtn.dataset.slug = "todo";
-  allBtn.onclick = () => {
-    currentSub = "";
-    updateUrl(true);
-    render();
-    setActiveSub(allBtn);
-  };
+  const allBtn=document.createElement('div');
+  allBtn.className='chip active';
+  allBtn.textContent='Todo';
+  allBtn.dataset.sub="";
+  allBtn.dataset.slug="todo";
+  allBtn.onclick=()=>{currentSub="";updateUrl(true);render();setActiveSub(allBtn);};
   makeClickableChip(allBtn);
   bar.appendChild(allBtn);
 
-  subs.forEach(s => {
-    const subName = String(s).trim();
-    const btn = document.createElement('div');
-    btn.className = 'chip';
-    btn.textContent = subName;
-    btn.dataset.sub = subName;
-    btn.dataset.slug = slugify(subName);
-
-    btn.onclick = () => {
-      currentSub = subName;
-      updateUrl(true);
-      render();
-      setActiveSub(btn);
-    };
-
+  subs.forEach(s=>{
+    const subName=String(s).trim();
+    const btn=document.createElement('div');
+    btn.className='chip';
+    btn.textContent=subName;
+    btn.dataset.sub=subName;
+    btn.dataset.slug=slugify(subName);
+    btn.onclick=()=>{currentSub=subName;updateUrl(true);render();setActiveSub(btn);};
     makeClickableChip(btn);
     bar.appendChild(btn);
   });
 }
-
-function setActiveSub(btn) {
-  document.querySelectorAll('.sub-bar .chip').forEach(b => b.classList.remove('active'));
+function setActiveSub(btn){
+  document.querySelectorAll('.sub-bar .chip').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
 
-/* =======================
-   ✅ INICIO (HOME)
-======================= */
-function goHome(pushUrl = true) {
-  currentCategory = "";
-  currentSub = "";
-
+function goHome(pushUrl=true){
+  currentCategory="";
+  currentSub="";
   clearActiveCategoryChips();
-
-  const subBar = document.getElementById('subBar');
-  subBar.innerHTML = "";
-  subBar.style.display = 'none';
-
-  document.getElementById('searchInput').value = "";
-
+  const subBar=document.getElementById('subBar');
+  subBar.innerHTML="";
+  subBar.style.display='none';
+  document.getElementById('searchInput').value="";
   updateUrl(pushUrl);
   render();
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
+document.getElementById('homeLink').addEventListener('click',(e)=>{e.preventDefault();goHome(true);});
 
-document.getElementById('homeLink').addEventListener('click', (e) => {
-  e.preventDefault();
-  goHome(true);
-});
+function render(){
+  const grid=document.getElementById('productGrid');
+  grid.innerHTML="";
 
-/* =======================
-   ✅ RENDER PRODUCTOS
-======================= */
-function render() {
-  const grid = document.getElementById('productGrid');
-  grid.innerHTML = "";
-
-  if (currentCategory === "") {
-    grid.innerHTML = `
+  if(currentCategory===""){
+    grid.innerHTML=`
       <div class="welcome-state">
         <div class="welcome-icon"><i class="fa-solid fa-hand-pointer"></i></div>
         <h3 class="welcome-title">¡Empieza tu búsqueda!</h3>
@@ -1079,93 +895,69 @@ function render() {
     return;
   }
 
-  const q = document.getElementById('searchInput').value.toLowerCase();
-
-  const filtered = products.filter(p => {
-    const pCat = p.categoria ? String(p.categoria).trim() : "Otros";
-    const name = (p.nombre || "").toLowerCase();
-    const desc = (p.descripcion || p.descipcion || "").toLowerCase();
-
-    return (pCat === currentCategory) &&
-           (!currentSub || p.subcategoria == currentSub) &&
-           (name.includes(q) || desc.includes(q));
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const filtered=products.filter(p=>{
+    const pCat=p.categoria?String(p.categoria).trim():"Otros";
+    const name=(p.nombre||"").toLowerCase();
+    const desc=(p.descripcion||p.descipcion||"").toLowerCase();
+    return (pCat===currentCategory)&&(!currentSub||p.subcategoria==currentSub)&&(name.includes(q)||desc.includes(q));
   });
 
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted)"><i class="fa-solid fa-ghost" style="font-size:40px; margin-bottom:10px;"></i><p>NO HAY RESULTADOS</p></div>`;
+  if(filtered.length===0){
+    grid.innerHTML=`<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-muted)"><i class="fa-solid fa-ghost" style="font-size:40px; margin-bottom:10px;"></i><p>NO HAY RESULTADOS</p></div>`;
     return;
   }
 
-  const isPromoCategory = currentCategory.toLowerCase().includes('oferta') || currentCategory.toLowerCase().includes('mayorista');
+  const isPromoCategory=currentCategory.toLowerCase().includes('oferta')||currentCategory.toLowerCase().includes('mayorista');
 
-  filtered.forEach(p => {
-    // ✅ FIX: stock vacío ya NO marca como agotado
-    const stockRaw = String(p.stock ?? "").trim();
-    const stockNum = Number(stockRaw);
-    const hasStockValue = stockRaw !== "";
-    const isAgotado = hasStockValue ? (Number.isFinite(stockNum) && stockNum <= 0) : false;
+  filtered.forEach(p=>{
+    const stockRaw=String(p.stock??"").trim();
+    const stockNum=Number(stockRaw);
+    const hasStockValue=stockRaw!=="";
+    const isAgotado=hasStockValue?(Number.isFinite(stockNum)&&stockNum<=0):false;
 
-    let btnText = "PEDIR AHORA 🚀";
-    let waMsg = p.whatsapp && String(p.whatsapp).length > 5 ? p.whatsapp : `Hola SDC, me interesa: *${p.nombre}*`;
+    let btnText="PEDIR AHORA 🚀";
+    let waMsg=p.whatsapp&&String(p.whatsapp).length>5?p.whatsapp:`Hola SDC, me interesa: *${p.nombre}*`;
+    if(isAgotado){btnText="CONSULTAR";waMsg=`Hola SDC, el producto *${p.nombre}* está AGOTADO. Avísenme cuando llegue.`;}
 
-    if (isAgotado) {
-      btnText = "CONSULTAR";
-      waMsg = `Hola SDC, el producto *${p.nombre}* está AGOTADO. Avísenme cuando llegue.`;
-    }
+    const waLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
+    const card=document.createElement('div');
+    card.className=`card ${isAgotado?'agotado':''} ${isPromoCategory&&!isAgotado?'promo-mode':''}`;
 
-    const waLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
-    const card = document.createElement('div');
-    card.className = `card ${isAgotado ? 'agotado' : ''} ${isPromoCategory && !isAgotado ? 'promo-mode' : ''}`;
+    let ribbonHTML="";
+    if(isAgotado)ribbonHTML=`<div class="ribbon">AGOTADO</div>`;
+    else if(isPromoCategory)ribbonHTML=`<div class="ribbon-promo">🔥 HOT SALE</div>`;
 
-    let ribbonHTML = "";
-    if (isAgotado) ribbonHTML = `<div class="ribbon">AGOTADO</div>`;
-    else if (isPromoCategory) ribbonHTML = `<div class="ribbon-promo">🔥 HOT SALE</div>`;
+    let rawDesc=p.descripcion||p.descipcion||"";
+    let descText=String(rawDesc).replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,'\n$1').trim();
 
-    let rawDesc = p.descripcion || p.descipcion || "";
-    let descText = String(rawDesc).replace(/(\r\n|\n|\r)/gm, " ").replace(/([►•\-★])/g, '\n$1').trim();
+    let imgUrl=(p.imagen||"").toString();
+    if(imgUrl&&imgUrl.includes('github.com')&&imgUrl.includes('/blob/'))imgUrl=imgUrl.replace('github.com','raw.githubusercontent.com').replace('/blob/','/');
 
-    // AUTO-CORRECTOR DE IMÁGENES GITHUB
-    let imgUrl = (p.imagen || "").toString();
-    if (imgUrl && imgUrl.includes('github.com') && imgUrl.includes('/blob/')) {
-      imgUrl = imgUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-    }
+    let priceHTMLContent="";
+    if(p.precio_anterior&&p.precio_anterior!=="")priceHTMLContent=`<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio||'0'}</div></div>`;
+    else priceHTMLContent=`<div class="price-stack"><div class="current-price-row">Lps. ${p.precio||'0'}</div></div>`;
+    const priceHTML=`<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
-    let priceHTMLContent = "";
-    if (p.precio_anterior && p.precio_anterior !== "") {
-      priceHTMLContent = `<div class="price-stack"><div class="old-price-row"><span class="p-label-small">Antes:</span> <span class="old-val">Lps. ${p.precio_anterior}</span></div><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
-    } else {
-      priceHTMLContent = `<div class="price-stack"><div class="current-price-row">Lps. ${p.precio || '0'}</div></div>`;
-    }
+    let videoBadge="";
+    if(p.tiktok)videoBadge=`<a href="${p.tiktok}" target="_blank" class="video-badge tiktok" rel="noopener"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
+    else if(p.youtube)videoBadge=`<a href="${p.youtube}" target="_blank" class="video-badge youtube" rel="noopener"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
 
-    const priceHTML = `<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
+    let galleryBtn="";
+    if(p.galeria)galleryBtn=`<a href="${p.galeria}" target="_blank" class="btn-gallery" rel="noopener"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
 
-    // 🎥 BOTÓN VIDEO
-    let videoBadge = "";
-    if (p.tiktok) {
-      videoBadge = `<a href="${p.tiktok}" target="_blank" class="video-badge tiktok" rel="noopener"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
-    } else if (p.youtube) {
-      videoBadge = `<a href="${p.youtube}" target="_blank" class="video-badge youtube" rel="noopener"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
-    }
-
-    // 📸 BOTÓN GALERÍA
-    let galleryBtn = "";
-    if (p.galeria) {
-      galleryBtn = `<a href="${p.galeria}" target="_blank" class="btn-gallery" rel="noopener"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
-    }
-
-    card.innerHTML = `
+    /* ✅ FIX: Ribbon fuera del contenedor de imagen para que NO se vea gris */
+    card.innerHTML=`
+      ${ribbonHTML}
       <div class="card-img-container" style="background-image: url('${imgUrl}');">
-        ${ribbonHTML}
         ${videoBadge}
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
         <div class="desc">${descText}</div>
-
         ${galleryBtn}
         ${priceHTML}
-
-        <a href="${waLink}" target="_blank" rel="noopener" class="btn-ws" style="${isAgotado ? 'background:#333; color:#aaa; box-shadow:none;' : ''}">
+        <a href="${waLink}" target="_blank" rel="noopener" class="btn-ws" style="${isAgotado?'background:#333; color:#aaa; box-shadow:none;':''}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>
       </div>
@@ -1174,39 +966,24 @@ function render() {
   });
 }
 
-document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('searchInput').addEventListener('input',render);
+window.addEventListener('scroll',()=>{const f=document.getElementById('filtersWrapper');window.scrollY>50?f.classList.add('scrolled'):f.classList.remove('scrolled');},{passive:true});
 
-window.addEventListener('scroll', () => {
-  const f = document.getElementById('filtersWrapper');
-  window.scrollY > 50 ? f.classList.add('scrolled') : f.classList.remove('scrolled');
-}, { passive: true });
-
-/* =======================
-   ✅ TEMA (GUARDADO + SISTEMA)
-======================= */
-const toggle = document.getElementById('themeToggle');
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  toggle.innerHTML = (theme === 'dark')
-    ? '<i class="fa-solid fa-moon"></i>'
-    : '<i class="fa-solid fa-sun"></i>';
+const toggle=document.getElementById('themeToggle');
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  toggle.innerHTML=(theme==='dark')?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
 }
-
-const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-applyTheme(savedTheme || (systemPrefersDark ? 'dark' : 'light'));
-
-toggle.onclick = () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('theme', next);
+const savedTheme=localStorage.getItem('theme');
+const systemPrefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(savedTheme||(systemPrefersDark?'dark':'light'));
+toggle.onclick=()=>{
+  const current=document.documentElement.getAttribute('data-theme')||'light';
+  const next=current==='dark'?'light':'dark';
+  localStorage.setItem('theme',next);
   applyTheme(next);
 };
 
-/* =======================
-   ✅ ARRANQUE
-======================= */
 fetchConfig();
 </script>
 </body>
