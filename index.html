@@ -113,9 +113,8 @@
     .sub-bar .chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
 
     .result-meta{
-      max-width:1200px;margin:12px auto 12px;padding:14px 16px;
-      color:var(--text-muted);font-size:12px;font-weight:700;letter-spacing:.3px;display:none;
-      scroll-margin-top:140px;
+      max-width:1200px;margin:12px auto 12px;padding:14px 16px;color:var(--text-muted);font-size:12px;font-weight:700;
+      letter-spacing:.3px;display:none;scroll-margin-top:140px;
     }
     .result-meta.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .result-left{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -371,35 +370,30 @@
 
 <div class="faq-section">
   <h3 class="sec-title" style="margin-top:20px;">❓ Preguntas Frecuentes</h3>
-
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Hacen envíos a toda Honduras? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
       ¡Claro que sí! 🚚 Realizamos envíos a todo el territorio nacional de Honduras a través de empresas de confianza como <b>C807, Forza y Cargo Expreso</b>. Si estás en Comayagua, ofrecemos servicio a domicilio o puedes retirar tu pedido personalmente en nuestra tienda física.
     </div>
   </div>
-
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Dónde están ubicados? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
       Estamos dentro de <b>Inkmortal Tattoo Comayagua</b> 📍, en la Colonia Piedras Bonitas. Estamos contiguo a la Farmacia Regis y justo al lado de la Clínica de Licores. ¡Te esperamos!
     </div>
   </div>
-
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
       Aceptamos <b>Efectivo</b> y <b>Transferencia Bancaria</b> 💳. Puedes transferir a nuestras cuentas en <b>BAC, Occidente, Ficohsa, Banpaís y Atlántida</b>. También aceptamos pagos vía <b>PayPal y Tigo Money</b>.
     </div>
   </div>
-
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Tienen garantía los productos? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
       ¡Claro que sí! 🛡️ Cada producto es probado antes de ser enviado para garantizar su funcionamiento. Además, cuentan con garantía por desperfectos de fábrica. Compra con total seguridad.
     </div>
   </div>
-
   <div class="faq-item">
     <div class="faq-question" onclick="toggleFaq(this)">¿Cómo puedo comprar? <i class="fa-solid fa-chevron-down"></i></div>
     <div class="faq-answer">
@@ -431,7 +425,7 @@ const TESTIMONIALS_SHEET="testimonios";
 const NEW_DAYS=7;
 const CACHE_PRODUCTS_KEY="sdc_products_cache_v5";
 const CACHE_TESTIMONIALS_KEY="sdc_testimonials_cache_v2";
-const LAST_STATE_KEY="sdc_last_state_v1"; // ✅ (1) guardar última categoría/sub/promo
+const LAST_STATE_KEY="sdc_last_state_v1";
 
 let products=[];
 let testimonials=[];
@@ -454,7 +448,6 @@ function slugify(s){
 function normBase(s){
   return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim();
 }
-/* ✅ (4) búsqueda más inteligente: quita símbolos, "lps", puntuación */
 function normSearch(s){
   let x=normBase(s);
   x=x.replace(/\b(lps|lempira|lempiras|honduras|hn)\b/g," ");
@@ -511,7 +504,6 @@ function isNewProduct(p){
   return diff>=0 && diff<=NEW_DAYS;
 }
 
-/* ✅ (1) Guardar/leer último estado (si no hay link compartido) */
 function saveLastState(){
   try{
     const st={cat:currentCategory||"", sub:currentSub||"", promo:ofertasOnly?1:0};
@@ -572,7 +564,7 @@ function updateUrl(push=true){
   if(push) history.pushState({}, "", url);
   else history.replaceState({}, "", url);
 
-  saveLastState(); // ✅ (1)
+  saveLastState();
 }
 
 async function copyCurrentLink(){
@@ -580,8 +572,6 @@ async function copyCurrentLink(){
   try{ await navigator.clipboard.writeText(link); flashToast("LINK COPIADO ✅"); }
   catch{ prompt("Copia este link:", link); }
 }
-
-/* ✅ (2) Compartir nativo + fallback a copiar */
 async function shareCurrentLink(){
   const link=window.location.href;
   const title=document.title || "Catálogo SDC";
@@ -590,7 +580,7 @@ async function shareCurrentLink(){
       await navigator.share({title, text:"Mira este producto/categoría en el catálogo SDC", url: link});
       return;
     }
-  }catch{ /* cancelado */ }
+  }catch{}
   await copyCurrentLink();
 }
 
@@ -655,7 +645,6 @@ function buildWaLink(phone, msg){
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
-/* ✅ (3) scroll al grid / resultados */
 function scrollToResults(){
   const target=document.getElementById("resultMeta") || document.getElementById("productGrid");
   if(!target) return;
@@ -774,7 +763,7 @@ function loadAllTabs(sheetNames){
     writeCache(CACHE_PRODUCTS_KEY, products);
     loader.style.display='none';
     initCategories();
-    loadFromUrlOrLastState(); // ✅ (1)
+    loadFromUrlOrLastState();
   });
 }
 
@@ -800,7 +789,7 @@ function getBulkTiers(p){
     }
   }
   tiers.sort((a,b)=>a.min-b.min);
-  if(tiers.length){ tiers[tiers.length-1].max=null; } // ✅ el último tier es 12+ (sin límite)
+  if(tiers.length){ tiers[tiers.length-1].max=null; }
   return tiers;
 }
 function hasPromo(p, tiers){
@@ -906,7 +895,7 @@ function initCategories(){
     setOffersChipState();
     updateUrl(true);
     render();
-    scrollToResults(); // ✅ (3)
+    scrollToResults();
   };
   makeClickableChip(offersChip);
   bar.appendChild(offersChip);
@@ -924,7 +913,7 @@ function initCategories(){
       updateSubs();
       updateUrl(true);
       render();
-      scrollToResults(); // ✅ (3)
+      scrollToResults();
     };
     makeClickableChip(btn);
     bar.appendChild(btn);
@@ -1050,20 +1039,19 @@ function loadFromUrlOrLastState(){
 }
 window.addEventListener('popstate',()=>{ if(products.length) loadFromUrlOrLastState(); });
 
-/* BUSCADOR */
+/* BUSCADOR (sin duplicar variables) */
 const searchInput=document.getElementById('searchInput');
-const clearBtn=document.getElementById('clearSearchBtn');
-function setClearBtn(){ clearBtn.classList.toggle("show", searchInput.value.trim().length>0); }
-clearBtn.addEventListener("click",()=>{
+const clearSearchBtn=document.getElementById('clearSearchBtn');
+function setClearBtn(){ clearSearchBtn.classList.toggle("show", searchInput.value.trim().length>0); }
+clearSearchBtn.addEventListener("click",()=>{
   searchInput.value="";
   setClearBtn();
   updateUrl(true);
   render();
   searchInput.focus();
 });
-searchInput.addEventListener("input",()=>{ setClearBtn(); });
+setClearBtn();
 
-/* META */
 function setResultMeta(count, modeLabel){
   const meta=document.getElementById("resultMeta");
   const left=document.getElementById("resultLeft");
@@ -1085,7 +1073,6 @@ function setResultMeta(count, modeLabel){
     b.textContent=modeLabel;
     left.appendChild(b);
   }
-
   if(ofertasOnly){
     const c=document.createElement("div");
     c.className="tiny-pill";
@@ -1094,7 +1081,6 @@ function setResultMeta(count, modeLabel){
   }
 }
 
-/* UI por cantidad */
 function formatMoney(n){
   const x = Math.round(Number(n)*100)/100;
   return Number.isInteger(x) ? String(x) : x.toFixed(2);
@@ -1152,7 +1138,6 @@ function updateCardForQty(card, p, qty){
   }
 }
 
-/* RENDER */
 function render(){
   const grid=document.getElementById('productGrid');
   grid.innerHTML="";
@@ -1175,18 +1160,10 @@ function render(){
 
   let list=products.map(normalizeProduct);
 
-  if(!ofertasOnly){
-    list=list.filter(p=>!p._promoOnly);
-  }
-  if(ofertasOnly){
-    list=list.filter(p=>p._promo);
-  }
-  if(currentCategory){
-    list=list.filter(p=>p._cat===currentCategory && (!currentSub || p._sub===currentSub));
-  }
-  if(searching){
-    list=list.filter(p=>p._search.includes(q));
-  }
+  if(!ofertasOnly){ list=list.filter(p=>!p._promoOnly); }
+  if(ofertasOnly){ list=list.filter(p=>p._promo); }
+  if(currentCategory){ list=list.filter(p=>p._cat===currentCategory && (!currentSub || p._sub===currentSub)); }
+  if(searching){ list=list.filter(p=>p._search.includes(q)); }
 
   list=sortProducts(list);
 
@@ -1210,6 +1187,7 @@ function render(){
 
     const basePrice = parseFloat(p.precio||"0") || 0;
     const hasTiers = p._tiers && p._tiers.length>0;
+
     let priceHTMLContent="";
     if(hasTiers){
       const unit = p._tiers[0].unit || "par";
@@ -1289,14 +1267,15 @@ function render(){
   });
 }
 
-/* Debounce search + scroll when searching */
+/* debounce búsqueda + scroll */
 let searchTimer=null;
 searchInput.addEventListener('input',()=>{
+  setClearBtn();
   clearTimeout(searchTimer);
   searchTimer=setTimeout(()=>{
     updateUrl(false);
     render();
-    if(searchInput.value.trim().length>0) scrollToResults(); // ✅ (3)
+    if(searchInput.value.trim().length>0) scrollToResults();
   },120);
 });
 
@@ -1327,11 +1306,10 @@ toggle.onclick=()=>{
   applyTheme(next);
 };
 
-/* Click +/− + ✅ NUEVO: click en las “cajitas” (tier-pill) */
+/* Click +/− + click en pills */
 document.getElementById("productGrid").addEventListener("click",(e)=>{
   const grid=document.getElementById("productGrid");
 
-  // ✅ pill tocable
   const pill=e.target.closest(".tier-pill");
   if(pill && grid.contains(pill)){
     const card=pill.closest(".card");
@@ -1344,7 +1322,6 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
     return;
   }
 
-  // +/- buttons
   const btn=e.target.closest(".qty-btn");
   if(!btn) return;
 
@@ -1367,8 +1344,6 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
 
   updateCardForQty(card, pRaw, qty);
 });
-
-/* también permite Enter/Espacio en pills */
 document.getElementById("productGrid").addEventListener("keydown",(e)=>{
   const pill=e.target.closest(".tier-pill");
   if(!pill) return;
@@ -1398,9 +1373,6 @@ bootFromCache();
 fetchConfig();
 fetchTestimonials();
 
-const clearBtn=document.getElementById('clearSearchBtn');
-function setClearBtn(){ clearBtn.classList.toggle("show", searchInput.value.trim().length>0); }
-setClearBtn();
 render();
 </script>
 </body>
