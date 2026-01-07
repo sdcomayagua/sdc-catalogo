@@ -6,7 +6,6 @@
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
-
   <meta name="description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
   <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
   <meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
@@ -113,7 +112,6 @@
     .sub-bar .chip{padding:6px 14px;font-size:11px;border-radius:8px;background:transparent;border:1px solid var(--border)}
     .sub-bar .chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
 
-    /* ✅ MÁS AIRE PARA MOSTRANDO / CATEGORÍA */
     .result-meta{
       max-width:1200px;margin:10px auto 10px;padding:10px 16px;
       color:var(--text-muted);font-size:12px;font-weight:700;letter-spacing:.3px;display:none
@@ -145,7 +143,7 @@
       padding:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)
     }
     .card.agotado .card-img-container{filter:grayscale(100%);opacity:.6}
-    .card.agotado{opacity:.95;border-color:var(--danger)}
+    .card.agotado{opacity:.98;border-color:var(--danger)}
 
     .video-badge{
       position:absolute;bottom:8px;right:8px;z-index:20;display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;
@@ -158,7 +156,8 @@
 
     .ribbon{
       position:absolute;top:15px;left:-30px;width:105px;background:var(--danger);color:#fff;font-size:10px;font-weight:900;padding:4px 0;
-      transform:rotate(-45deg);text-align:center;z-index:30;box-shadow:0 2px 5px rgba(0,0,0,.2);text-shadow:0 2px 6px rgba(0,0,0,.45)
+      transform:rotate(-45deg);text-align:center;z-index:30;box-shadow:0 2px 5px rgba(0,0,0,.2);
+      text-shadow:0 2px 6px rgba(0,0,0,.45)
     }
     .ribbon-promo{
       position:absolute;top:0;right:0;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-size:10px;font-weight:900;padding:6px 12px;
@@ -175,13 +174,6 @@
       display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;height:42px;color:var(--text);text-shadow:0 1px 2px rgba(0,0,0,.3)
     }
     .desc{font-size:13.5px;font-weight:500;color:var(--text);opacity:.9;margin-bottom:6px;line-height:1.6;white-space:pre-line;padding-left:5px}
-
-    .cat-label{
-      display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;
-      color:var(--text-muted);border:1px solid var(--border);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.03);width:fit-content
-    }
-    [data-theme="light"] .cat-label{background:#f8fafc}
-    .cat-label b{color:var(--text);opacity:.9}
 
     .btn-gallery{
       display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;margin-top:6px;background:transparent;border:1px dashed var(--border);
@@ -203,48 +195,33 @@
     .card.agotado .price-icon,.card.agotado .current-price-row{color:var(--danger);text-shadow:none}
     [data-theme="light"] .card.agotado .price-bar{background:#fef2f2;border-color:#fca5a5}
 
-    /* ✅ PROMOS POR CANTIDAD */
     .bulk-box{
-      margin-top:8px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.03);
-      border-radius:10px;
-      padding:10px;
+      margin-top:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:10px;padding:10px
     }
     .card.promo-mode .bulk-box{
-      border-color:var(--promo-color);
-      background:var(--promo-bg);
-      box-shadow:0 0 15px var(--promo-glow);
+      border-color:var(--promo-color);background:var(--promo-bg);box-shadow:0 0 15px var(--promo-glow)
     }
     .bulk-title{
-      font-size:10px;
-      font-weight:900;
-      letter-spacing:.8px;
-      text-transform:uppercase;
-      color:var(--text-muted);
-      margin-bottom:6px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
+      font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);
+      margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:6px
     }
     .bulk-line{
-      font-size:12px;
-      font-weight:800;
-      color:var(--text);
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding:4px 6px;
-      border-radius:8px;
+      font-size:12px;font-weight:800;color:var(--text);
+      display:flex;justify-content:space-between;gap:10px;padding:7px 8px;border-radius:10px
     }
-    .bulk-line span:last-child{
-      font-weight:900;
-      color:var(--accent);
+    .bulk-line span:last-child{font-weight:900;color:var(--accent)}
+    .card.promo-mode .bulk-line span:last-child{color:var(--promo-color);text-shadow:0 0 10px var(--promo-glow)}
+
+    /* ✅ selección de promo por cantidad */
+    .bulk-choice{cursor:pointer;transition:.15s;border:1px solid transparent}
+    .bulk-choice:hover{transform:translateY(-1px)}
+    .bulk-choice.selected{
+      border:1px solid var(--promo-color);
+      background:rgba(255,107,0,.08);
     }
-    .card.promo-mode .bulk-line span:last-child{
-      color:var(--promo-color);
-      text-shadow:0 0 10px var(--promo-glow);
+    .bulk-hint{
+      font-size:10px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;
+      color:var(--text-muted);margin-top:8px;text-align:center;opacity:.9
     }
 
     .btn-ws{
@@ -257,14 +234,20 @@
     .testimonials-section{padding:30px 16px;margin-top:20px;background:rgba(255,255,255,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     .sec-title{text-align:center;font-size:18px;font-weight:900;margin-bottom:20px;color:var(--text);text-transform:uppercase}
     .testimonials-track{display:flex;gap:15px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
-    .t-card{min-width:260px;max-width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:8px;content-visibility:auto;contain:content;contain-intrinsic-size:240px}
+    .t-card{
+      min-width:260px;max-width:260px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:15px;
+      display:flex;flex-direction:column;gap:8px;content-visibility:auto;contain:content;contain-intrinsic-size:240px
+    }
     .t-header{display:flex;align-items:center;gap:10px;margin-bottom:5px}
     .t-avatar{width:35px;height:35px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
     [data-theme="dark"] .t-avatar{color:#000}
     .t-info h4{margin:0;font-size:13px;color:var(--text)}
     .t-info span{font-size:10px;color:var(--accent);font-weight:600;text-transform:uppercase}
     .t-stars{color:#fbbf24;font-size:12px;margin-bottom:0}
-    .t-text{font-size:12px;color:var(--text-muted);line-height:1.4;font-style:italic;margin:0;text-align:justify;text-justify:inter-word;hyphens:auto}
+    .t-text{
+      font-size:12px;color:var(--text-muted);line-height:1.4;font-style:italic;margin:0;
+      text-align:justify;text-justify:inter-word;hyphens:auto
+    }
 
     .location-section{padding:20px 16px;margin-top:10px;text-align:center}
     .map-frame{width:100%;height:250px;border:2px solid var(--border);border-radius:16px;margin-bottom:15px;filter:grayscale(20%) contrast(1.1)}
@@ -440,7 +423,7 @@ const BACKUP_SHEETS=['ofertas','gamer','pc','movil','streaming','cobertores','po
 const TESTIMONIALS_SHEET="testimonios";
 
 const NEW_DAYS=7;
-const CACHE_PRODUCTS_KEY="sdc_products_cache_v3";
+const CACHE_PRODUCTS_KEY="sdc_products_cache_v4";
 const CACHE_TESTIMONIALS_KEY="sdc_testimonials_cache_v2";
 
 let products=[];
@@ -448,6 +431,9 @@ let testimonials=[];
 let currentCategory="";
 let currentSub="";
 let ofertasOnly=false;
+
+/* ✅ selección de promo por cantidad (se recuerda por producto) */
+const promoPick={};
 
 function setCanonical(){
   const el=document.getElementById("canonicalLink");
@@ -480,6 +466,12 @@ function readCache(key){
 }
 function writeCache(key,data){
   try{ localStorage.setItem(key, JSON.stringify({t:Date.now(), d:data})); }catch{}
+}
+function hashStr(str){
+  let h=2166136261;
+  const s=String(str||"");
+  for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=(h*16777619)>>>0; }
+  return h.toString(36);
 }
 
 function parseDateAny(v){
@@ -589,6 +581,32 @@ function getIconForCategory(catName){
 }
 
 /* =======================
+   ✅ WhatsApp helpers (promo por cantidad)
+======================= */
+function pluralizeUnit(unit, qty){
+  const u=String(unit||"par").trim();
+  if(qty===1) return u;
+  if(u.toLowerCase()==="par") return "pares";
+  if(u.endsWith("s")) return u;
+  return u+"s";
+}
+function buildWaText(baseMsg, productName, tier){
+  if(!tier) return baseMsg;
+  const qty=tier.qty;
+  const price=tier.price;
+  const unit=pluralizeUnit(tier.unit, qty);
+  const total=(qty*price);
+  return `${baseMsg}
+
+✅ Quiero aprovechar la promo de *${productName}*:
+• ${qty} ${unit} a Lps. ${price} c/u
+• Total: Lps. ${total}`;
+}
+function buildWaLink(phone, msg){
+  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+}
+
+/* =======================
    ✅ TESTIMONIOS (sheet)
 ======================= */
 function resolveAvatarColor(value){
@@ -691,6 +709,7 @@ function fetchTab(sheetName){
       let obj={};
       r.c.forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
       if(!obj.categoria) obj.categoria=sheetName;
+      obj._sheet = sheetName;
       return obj;
     }).filter(p=>p.nombre);
   }).catch(()=>[]);
@@ -759,7 +778,10 @@ function normalizeProduct(p){
   const promo=hasPromo(p, tiers);
   const nuevo=isNewProduct(p);
 
-  return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_nombre:nombre,_desc:desc,_promo:promo,_nuevo:nuevo,_promoOnly:promoOnly,_tiers:tiers};
+  const keyBase = `${cat}|${sub}|${nombre}|${String(p.precio||"")}|${String(p.precio_anterior||"")}|${img}|${String(p._sheet||"")}`;
+  const key = `${slugify(cat)}_${hashStr(keyBase)}`;
+
+  return {...p,_cat:cat,_sub:sub,_agotado:agotado,_img:img,_gal:gal,_tiktok:tiktok,_youtube:youtube,_ord:ord,_nombre:nombre,_desc:desc,_promo:promo,_nuevo:nuevo,_promoOnly:promoOnly,_tiers:tiers,_key:key};
 }
 
 function sortProducts(list){
@@ -803,8 +825,8 @@ function isHiddenOffersCategory(catName){
 function initCategories(){
   const rawCats=products.map(p=>p.categoria?String(p.categoria).trim():"Otros");
   const uniqueCats=[...new Set(rawCats)];
+  const cats=uniqueCats.filter(c=>!isHiddenOffersCategory(c));
 
-  const cats=uniqueCats.filter(c=>!isHiddenOffersCategory(c)); // ✅ aquí se quitan Ofertas duplicadas
   const bar=document.getElementById('categoryBar');
   bar.innerHTML="";
 
@@ -848,7 +870,7 @@ function updateSubs(){
   bar.innerHTML="";
   if(!currentCategory){ bar.style.display='none'; return; }
 
-  const currentCatProducts=products.map(normalizeProduct).filter(p=>p._cat===currentCategory && (!p._promoOnly)); // ✅ NO mezclar promos-only
+  const currentCatProducts=products.map(normalizeProduct).filter(p=>p._cat===currentCategory && (!p._promoOnly));
   const subs=[...new Set(currentCatProducts.map(p=>p._sub).filter(Boolean))];
 
   if(subs.length===0){ bar.style.display='none'; return; }
@@ -1009,19 +1031,15 @@ function render(){
 
   let list=products.map(normalizeProduct);
 
-  /* ✅ Si NO estás en SOLO OFERTAS, NO mostramos los productos marcados "solo_ofertas" */
   if(!ofertasOnly){
     list=list.filter(p=>!p._promoOnly);
   }
-
   if(ofertasOnly){
-    list=list.filter(p=>p._promo); // ofertas: todo lo promo (precio anterior o tiers o promoOnly)
+    list=list.filter(p=>p._promo);
   }
-
   if(currentCategory){
     list=list.filter(p=>p._cat===currentCategory && (!currentSub || p._sub===currentSub));
   }
-
   if(searching){
     list=list.filter(p=>{
       const n=norm(p._nombre);
@@ -1043,19 +1061,11 @@ function render(){
   }
 
   list.forEach(p=>{
-    let btnText="PEDIR AHORA 🚀";
-    let waMsg=p.whatsapp && String(p.whatsapp).length>5 ? p.whatsapp : `Hola SDC, me interesa: *${p._nombre}*`;
-    if(p._agotado){ btnText="CONSULTAR"; waMsg=`Hola SDC, el producto *${p._nombre}* está AGOTADO. Avísenme cuando llegue.`; }
-
-    const waLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(waMsg)}`;
-    const card=document.createElement('div');
-
-    const promoMode = (p._promo && !p._agotado);
-    card.className=`card ${p._agotado?'agotado':''} ${promoMode?'promo-mode':''}`;
+    const isPromoMode=(p._promo && !p._agotado);
 
     let ribbonHTML="";
     if(p._agotado) ribbonHTML+=`<div class="ribbon">AGOTADO</div>`;
-    else if(promoMode) ribbonHTML+=`<div class="ribbon-promo">🔥 HOT SALE</div>`;
+    else if(isPromoMode) ribbonHTML+=`<div class="ribbon-promo">🔥 HOT SALE</div>`;
     if(!p._agotado && p._nuevo) ribbonHTML+=`<div class="ribbon-new">🆕 NUEVO</div>`;
 
     const descText=String(p._desc||"").replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,'\n$1').trim();
@@ -1068,17 +1078,28 @@ function render(){
     }
     const priceHTML=`<div class="price-bar"><i class="fa-solid fa-tag price-icon"></i>${priceHTMLContent}</div>`;
 
+    /* ✅ promo por cantidad (sin seleccionar por defecto) */
     let bulkHTML="";
-    if(p._tiers && p._tiers.length){
-      const unitLabel = (p._tiers[0].unit || "par");
-      const plural = (qty)=> qty===1 ? unitLabel : (unitLabel.endsWith("s") ? unitLabel : unitLabel+"es");
-      const lines = p._tiers.map(t=>{
-        return `<div class="bulk-line"><span>${t.qty} ${plural(t.qty)}</span><span>Lps. ${t.price} c/u</span></div>`;
+    if(p._tiers && p._tiers.length && !p._agotado){
+      const tiers=[...p._tiers].sort((a,b)=>a.qty-b.qty);
+      const picked=promoPick[p._key] || null;
+
+      const lines = tiers.map(t=>{
+        const unitLabel=pluralizeUnit(t.unit, t.qty);
+        const isSel = picked && (t.qty===picked.qty) && (t.price===picked.price);
+        return `
+          <div class="bulk-line bulk-choice ${isSel?'selected':''}" data-key="${p._key}" data-qty="${t.qty}" data-price="${t.price}" data-unit="${t.unit||'par'}">
+            <span>${t.qty} ${unitLabel}</span>
+            <span>Lps. ${t.price} c/u</span>
+          </div>
+        `;
       }).join("");
+
       bulkHTML=`
         <div class="bulk-box">
           <div class="bulk-title"><i class="fa-solid fa-bolt"></i> Promo por cantidad</div>
           ${lines}
+          <div class="bulk-hint">Toca una opción (3 o 5) para que WhatsApp diga la promo exacta ✅</div>
         </div>
       `;
     }
@@ -1089,6 +1110,35 @@ function render(){
 
     let galleryBtn="";
     if(p._gal) galleryBtn=`<a href="${p._gal}" target="_blank" class="btn-gallery" rel="noopener noreferrer"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
+
+    /* ✅ WhatsApp base + selected tier */
+    let btnText="PEDIR AHORA 🚀";
+    const defaultBase=`Hola SDC, me interesa: *${p._nombre}*`;
+    let waBase = defaultBase;
+
+    /* Si NO hay promo por cantidad, sí usamos tu columna whatsapp si existe */
+    const hasTiers = (p._tiers && p._tiers.length);
+    if(!hasTiers && p.whatsapp && String(p.whatsapp).length>5){
+      waBase = String(p.whatsapp);
+    }
+
+    let waMsg = waBase;
+
+    const pickedTier = promoPick[p._key] || null;
+    if(pickedTier && !p._agotado){
+      waMsg = buildWaText(waBase, p._nombre, pickedTier);
+      btnText = `PEDIR ${pickedTier.qty} ${pluralizeUnit(pickedTier.unit, pickedTier.qty).toUpperCase()} 🚀`;
+    }
+
+    if(p._agotado){
+      btnText="CONSULTAR";
+      waMsg = `Hola SDC, el producto *${p._nombre}* está AGOTADO. Avísenme cuando llegue.`;
+    }
+
+    const waLink = buildWaLink(MY_PHONE, waMsg);
+
+    const card=document.createElement('div');
+    card.className=`card ${p._agotado?'agotado':''} ${isPromoMode?'promo-mode':''}`;
 
     const agotadoHint = p._agotado ? `<div class="agotado-hint">Escríbenos y te avisamos cuando regrese.</div>` : "";
     const imgStyle = p._img ? `background-image:url('${p._img}');` : `background-image:none;`;
@@ -1104,7 +1154,12 @@ function render(){
         ${galleryBtn}
         ${priceHTML}
         ${bulkHTML}
-        <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-ws" style="${p._agotado?'background:#333;color:#aaa;box-shadow:none;':''}">
+        <a href="${waLink}" target="_blank" rel="noopener noreferrer"
+           class="btn-ws"
+           data-key="${p._key}"
+           data-name="${p._nombre}"
+           data-base="${waBase.replace(/"/g,'&quot;')}"
+           style="${p._agotado?'background:#333;color:#aaa;box-shadow:none;':''}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>
         ${agotadoHint}
@@ -1147,6 +1202,36 @@ toggle.onclick=()=>{
   localStorage.setItem('theme',next);
   applyTheme(next);
 };
+
+/* ✅ click en promo por cantidad -> actualiza WhatsApp */
+document.getElementById("productGrid").addEventListener("click",(e)=>{
+  const choice=e.target.closest(".bulk-choice");
+  if(!choice) return;
+
+  const card=choice.closest(".card");
+  if(!card || card.classList.contains("agotado")) return;
+
+  const key=choice.dataset.key;
+  const qty=parseInt(choice.dataset.qty,10);
+  const price=parseFloat(choice.dataset.price);
+  const unit=choice.dataset.unit || "par";
+
+  promoPick[key]={qty, price, unit};
+
+  card.querySelectorAll(".bulk-choice").forEach(x=>x.classList.remove("selected"));
+  choice.classList.add("selected");
+
+  const btn=card.querySelector(".btn-ws");
+  if(!btn) return;
+
+  const productName = btn.dataset.name || "Producto";
+  const baseRaw = btn.dataset.base ? btn.dataset.base.replace(/&quot;/g,'"') : `Hola SDC, me interesa: *${productName}*`;
+  const msg = buildWaText(baseRaw, productName, promoPick[key]);
+
+  btn.href = buildWaLink(MY_PHONE, msg);
+  btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${pluralizeUnit(unit, qty).toUpperCase()} 🚀`;
+  flashToast(`Promo seleccionada: ${qty} ${pluralizeUnit(unit, qty)} ✅`);
+});
 
 /* ✅ boot cache */
 function bootFromCache(){
