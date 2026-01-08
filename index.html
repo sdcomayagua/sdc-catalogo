@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
-  <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
 
   <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
@@ -67,16 +66,11 @@
     .search-box{position:relative;display:flex;align-items:center}
     .search-box i{position:absolute;left:14px;color:var(--text-muted)}
     .search-box input{
-      width:100%;padding:14px 44px 14px 45px;border-radius:16px;border:1px solid var(--border);
+      width:100%;padding:14px 16px 14px 45px;border-radius:16px;border:1px solid var(--border);
       background:var(--card-bg);color:var(--text);font-size:15px;outline:none;font-weight:700;
       box-shadow:0 4px 10px rgba(0,0,0,.05);user-select:text;-webkit-user-select:text
     }
     .search-box input:focus{border-color:var(--primary)}
-    .clear-btn{
-      position:absolute;right:10px;width:34px;height:34px;border-radius:12px;border:1px solid var(--border);
-      background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:none;align-items:center;justify-content:center
-    }
-    .clear-btn:hover{border-color:var(--primary)}
 
     .trust-grid{
       display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px;max-width:800px;margin:18px auto 22px
@@ -117,6 +111,9 @@
     }
     [data-theme="light"] .status-pill{background:#fff;border-color:#e2e8f0}
     .status-pill strong{color:var(--text)}
+    /* ✅ NUEVO: Botón compartir en pills */
+    .status-pill.action{cursor:pointer;color:var(--text);border-style:dashed}
+    .status-pill.action i{opacity:.85}
 
     .grid{
       display:grid;grid-template-columns:1fr;gap:16px;padding:10px 16px;max-width:1200px;margin:0 auto;min-height:200px
@@ -175,17 +172,6 @@
     }
     .btn-gallery:hover{background:var(--card-bg);border-color:var(--primary);color:var(--primary)}
 
-    /* ✅ NUEVO: botón compartir producto */
-    .btn-share{
-      display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
-      padding:10px;margin-top:6px;border-radius:12px;cursor:pointer;
-      border:1px solid var(--border);background:rgba(255,255,255,.06);
-      color:var(--text);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.4px;
-      transition:.2s
-    }
-    .btn-share:hover{border-color:var(--primary);transform:translateY(-1px)}
-    .btn-share i{color:var(--primary)}
-
     .price-bar{
       display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--border);
       border-radius:10px;padding:10px;margin-top:10px
@@ -203,18 +189,8 @@
     }
     [data-theme="dark"] .btn-ws{color:#000}
 
-    .stock-badge{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;border:1px solid var(--border);
-      background:rgba(255,255,255,.05);color:var(--text-muted);
-      font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.35px
-    }
-    .stock-badge.low{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.10);color:var(--text)}
-    .stock-badge.ok{border-color:rgba(45,212,191,.35);background:rgba(45,212,191,.10);color:var(--text)}
-
     .promo-box{
-      margin-top:10px;border:1px solid rgba(255,107,0,.35);background:var(--promo-bg);border-radius:14px;padding:12px;
-      display:flex;flex-direction:column;gap:10px
+      margin-top:10px;border:1px solid rgba(255,107,0,.35);background:var(--promo-bg);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px
     }
     .promo-top{
       background:rgba(255,255,255,.06);border:1px solid rgba(255,107,0,.35);border-radius:12px;padding:10px;display:flex;
@@ -240,6 +216,7 @@
     .tier.active{background:rgba(255,107,0,.22);border-color:var(--promo-color);box-shadow:0 0 0 2px rgba(255,107,0,.18) inset}
     .tier.disabled{opacity:.35;cursor:not-allowed;position:relative}
     .tier.disabled::after{content:"✖";position:absolute;right:8px;top:-6px;font-size:12px;color:var(--danger);font-weight:900}
+
     .hint{font-size:11px;font-weight:900;color:var(--text-muted);text-align:center;text-transform:uppercase;letter-spacing:.4px}
 
     .toast{
@@ -299,7 +276,7 @@
 
 <body>
   <header>
-    <div class="brand" id="goHome" role="button" aria-label="Ir al inicio">
+    <div class="brand" id="goHome">
       <img src="logo.png" alt="SDC" onerror="this.style.display='none'">
       <div>
         <h1>Soluciones <span>Digitales</span></h1>
@@ -307,7 +284,7 @@
       </div>
     </div>
     <div style="display:flex; gap:10px; align-items:center;">
-      <div class="icon-btn" id="themeToggle" title="Tema" aria-label="Cambiar tema"><i class="fa-solid fa-sun"></i></div>
+      <div class="icon-btn" id="themeToggle" title="Tema"><i class="fa-solid fa-sun"></i></div>
     </div>
   </header>
 
@@ -319,10 +296,7 @@
   <div class="search-container">
     <div class="search-box">
       <i class="fa-solid fa-search"></i>
-      <input id="searchInput" type="text" placeholder="Buscar producto (nombre o descripción)..." aria-label="Buscar producto" />
-      <button class="clear-btn" id="clearSearch" type="button" aria-label="Limpiar búsqueda">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <input id="searchInput" type="text" placeholder="Buscar producto (nombre o descripción)..." />
     </div>
   </div>
 
@@ -361,10 +335,10 @@
     </div>
 
     <div class="location-btns">
-      <a rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google">
+      <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google">
         <i class="fa-solid fa-map-location-dot"></i> Google Maps
       </a>
-      <a rel="noopener" href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes" target="_blank" class="btn-loc btn-waze">
+      <a href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes" target="_blank" class="btn-loc btn-waze">
         <i class="fa-brands fa-waze"></i> Waze
       </a>
     </div>
@@ -397,275 +371,238 @@
 
   <footer>
     <div class="social-bar">
-      <a rel="noopener" href="https://www.facebook.com/sdcomayagua/" target="_blank" class="social-btn sb-fb" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-      <a rel="noopener" href="https://www.instagram.com/sdcomayagua/" target="_blank" class="social-btn sb-insta" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-      <a rel="noopener" href="https://www.tiktok.com/@gamer.comayagua" target="_blank" class="social-btn sb-tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://www.facebook.com/sdcomayagua/" target="_blank" class="social-btn sb-fb"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/sdcomayagua/" target="_blank" class="social-btn sb-insta"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://www.tiktok.com/@gamer.comayagua" target="_blank" class="social-btn sb-tiktok"><i class="fa-brands fa-tiktok"></i></a>
     </div>
     <p>© 2026 Soluciones Digitales Comayagua<br><span style="font-size:10px; opacity:0.6;">Todos los derechos reservados.</span></p>
   </footer>
 
-  <a class="float-ws" rel="noopener" href="https://wa.me/50432429490" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+  <a class="float-ws" href="https://wa.me/50432429490" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
   <div class="toast" id="toast"></div>
 
 <script>
 /* ================== CONFIG ================== */
-const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const CONFIG_GID = "1488858707";
-const MY_PHONE = "50432429490";
-const BACKUP_SHEETS = ["ofertas","gamer","pc","movil","streaming","cobertores","power"];
-const TESTIMONIOS_SHEET = "testimonios";
+const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
+const CONFIG_GID="1488858707";
+const MY_PHONE="50432429490";
+const BACKUP_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
+const TESTIMONIOS_SHEET="testimonios";
 
 /* ================== STATE ================== */
-let products = [];
-let productById = new Map();
-let currentCategory = "";
-let currentSub = "";
-let soloOfertasMode = false;
-let pendingPid = "";
+let products=[];
+let currentCategory="";
+let currentSub="";
+let soloOfertasMode=false;
+let pendingPid="";
 
 /* ================== HELPERS ================== */
 function norm(s){
-  return (s ?? "").toString().trim().toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
 function money(n){
-  const x = Number(n || 0);
+  const x=Number(n||0);
   return x.toLocaleString("es-HN",{maximumFractionDigits:0});
 }
 function toast(msg){
-  const el = document.getElementById("toast");
-  el.textContent = msg;
+  const el=document.getElementById("toast");
+  el.textContent=msg;
   el.classList.add("show");
   clearTimeout(window.__t);
-  window.__t = setTimeout(()=>el.classList.remove("show"), 1800);
-}
-function debounce(fn, wait=160){
-  let t;
-  return (...args)=>{
-    clearTimeout(t);
-    t=setTimeout(()=>fn(...args), wait);
-  };
+  window.__t=setTimeout(()=>el.classList.remove("show"),1800);
 }
 function getIconForCategory(cat){
-  const name = norm(cat);
+  const name=norm(cat);
   if(name.includes("gamer")) return "🎮";
   if(name.includes("pc")) return "🖥️";
-  if(name.includes("movil") || name.includes("móvil") || name.includes("cel")) return "📱";
+  if(name.includes("movil")||name.includes("móvil")||name.includes("cel")) return "📱";
   if(name.includes("stream")) return "📺";
   if(name.includes("cobert")) return "📦";
   if(name.includes("power")) return "🔋";
   return "📦";
 }
-function pluralize(unidad, qty){
-  const u = norm(unidad);
-  if(u === "par") return qty === 1 ? "par" : "pares";
-  if(u === "uno") return qty === 1 ? "unidad" : "unidades";
-  return qty === 1 ? "unidad" : "unidades";
-}
-function tokenize(q){
-  return norm(q).split(/\s+/).filter(Boolean);
-}
-function matchTokens(text, tokens){
-  if(!tokens.length) return true;
-  const t = norm(text);
-  return tokens.every(tok => t.includes(tok));
+function pluralize(unidad,qty){
+  const u=norm(unidad);
+  if(u==="par") return qty===1?"par":"pares";
+  if(u==="uno") return qty===1?"unidad":"unidades";
+  return qty===1?"unidad":"unidades";
 }
 
-/* ================== SHARE (por producto) ================== */
-function buildShareUrl(pid){
-  const base = new URL(window.location.origin + window.location.pathname);
-  base.searchParams.set("pid", pid);
-  return base.toString();
+/* ================== SHARE / COPY (NUEVO) ================== */
+function buildViewLink({cat="",sub="",offer=false}={}){
+  const url=new URL(window.location);
+  url.searchParams.delete("pid");
+  if(cat) url.searchParams.set("cat",cat); else url.searchParams.delete("cat");
+  if(sub) url.searchParams.set("sub",sub); else url.searchParams.delete("sub");
+  if(offer) url.searchParams.set("offer","1"); else url.searchParams.delete("offer");
+  return url.toString();
 }
-async function shareProduct(pid){
-  if(!pid){ toast("Este producto no tiene ID"); return; }
-  const p = productById.get(pid);
-  const name = p?.nombre || "Producto SDC";
-  const url = buildShareUrl(pid);
-  const text = `Mira este producto en SDC: ${name}`;
-
-  if(navigator.share){
-    try{
-      await navigator.share({ title: name, text, url });
-      return;
-    }catch(e){
-      // si cancelan o falla, seguimos con copiar
-    }
-  }
+async function copyText(text){
   try{
-    await navigator.clipboard.writeText(url);
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+    }else{
+      const ta=document.createElement("textarea");
+      ta.value=text;
+      ta.setAttribute("readonly","");
+      ta.style.position="fixed";
+      ta.style.left="-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
     toast("✅ Link copiado");
   }catch(e){
-    window.prompt("Copia este link:", url);
+    console.warn("No se pudo copiar:",e);
+    toast("⚠️ No se pudo copiar");
   }
+}
+function bindDoubleTap(el,fn){
+  let last=0;
+  el.addEventListener("touchend",(e)=>{
+    const now=Date.now();
+    if(now-last<320){
+      e.preventDefault();
+      fn();
+    }
+    last=now;
+  },{passive:false});
+  el.addEventListener("dblclick",(e)=>{
+    e.preventDefault();
+    fn();
+  });
+}
+function copyCurrentView(){
+  const link=buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
+  copyText(link);
 }
 
 /* ================== URL ================== */
 function updateUrl(){
-  const url = new URL(window.location);
-  if(currentCategory) url.searchParams.set("cat", currentCategory); else url.searchParams.delete("cat");
-  if(currentSub) url.searchParams.set("sub", currentSub); else url.searchParams.delete("sub");
+  const url=new URL(window.location);
+  if(currentCategory) url.searchParams.set("cat",currentCategory); else url.searchParams.delete("cat");
+  if(currentSub) url.searchParams.set("sub",currentSub); else url.searchParams.delete("sub");
   if(soloOfertasMode) url.searchParams.set("offer","1"); else url.searchParams.delete("offer");
-  if(pendingPid) url.searchParams.set("pid", pendingPid); else url.searchParams.delete("pid");
+  if(pendingPid) url.searchParams.set("pid",pendingPid); else url.searchParams.delete("pid");
   window.history.replaceState({}, "", url);
 }
-function loadFromUrl(){
-  const params = new URLSearchParams(window.location.search);
-  const cat = params.get("cat");
-  const sub = params.get("sub");
-  const offer = params.get("offer");
-  const pid = params.get("pid");
-  soloOfertasMode = offer === "1";
-  if(cat) currentCategory = norm(cat);
-  if(sub) currentSub = sub;
-  if(pid) pendingPid = pid;
-}
 
-/* ================== FETCH (timeout + retry) ================== */
-async function fetchText(url, timeoutMs=6000){
-  const ctrl = new AbortController();
-  const timer = setTimeout(()=>ctrl.abort(), timeoutMs);
-  try{
-    const res = await fetch(url, {signal: ctrl.signal});
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    return await res.text();
-  } finally {
-    clearTimeout(timer);
+/* ✅ NUEVO: si viene pid, ignoramos cat/sub/offer (link compartido por producto) */
+function loadFromUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const pid=params.get("pid");
+  pendingPid=pid?pid:"";
+  if(pendingPid){
+    currentCategory="";
+    currentSub="";
+    soloOfertasMode=false;
+    return;
   }
-}
-async function fetchTextRetry(url, retries=2, timeoutMs=6000){
-  let lastErr;
-  for(let i=0;i<=retries;i++){
-    try{
-      return await fetchText(url, timeoutMs);
-    }catch(e){
-      lastErr = e;
-      await new Promise(r=>setTimeout(r, 280 + i*220));
-    }
-  }
-  throw lastErr;
+  const cat=params.get("cat");
+  const sub=params.get("sub");
+  const offer=params.get("offer");
+  soloOfertasMode=offer==="1";
+  if(cat) currentCategory=norm(cat);
+  if(sub) currentSub=sub;
 }
 
 /* ================== SHEETS FETCH ================== */
-function gvizUrlByGid(gid){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;
-}
-function gvizUrlBySheet(sheetName){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-}
+function gvizUrlByGid(gid){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;}
+function gvizUrlBySheet(sheetName){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;}
 function parseGviz(text){
-  const json = JSON.parse(text.substring(47, text.length - 2));
-  const cols = json.table.cols.map(c => c && c.label ? norm(c.label) : "col");
-  const rows = json.table.rows.map(r=>{
-    let obj = {};
-    r.c.forEach((c,i)=> obj[cols[i]] = c ? (c.v===null ? "" : c.v) : "");
+  const json=JSON.parse(text.substring(47,text.length-2));
+  const cols=json.table.cols.map(c=>c&&c.label?norm(c.label):"col");
+  const rows=json.table.rows.map(r=>{
+    let obj={};
+    r.c.forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
     return obj;
   });
-  return { cols, rows };
+  return {cols,rows};
 }
 async function fetchConfigSheets(){
   try{
-    const t = await fetchTextRetry(gvizUrlByGid(CONFIG_GID), 2, 6500);
-    const { rows } = parseGviz(t);
-    const names = rows.map(r => r.sheet ?? r.col ?? "").map(s=> (s??"").toString().trim()).filter(Boolean);
-    const clean = names.filter(n => norm(n) !== "sheet");
-    return clean.length ? clean : BACKUP_SHEETS;
+    const t=await (await fetch(gvizUrlByGid(CONFIG_GID))).text();
+    const {rows}=parseGviz(t);
+    const names=rows.map(r=>r.sheet??r.col??"").map(s=>(s??"").toString().trim()).filter(Boolean);
+    const clean=names.filter(n=>norm(n)!=="sheet");
+    return clean.length?clean:BACKUP_SHEETS;
   }catch(e){
-    console.warn("Config falló, usando respaldo", e);
+    console.warn("Config falló, usando respaldo",e);
     return BACKUP_SHEETS;
   }
 }
 async function fetchTab(sheetName){
   try{
-    const t = await fetchTextRetry(gvizUrlBySheet(sheetName), 2, 6500);
-    const { rows } = parseGviz(t);
+    const t=await (await fetch(gvizUrlBySheet(sheetName))).text();
+    const {rows}=parseGviz(t);
     return rows.map(o=>{
-      const obj = { ...o };
-      obj._sheet = norm(sheetName);
-      obj.categoria = norm(obj.categoria || sheetName);
-      obj.subcategoria = (obj.subcategoria ?? "").toString().trim();
-      obj.nombre = (obj.nombre ?? "").toString().trim();
-      obj.descripcion = (obj.descripcion ?? obj.descipcion ?? "").toString();
-      obj.estado = norm(obj.estado || "activo");
-      obj.stock = Number(obj.stock || 0);
-      obj.precio = Number(obj.precio || 0);
-      obj.precio_anterior = Number(obj.precio_anterior || 0);
-      obj.unidad = (obj.unidad ?? "").toString().trim() || "unidad";
-      obj.id = (obj.id ?? "").toString().trim();
-      obj.solo_ofertas = norm(obj.solo_ofertas || "");
-      obj._isOffer = (obj._sheet === "ofertas") || ["si","sí","1","true","yes"].includes(obj.solo_ofertas);
+      const obj={...o};
+      obj._sheet=norm(sheetName);
+      obj.categoria=norm(obj.categoria||sheetName);
+      obj.subcategoria=(obj.subcategoria??"").toString().trim();
+      obj.nombre=(obj.nombre??"").toString().trim();
+      obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
+      obj.estado=norm(obj.estado||"activo");
+      obj.stock=Number(obj.stock||0);
+      obj.precio=Number(obj.precio||0);
+      obj.precio_anterior=Number(obj.precio_anterior||0);
+      obj.unidad=(obj.unidad??"").toString().trim()||"unidad";
+      obj.id=(obj.id??"").toString().trim();
+      obj.solo_ofertas=norm(obj.solo_ofertas||"");
+      obj._isOffer=(obj._sheet==="ofertas")||["si","sí","1","true","yes"].includes(obj.solo_ofertas);
       if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
-        obj.imagen = obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
+        obj.imagen=obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
       }
       return obj;
-    }).filter(p => p.nombre);
+    }).filter(p=>p.nombre);
   }catch(e){
-    console.warn("Tab falló:", sheetName, e);
+    console.warn("Tab falló:",sheetName,e);
     return [];
   }
 }
-function showLoadError(){
-  const loader = document.getElementById("loader");
-  loader.innerHTML = `
-    <div style="text-align:center;max-width:320px;padding:0 16px;">
-      <div style="font-size:42px;margin-bottom:10px;">⚠️</div>
-      <p style="font-weight:900;letter-spacing:1px;margin:0 0 8px;">NO SE PUDO CARGAR</p>
-      <p style="margin:0;color:var(--text-muted);line-height:1.45;">Revisa tu conexión o inténtalo de nuevo.</p>
-      <button id="retryBtn" style="margin-top:14px;background:var(--primary);border:none;padding:12px 16px;border-radius:14px;font-weight:900;cursor:pointer;">
-        REINTENTAR
-      </button>
-    </div>`;
-  const btn = document.getElementById("retryBtn");
-  if(btn) btn.onclick = ()=>location.reload();
-}
 
-/* ================== LOAD ALL ================== */
 async function loadAll(){
-  try{
-    loadFromUrl();
-    const sheetNames = await fetchConfigSheets();
-    const results = await Promise.all(sheetNames.map(n => fetchTab(n)));
-    products = results.flat().filter(p => p.estado !== "inactivo" && p.estado !== "0");
+  loadFromUrl();
+  const sheetNames=await fetchConfigSheets();
+  const results=await Promise.all(sheetNames.map(n=>fetchTab(n)));
+  products=results.flat().filter(p=>p.estado!=="inactivo" && p.estado!=="0");
 
-    productById = new Map();
-    products.forEach(p=>{ if(p.id) productById.set(p.id, p); });
+  // ✅ index por id para deep-link perfecto
+  window.productById=new Map(products.map(p=>[p.id,p]));
 
-    if(!products.length){
-      showLoadError();
-      return;
+  // ✅ Deep link perfecto por producto
+  if(pendingPid){
+    const found=productById.get(pendingPid);
+    if(found){
+      currentCategory=found.categoria||"";
+      soloOfertasMode=!!found._isOffer;
+      currentSub=(found.subcategoria||"").trim();
+      const si=document.getElementById("searchInput");
+      if(si) si.value="";
+    }else{
+      toast("⚠️ Producto no encontrado");
     }
-
-    if (pendingPid && !currentCategory) {
-      const found = productById.get(pendingPid);
-      if (found) {
-        currentCategory = found.categoria;
-        soloOfertasMode = !!found._isOffer;
-        if (found.subcategoria) currentSub = found.subcategoria;
-      }
-    }
-
-    document.getElementById("loader").style.display = "none";
-    initCategoryBar();
-    updateSubs();
-    render();
-    await loadTestimonials();
-    if(pendingPid) focusProductById(pendingPid);
-  }catch(e){
-    console.warn("LoadAll error:", e);
-    showLoadError();
   }
+
+  document.getElementById("loader").style.display="none";
+  initCategoryBar();
+  updateSubs();
+  render();
+  await loadTestimonials();
+  if(pendingPid){setTimeout(()=>focusProductById(pendingPid),120);}
 }
 
 /* ================== CATEGORY UI ================== */
 function initCategoryBar(){
-  const bar = document.getElementById("categoryBar");
-  bar.innerHTML = "";
+  const bar=document.getElementById("categoryBar");
+  bar.innerHTML="";
 
-  const offerChip = document.createElement("div");
-  offerChip.className = "chip" + (soloOfertasMode ? " active promo-active" : "");
-  offerChip.textContent = "💥 SOLO OFERTAS";
-  offerChip.onclick = ()=>{
-    soloOfertasMode = !soloOfertasMode;
+  const offerChip=document.createElement("div");
+  offerChip.className="chip"+(soloOfertasMode?" active promo-active":"");
+  offerChip.textContent="💥 SOLO OFERTAS";
+  offerChip.onclick=()=>{
+    soloOfertasMode=!soloOfertasMode;
     updateUrl();
     initCategoryBar();
     updateSubs();
@@ -673,73 +610,80 @@ function initCategoryBar(){
   };
   bar.appendChild(offerChip);
 
-  const availableCats = [...new Set(products.map(p => p.categoria).filter(Boolean))];
-  const preferredOrder = ["gamer","pc","movil","streaming","cobertores","power"];
-  const ordered = [
-    ...preferredOrder.filter(c => availableCats.includes(c)),
-    ...availableCats.filter(c => !preferredOrder.includes(c))
-  ];
+  const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
+  const preferredOrder=["gamer","pc","movil","streaming","cobertores","power"];
+  const ordered=[...preferredOrder.filter(c=>availableCats.includes(c)),...availableCats.filter(c=>!preferredOrder.includes(c))];
 
   ordered.forEach(cat=>{
-    const btn = document.createElement("div");
-    btn.className = "chip" + (cat === currentCategory ? " active" : "");
-    btn.innerHTML = `${getIconForCategory(cat)} ${cat}`;
-    btn.onclick = ()=>{
-      currentCategory = cat;
-      currentSub = "";
-      pendingPid = "";
+    const btn=document.createElement("div");
+    btn.className="chip"+(cat===currentCategory?" active":"");
+    btn.innerHTML=`${getIconForCategory(cat)} ${cat}`;
+    btn.onclick=()=>{
+      currentCategory=cat;
+      currentSub="";
+      pendingPid="";
       updateUrl();
       document.querySelectorAll(".category-bar .chip").forEach(c=>c.classList.remove("active"));
       btn.classList.add("active");
       updateSubs();
       render();
-      window.scrollTo({top:0, behavior:"smooth"});
+      window.scrollTo({top:0,behavior:"smooth"});
     };
+
+    // ✅ NUEVO: doble tap/doble click para copiar link de esa categoría
+    bindDoubleTap(btn, ()=>{
+      copyText(buildViewLink({cat,sub:"",offer:!!soloOfertasMode}));
+    });
+
     bar.appendChild(btn);
   });
 }
 function updateSubs(){
-  const bar = document.getElementById("subBar");
-  bar.innerHTML = "";
+  const bar=document.getElementById("subBar");
+  bar.innerHTML="";
 
-  if(!currentCategory){
-    bar.style.display = "none";
-    return;
-  }
+  if(!currentCategory){bar.style.display="none";return;}
 
-  const base = products.filter(p => p.categoria === currentCategory);
-  const inMode = base.filter(p => soloOfertasMode ? p._isOffer : !p._isOffer);
-  const subs = [...new Set(inMode.map(p => (p.subcategoria||"").trim()).filter(Boolean))];
+  const base=products.filter(p=>p.categoria===currentCategory);
+  const inMode=base.filter(p=>soloOfertasMode?p._isOffer:!p._isOffer);
+  const subs=[...new Set(inMode.map(p=>(p.subcategoria||"").trim()).filter(Boolean))];
 
-  if(!subs.length){
-    bar.style.display = "none";
-    return;
-  }
-  bar.style.display = "flex";
+  if(!subs.length){bar.style.display="none";return;}
+  bar.style.display="flex";
 
-  const allBtn = document.createElement("div");
-  allBtn.className = "chip" + (!currentSub ? " active" : "");
-  allBtn.textContent = "Todo";
-  allBtn.onclick = ()=>{
-    currentSub = "";
-    pendingPid = "";
+  const allBtn=document.createElement("div");
+  allBtn.className="chip"+(!currentSub?" active":"");
+  allBtn.textContent="Todo";
+  allBtn.onclick=()=>{
+    currentSub="";
+    pendingPid="";
     updateUrl();
     render();
     setActiveSub(allBtn);
   };
+  // ✅ doble tap copiar vista sin sub
+  bindDoubleTap(allBtn, ()=>{
+    copyText(buildViewLink({cat:currentCategory||"",sub:"",offer:!!soloOfertasMode}));
+  });
   bar.appendChild(allBtn);
 
   subs.forEach(s=>{
-    const b = document.createElement("div");
-    b.className = "chip" + (currentSub===s ? " active" : "");
-    b.textContent = s;
-    b.onclick = ()=>{
-      currentSub = s;
-      pendingPid = "";
+    const b=document.createElement("div");
+    b.className="chip"+(currentSub===s?" active":"");
+    b.textContent=s;
+    b.onclick=()=>{
+      currentSub=s;
+      pendingPid="";
       updateUrl();
       render();
       setActiveSub(b);
     };
+
+    // ✅ NUEVO: doble tap copia link de categoría + sub
+    bindDoubleTap(b, ()=>{
+      copyText(buildViewLink({cat:currentCategory||"",sub:s,offer:!!soloOfertasMode}));
+    });
+
     bar.appendChild(b);
   });
 }
@@ -750,87 +694,74 @@ function setActiveSub(btn){
 
 /* ================== PROMOS ================== */
 function extractPromos(p){
-  const promos = [];
+  const promos=[];
   for(const k in p){
-    const m = k.match(/^promo(\d+)_cant$/i);
+    const m=k.match(/^promo(\d+)_cant$/i);
     if(m){
-      const idx = m[1];
-      const cant = Number(p[k] || 0);
-      const precio = Number(p[`promo${idx}_precio`] || 0);
-      if(cant > 0 && precio > 0){
-        promos.push({ cant, precio });
-      }
+      const idx=m[1];
+      const cant=Number(p[k]||0);
+      const precio=Number(p[`promo${idx}_precio`]||0);
+      if(cant>0 && precio>0) promos.push({cant,precio});
     }
   }
   promos.sort((a,b)=>a.cant-b.cant);
-  const map = new Map();
+  const map=new Map();
   promos.forEach(x=>{
-    if(!map.has(x.cant)) map.set(x.cant, x.precio);
-    else map.set(x.cant, Math.min(map.get(x.cant), x.precio));
+    if(!map.has(x.cant)) map.set(x.cant,x.precio);
+    else map.set(x.cant,Math.min(map.get(x.cant),x.precio));
   });
   return [...map.entries()].map(([cant,precio])=>({cant,precio})).sort((a,b)=>a.cant-b.cant);
 }
-function priceForQty(p, qty){
-  const base = Number(p.precio || 0);
-  const promos = extractPromos(p);
-  let unit = base;
-  let tier = { cant: 1, precio: base };
+function priceForQty(p,qty){
+  const base=Number(p.precio||0);
+  const promos=extractPromos(p);
+  let unit=base;
+  let tier={cant:1,precio:base};
   promos.forEach(pr=>{
-    if(qty >= pr.cant){
-      unit = pr.precio;
-      tier = { cant: pr.cant, precio: pr.precio };
-    }
+    if(qty>=pr.cant){unit=pr.precio;tier={cant:pr.cant,precio:pr.precio};}
   });
-  return { unitPrice: unit, tier, promos };
+  return {unitPrice:unit,tier,promos};
 }
 
 /* ================== RENDER ================== */
 function buildStatus(count){
-  const row = document.getElementById("statusRow");
-  const q = document.getElementById("searchInput").value.trim();
-  if(!currentCategory && !q){
-    row.style.display = "none";
-    row.innerHTML = "";
+  const row=document.getElementById("statusRow");
+  if(!currentCategory && !document.getElementById("searchInput").value.trim()){
+    row.style.display="none";
+    row.innerHTML="";
     return;
   }
-  row.style.display = "flex";
-  row.innerHTML = `
+  row.style.display="flex";
+  row.innerHTML=`
     <div class="status-pill">Mostrando: <strong>${count}</strong></div>
-    <div class="status-pill">Categoría: <strong>${currentCategory ? currentCategory.toUpperCase() : "TODAS"}</strong></div>
-    ${soloOfertasMode ? `<div class="status-pill">Solo ofertas ✅</div>` : ``}
+    <div class="status-pill">Categoría: <strong>${currentCategory?currentCategory.toUpperCase():"TODAS"}</strong></div>
+    ${currentSub?`<div class="status-pill">Sub: <strong>${currentSub}</strong></div>`:``}
+    ${soloOfertasMode?`<div class="status-pill">Solo ofertas ✅</div>`:``}
+    ${(currentCategory || currentSub || soloOfertasMode)?`<div class="status-pill action" id="shareViewBtn"><i class="fa-solid fa-link"></i> Compartir</div>`:``}
   `;
+  const shareBtn=document.getElementById("shareViewBtn");
+  if(shareBtn) shareBtn.onclick=copyCurrentView;
 }
 
 function render(){
-  const grid = document.getElementById("productGrid");
-  grid.innerHTML = "";
+  const grid=document.getElementById("productGrid");
+  grid.innerHTML="";
 
-  const rawQ = document.getElementById("searchInput").value;
-  const tokens = tokenize(rawQ);
+  const q=norm(document.getElementById("searchInput").value);
 
-  let list = products.slice();
-  if(currentCategory) list = list.filter(p => p.categoria === currentCategory);
-  if(currentSub) list = list.filter(p => (p.subcategoria||"").trim() === currentSub);
-  list = list.filter(p => soloOfertasMode ? p._isOffer : !p._isOffer);
+  let list=products.slice();
+  if(currentCategory) list=list.filter(p=>p.categoria===currentCategory);
+  if(currentSub) list=list.filter(p=>(p.subcategoria||"").trim()===currentSub);
+  list=list.filter(p=>soloOfertasMode?p._isOffer:!p._isOffer);
 
-  if(tokens.length){
-    list = list.filter(p=>{
-      const blob = `${p.nombre} ${p.descripcion} ${p.subcategoria}`;
-      return matchTokens(blob, tokens);
-    });
+  if(q){
+    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q));
   }
-
-  list.sort((a,b)=>{
-    const ao = Number(a.stock||0) <= 0;
-    const bo = Number(b.stock||0) <= 0;
-    if(ao !== bo) return ao - bo;
-    return norm(a.nombre).localeCompare(norm(b.nombre), "es");
-  });
 
   buildStatus(list.length);
 
-  if(!currentCategory && !tokens.length){
-    grid.innerHTML = `
+  if(!currentCategory && !q){
+    grid.innerHTML=`
       <div class="welcome-state">
         <div class="welcome-icon"><i class="fa-solid fa-hand-pointer"></i></div>
         <h3 class="welcome-title">¡Empieza tu búsqueda!</h3>
@@ -839,8 +770,8 @@ function render(){
     return;
   }
 
-  if(list.length === 0){
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
+  if(list.length===0){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
       <i class="fa-solid fa-ghost" style="font-size:40px;margin-bottom:10px;"></i>
       <p style="font-weight:900;letter-spacing:1px;">NO HAY RESULTADOS</p>
     </div>`;
@@ -848,60 +779,51 @@ function render(){
   }
 
   list.forEach(p=>{
-    const stock = Number(p.stock || 0);
-    const isAgotado = stock <= 0;
+    const isAgotado=Number(p.stock||0)<=0;
+    const promos=extractPromos(p);
+    const isPromoCard=p._isOffer && promos.length;
 
-    const promos = extractPromos(p);
-    const isPromoCard = p._isOffer && promos.length;
+    const card=document.createElement("div");
+    card.className=`card ${isAgotado?"agotado":""} ${isPromoCard && !isAgotado?"promo-mode":""}`;
+    card.dataset.pid=p.id||"";
 
-    const card = document.createElement("div");
-    card.className = `card ${isAgotado ? "agotado" : ""} ${isPromoCard && !isAgotado ? "promo-mode" : ""}`;
-    card.dataset.pid = p.id || "";
+    const imgUrl=p.imagen||"";
+    const ribbon=isAgotado?`<div class="ribbon">AGOTADO</div>`:(isPromoCard?`<div class="ribbon-promo">🔥 HOT SALE</div>`:``);
 
-    const imgUrl = p.imagen || "";
-    const ribbon = isAgotado ? `<div class="ribbon">AGOTADO</div>` : (isPromoCard ? `<div class="ribbon-promo">🔥 HOT SALE</div>` : ``);
+    let videoBadge="";
+    if(p.tiktok) videoBadge=`<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
+    else if(p.youtube) videoBadge=`<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
 
-    let videoBadge = "";
-    if(p.tiktok) videoBadge = `<a rel="noopener" href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
-    else if(p.youtube) videoBadge = `<a rel="noopener" href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
+    let galleryBtn="";
+    if(p.galeria) galleryBtn=`<a href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
 
-    let galleryBtn = "";
-    if(p.galeria) galleryBtn = `<a rel="noopener" href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
+    let rawDesc=(p.descripcion||"");
+    let descText=rawDesc.replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,"\n$1").trim();
 
-    // ✅ botón compartir por producto (solo si tiene ID)
-    const shareBtn = p.id ? `<button class="btn-share" type="button" data-share="${p.id}"><i class="fa-solid fa-share-nodes"></i> Compartir</button>` : ``;
-
-    let rawDesc = (p.descripcion || "");
-    let descText = rawDesc.replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,"\n$1").trim();
-
-    const showOld = Number(p.precio_anterior||0) > Number(p.precio||0) && !isPromoCard;
-    const priceHTML = `
+    const showOld=Number(p.precio_anterior||0)>Number(p.precio||0) && !isPromoCard;
+    const priceHTML=`
       <div class="price-bar">
         <i class="fa-solid fa-tag price-icon"></i>
         <div class="price-stack">
-          ${showOld ? `<div class="old-price-row"><span style="font-weight:900;">Antes:</span><span class="old-val">Lps. ${money(p.precio_anterior)}</span></div>` : ``}
+          ${showOld?`<div class="old-price-row"><span style="font-weight:900;">Antes:</span><span class="old-val">Lps. ${money(p.precio_anterior)}</span></div>`:``}
           <div class="current-price-row">Lps. ${money(p.precio||0)}</div>
         </div>
       </div>`;
 
-    const normalMsg = p.whatsapp && p.whatsapp.toString().trim().length > 5
+    const normalMsg=(p.whatsapp && p.whatsapp.toString().trim().length>5)
       ? p.whatsapp
       : `Hola SDC, me interesa: *${p.nombre}*\nPrecio: Lps. ${money(p.precio||0)}\nQuedo atento(a). Gracias.`;
-    const normalLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(normalMsg)}`;
+    const normalLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(normalMsg)}`;
 
-    let promoHTML = "";
-    let btnText = isAgotado ? "CONSULTAR" : "PEDIR AHORA 🚀";
-
-    let stockBadge = "";
-    if(!isPromoCard){
-      if(stock > 0 && stock <= 3) stockBadge = `<div class="stock-badge low">⚠️ Quedan ${stock}</div>`;
-    }
+    let promoHTML="";
+    let btnText=isAgotado?"CONSULTAR":"PEDIR AHORA 🚀";
 
     if(isPromoCard){
-      let defaultQty = 1;
-      if(promos.some(x=>x.cant===2) && stock >= 2) defaultQty = 2;
+      let defaultQty=1;
+      const stock=Number(p.stock||0);
+      if(promos.some(x=>x.cant===2) && stock>=2) defaultQty=2;
 
-      promoHTML = `
+      promoHTML=`
         <div class="promo-box" data-pid="${p.id}" data-qty="${defaultQty}">
           <div class="promo-top">
             <div class="promo-total"><i class="fa-solid fa-tag"></i> <span class="promoTotal">Lps. 0</span></div>
@@ -909,20 +831,20 @@ function render(){
           </div>
 
           <div class="qty-row">
-            <button class="qty-btn minus" aria-label="Bajar cantidad">−</button>
+            <button class="qty-btn minus">−</button>
             <div class="qty-pill"><span class="qtyVal">${defaultQty}</span> <span class="qtyUnit">UNIDADES</span></div>
-            <button class="qty-btn plus" aria-label="Subir cantidad">+</button>
+            <button class="qty-btn plus">+</button>
           </div>
 
           <div class="tier-grid"></div>
           <div class="hint">El total y WhatsApp se actualizan solos ✅</div>
 
-          <a rel="noopener" href="#" target="_blank" class="btn-ws promoBtn"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
+          <a href="#" target="_blank" class="btn-ws promoBtn"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
         </div>`;
-      btnText = "PEDIR";
+      btnText="PEDIR";
     }
 
-    card.innerHTML = `
+    card.innerHTML=`
       <div class="card-img-container">
         <div class="card-img" style="background-image:url('${imgUrl}')"></div>
         ${ribbon}
@@ -930,111 +852,97 @@ function render(){
       </div>
       <div class="card-body">
         <h3>${p.nombre}</h3>
-        ${stockBadge}
         <div class="desc">${descText}</div>
         ${galleryBtn}
-        ${shareBtn}
-        ${isPromoCard ? promoHTML : priceHTML}
-        ${!isPromoCard ? `<a rel="noopener" href="${normalLink}" target="_blank" class="btn-ws" style="${isAgotado ? 'background:#333; color:#aaa; box-shadow:none;' : ''}">
+        ${isPromoCard?promoHTML:priceHTML}
+        ${!isPromoCard?`<a href="${normalLink}" target="_blank" class="btn-ws" style="${isAgotado?'background:#333; color:#aaa; box-shadow:none;':''}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
-        </a>` : ``}
+        </a>`:``}
       </div>
     `;
     grid.appendChild(card);
-
-    if(isPromoCard) initPromoWidget(card, p);
+    if(isPromoCard) initPromoWidget(card,p);
   });
 }
 
-function initPromoWidget(card, p){
-  const box = card.querySelector(".promo-box");
+function initPromoWidget(card,p){
+  const box=card.querySelector(".promo-box");
   if(!box) return;
 
-  let qty = Number(box.dataset.qty || 1);
-  const stock = Number(p.stock || 0);
-  const unidad = p.unidad || "unidad";
-  const promos = extractPromos(p);
+  let qty=Number(box.dataset.qty||1);
+  const stock=Number(p.stock||0);
+  const unidad=p.unidad||"unidad";
+  const promos=extractPromos(p);
 
-  const tierSet = new Set([1,2,3,4]);
+  const tierSet=new Set([1,2,3,4]);
   promos.forEach(x=>tierSet.add(x.cant));
-  const tiers = [...tierSet].sort((a,b)=>a-b);
+  const tiers=[...tierSet].sort((a,b)=>a-b);
 
-  const tierGrid = box.querySelector(".tier-grid");
-  tierGrid.innerHTML = "";
+  const tierGrid=box.querySelector(".tier-grid");
+  tierGrid.innerHTML="";
 
   tiers.forEach(cant=>{
-    const { unitPrice } = priceForQty(p, cant);
-    const t = document.createElement("div");
-    t.className = "tier";
-    t.dataset.cant = cant;
-
-    const label = cant >= 5 ? `${cant}+` : `${cant}`;
-    t.innerHTML = `<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
-
-    const disabled = stock > 0 && cant > stock;
+    const {unitPrice}=priceForQty(p,cant);
+    const t=document.createElement("div");
+    t.className="tier";
+    t.dataset.cant=cant;
+    const label=cant>=5?`${cant}+`:`${cant}`;
+    t.innerHTML=`<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
+    const disabled=stock>0 && cant>stock;
     if(disabled) t.classList.add("disabled");
-
-    t.onclick = ()=>{
-      if(disabled){
-        toast(`Solo hay ${stock} disponibles`);
-        return;
-      }
-      qty = cant;
+    t.onclick=()=>{
+      if(disabled){toast(`Solo hay ${stock} disponibles`);return;}
+      qty=cant;
       updatePromoUI();
     };
     tierGrid.appendChild(t);
   });
 
-  const minus = box.querySelector(".minus");
-  const plus = box.querySelector(".plus");
+  const minus=box.querySelector(".minus");
+  const plus=box.querySelector(".plus");
 
-  minus.onclick = ()=>{
-    qty = Math.max(1, qty - 1);
-    updatePromoUI();
-  };
-  plus.onclick = ()=>{
-    if(stock > 0 && qty >= stock){
+  minus.onclick=()=>{qty=Math.max(1,qty-1);updatePromoUI();};
+  plus.onclick=()=>{
+    if(stock>0 && qty>=stock){
       toast(`Solo hay ${stock} disponibles`);
-      qty = stock;
-      updatePromoUI();
-      return;
+      qty=stock;updatePromoUI();return;
     }
-    qty = qty + 1;
-    updatePromoUI();
+    qty=qty+1;updatePromoUI();
   };
 
   function updatePromoUI(){
-    if(stock > 0 && qty > stock){
-      qty = stock;
+    if(stock>0 && qty>stock){
+      qty=stock;
       toast(`Solo hay ${stock} disponibles`);
     }
+    const {unitPrice,tier}=priceForQty(p,qty);
+    const total=unitPrice*qty;
 
-    const { unitPrice, tier } = priceForQty(p, qty);
-    const total = unitPrice * qty;
-
-    box.querySelector(".promoTotal").textContent = `Lps. ${money(total)}`;
-    const unitLabel = pluralize(unidad, qty).toUpperCase();
-    const tierLabel = tier.cant > 1 ? `PROMO ${tier.cant}+` : `PRECIO NORMAL`;
-    box.querySelector(".promoLine").textContent = `${qty} ${unitLabel} x Lps. ${money(unitPrice)} c/u · ${tierLabel}`;
-    box.querySelector(".qtyVal").textContent = qty;
-    box.querySelector(".qtyUnit").textContent = unitLabel;
+    box.querySelector(".promoTotal").textContent=`Lps. ${money(total)}`;
+    const unitLabel=pluralize(unidad,qty).toUpperCase();
+    box.querySelector(".promoLine").textContent=`${qty} ${unitLabel} x Lps. ${money(unitPrice)} c/u`;
+    box.querySelector(".qtyVal").textContent=qty;
+    box.querySelector(".qtyUnit").textContent=unitLabel;
 
     box.querySelectorAll(".tier").forEach(el=>{
       el.classList.remove("active");
-      const c = Number(el.dataset.cant||0);
-      if(!el.classList.contains("disabled") && c === qty) el.classList.add("active");
+      const c=Number(el.dataset.cant||0);
+      const isDisabled=el.classList.contains("disabled");
+      if(isDisabled) return;
+      if(c===tier.cant) el.classList.add("active");
     });
 
-    minus.classList.toggle("disabled", qty <= 1);
-    plus.classList.toggle("disabled", stock > 0 && qty >= stock);
+    minus.classList.toggle("disabled",qty<=1);
+    plus.classList.toggle("disabled",stock>0 && qty>=stock);
 
-    const unitStr = pluralize(unidad, qty);
-    const msg = `Hola SDC, quiero *${qty} ${unitStr}* de:\n*${p.nombre}*\n\n${tierLabel}\nPrecio unitario: Lps. ${money(unitPrice)}\nTotal: Lps. ${money(total)}\nStock disponible: ${stock}\n\nQuedo atento(a). Gracias.`;
-    const link = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
+    const unitStr=pluralize(unidad,qty);
+    const tierLabel=tier.cant>1?`Promo ${tier.cant}+`:`Precio normal`;
+    const msg=`Hola SDC, quiero *${qty} ${unitStr}* de:\n*${p.nombre}*\n\n${tierLabel}\nPrecio unitario: Lps. ${money(unitPrice)}\nTotal: Lps. ${money(total)}\nStock disponible: ${stock}\n\nQuedo atento(a). Gracias.`;
+    const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
 
-    const btn = box.querySelector(".promoBtn");
-    btn.href = link;
-    btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitStr.toUpperCase()} 🚀`;
+    const btn=box.querySelector(".promoBtn");
+    btn.href=link;
+    btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitStr.toUpperCase()} 🚀`;
   }
 
   updatePromoUI();
@@ -1043,22 +951,22 @@ function initPromoWidget(card, p){
 /* ================== TESTIMONIOS ================== */
 async function loadTestimonials(){
   try{
-    const t = await fetchTextRetry(gvizUrlBySheet(TESTIMONIOS_SHEET), 1, 6000);
-    const { rows } = parseGviz(t);
-    const clean = rows.map(r=>{
-      const nombre = (r.nombre ?? "").toString().trim();
-      const rol = (r.rol ?? r.tipo ?? "").toString().trim();
-      const estrellas = Math.max(1, Math.min(5, Number(r.estrellas || 5)));
-      const comentario = (r.comentario ?? r.texto ?? r.opinion ?? "").toString().trim();
-      const estado = norm(r.estado || "activo");
-      return { nombre, rol, estrellas, comentario, estado };
-    }).filter(x=>x.nombre && x.comentario && x.estado !== "inactivo");
+    const t=await (await fetch(gvizUrlBySheet(TESTIMONIOS_SHEET))).text();
+    const {rows}=parseGviz(t);
+    const clean=rows.map(r=>{
+      const nombre=(r.nombre??"").toString().trim();
+      const rol=(r.rol??r.tipo??"").toString().trim();
+      const estrellas=Math.max(1,Math.min(5,Number(r.estrellas||5)));
+      const comentario=(r.comentario??r.texto??r.opinion??"").toString().trim();
+      const estado=norm(r.estado||"activo");
+      return {nombre,rol,estrellas,comentario,estado};
+    }).filter(x=>x.nombre && x.comentario && x.estado!=="inactivo");
 
-    const list = clean.slice(0,8);
+    const list=clean.slice(0,8);
     if(!list.length) throw new Error("sin testimonios activos");
     renderTestimonials(list);
   }catch(e){
-    console.warn("Testimonios no cargaron, fallback:", e);
+    console.warn("Testimonios no cargaron, fallback:",e);
     renderTestimonials([
       {nombre:"Cliente SDC",rol:"Cliente",estrellas:5,comentario:"Buena atención y productos de calidad. Recomendado.",estado:"activo"},
       {nombre:"Gamer Comayagua",rol:"Gamer",estrellas:5,comentario:"Las promos por cantidad están brutales. Rápido y confiable.",estado:"activo"},
@@ -1067,24 +975,23 @@ async function loadTestimonials(){
   }
 }
 function initials(name){
-  const parts = (name||"").trim().split(/\s+/).slice(0,2);
-  return parts.map(p=>p[0]?.toUpperCase()||"").join("") || "SD";
+  const parts=(name||"").trim().split(/\s+/).slice(0,2);
+  return parts.map(p=>p[0]?.toUpperCase()||"").join("")||"SD";
 }
 function renderTestimonials(list){
-  const section = document.getElementById("testimonialsSection");
-  const track = document.getElementById("testimonialsTrack");
-  track.innerHTML = "";
-
+  const section=document.getElementById("testimonialsSection");
+  const track=document.getElementById("testimonialsTrack");
+  track.innerHTML="";
   list.forEach(t=>{
-    const card = document.createElement("div");
-    card.className = "t-card";
-    const stars = Array.from({length:t.estrellas}).map(()=>`<i class="fa-solid fa-star"></i>`).join("");
-    card.innerHTML = `
+    const card=document.createElement("div");
+    card.className="t-card";
+    const stars=Array.from({length:t.estrellas}).map(()=>`<i class="fa-solid fa-star"></i>`).join("");
+    card.innerHTML=`
       <div class="t-header">
         <div class="t-avatar">${initials(t.nombre)}</div>
         <div class="t-info">
           <h4>${t.nombre}</h4>
-          <span>${t.rol || "Cliente"}</span>
+          <span>${t.rol||"Cliente"}</span>
         </div>
       </div>
       <div class="t-stars">${stars}</div>
@@ -1092,105 +999,56 @@ function renderTestimonials(list){
     `;
     track.appendChild(card);
   });
-
-  section.style.display = "block";
+  section.style.display="block";
 }
 
 /* ================== UI EVENTS ================== */
-const searchInput = document.getElementById("searchInput");
-const clearBtn = document.getElementById("clearSearch");
-
-function syncClearBtn(){
-  clearBtn.style.display = searchInput.value.trim() ? "flex" : "none";
-}
-clearBtn.onclick = ()=>{
-  searchInput.value = "";
-  pendingPid = "";
+document.getElementById("searchInput").addEventListener("input",()=>{
+  pendingPid="";
   updateUrl();
-  syncClearBtn();
   render();
-  searchInput.focus();
+});
+window.addEventListener("scroll",()=>{
+  const f=document.getElementById("filtersWrapper");
+  window.scrollY>50?f.classList.add("scrolled"):f.classList.remove("scrolled");
+});
+function toggleFaq(element){element.parentElement.classList.toggle("open");}
+const toggle=document.getElementById("themeToggle");
+let dark=false;
+document.documentElement.setAttribute("data-theme","light");
+toggle.onclick=()=>{
+  dark=!dark;
+  document.documentElement.setAttribute("data-theme",dark?"dark":"light");
+  toggle.innerHTML=dark?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
 };
-
-const onSearch = debounce(()=>{
-  pendingPid = "";
-  updateUrl();
-  syncClearBtn();
-  render();
-}, 170);
-
-searchInput.addEventListener("input", onSearch);
-
-window.addEventListener("scroll", ()=>{
-  const f = document.getElementById("filtersWrapper");
-  window.scrollY > 50 ? f.classList.add("scrolled") : f.classList.remove("scrolled");
-});
-
-function toggleFaq(element){
-  element.parentElement.classList.toggle("open");
-}
-
-/* ✅ Delegación: click en "Compartir" */
-document.getElementById("productGrid").addEventListener("click", (e)=>{
-  const btn = e.target.closest(".btn-share");
-  if(!btn) return;
-  const pid = btn.dataset.share;
-  shareProduct(pid);
-});
-
-/* ================== THEME (persist) ================== */
-const toggle = document.getElementById("themeToggle");
-let dark = false;
-
-function applyTheme(){
-  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  toggle.innerHTML = dark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
-  localStorage.setItem("sdc_theme", dark ? "dark" : "light");
-}
-(function initTheme(){
-  const stored = localStorage.getItem("sdc_theme");
-  if(stored){
-    dark = stored === "dark";
-  }else{
-    dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-  }
-  applyTheme();
-})();
-toggle.onclick = ()=>{ dark = !dark; applyTheme(); };
-
-document.getElementById("goHome").onclick = ()=>{
-  currentCategory = "";
-  currentSub = "";
-  soloOfertasMode = false;
-  pendingPid = "";
-  searchInput.value = "";
-  syncClearBtn();
+document.getElementById("goHome").onclick=()=>{
+  currentCategory="";
+  currentSub="";
+  soloOfertasMode=false;
+  pendingPid="";
   updateUrl();
   initCategoryBar();
   updateSubs();
   render();
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
 };
-
-document.getElementById("loadMapBtn").onclick = ()=>{
-  const shell = document.getElementById("mapShell");
-  shell.innerHTML = `
-    <iframe style="width:100%;height:250px;border:0;"
+document.getElementById("loadMapBtn").onclick=()=>{
+  const shell=document.getElementById("mapShell");
+  shell.innerHTML=`
+    <iframe class="map-frame" style="width:100%;height:250px;border:0;"
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1933.2843779837946!2d-87.6289189153322!3d14.454458000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6585356521890d%3A0x5e9e0d326671793d!2sInkmortal%20Tattoo%20Comayagua!5e0!3m2!1ses!2shn!4v1709660000000!5m2!1ses!2shn"
       loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen=""></iframe>
   `;
 };
-
 function focusProductById(pid){
-  const el = document.querySelector(`[data-pid="${CSS.escape(pid)}"]`);
+  const el=document.querySelector(`[data-pid="${CSS.escape(pid)}"]`);
   if(!el) return;
   el.classList.add("highlight");
-  el.scrollIntoView({behavior:"smooth", block:"center"});
-  setTimeout(()=>el.classList.remove("highlight"), 1800);
+  el.scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(()=>el.classList.remove("highlight"),1800);
 }
 
 /* ================== START ================== */
-syncClearBtn();
 loadAll();
 </script>
 </body>
