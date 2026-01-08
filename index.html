@@ -36,6 +36,10 @@
       margin:0;font-family:'Outfit',sans-serif;background-color:var(--bg);background-image:var(--bg-image);background-attachment:fixed;
       color:var(--text);padding-bottom:80px;transition:background .3s,color .3s;-webkit-user-select:none;user-select:none
     }
+
+    /* ✅ Permitir copiar textos útiles sin cambiar tu “feel” general */
+    .desc, .t-text, .faq-answer, footer, .status-row { -webkit-user-select:text; user-select:text; }
+
     header{
       position:sticky;top:0;z-index:100;background:var(--card-bg);border-bottom:1px solid var(--border);
       padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,.1)
@@ -111,7 +115,7 @@
     }
     [data-theme="light"] .status-pill{background:#fff;border-color:#e2e8f0}
     .status-pill strong{color:var(--text)}
-    /* ✅ NUEVO: Botón compartir en pills */
+    /* ✅ Botón compartir en pills */
     .status-pill.action{cursor:pointer;color:var(--text);border-style:dashed}
     .status-pill.action i{opacity:.85}
 
@@ -139,6 +143,20 @@
     .card-img-container{position:relative;width:100%;aspect-ratio:1/1;background:#fff;border-bottom:1px solid var(--border);overflow:hidden}
     .card-img{position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat}
     .card.agotado .card-img{filter:grayscale(100%);opacity:.55}
+
+    /* ✅ NUEVO: compartir producto */
+    .share-prod{
+      position:absolute;bottom:8px;left:8px;z-index:13;
+      width:36px;height:36px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(0,0,0,.45);color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;backdrop-filter:blur(4px);
+      transition:.2s
+    }
+    .share-prod:hover{transform:scale(1.05)}
+    [data-theme="light"] .share-prod{background:rgba(15,23,42,.75)}
+    .card.agotado .share-prod{opacity:.6}
 
     .ribbon{
       position:absolute;top:16px;left:-34px;width:110px;background:var(--danger);color:#fff;font-size:10px;font-weight:900;
@@ -271,12 +289,17 @@
 
     .float-ws{position:fixed;bottom:20px;right:20px;width:55px;height:55px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:200;text-decoration:none}
     .highlight{outline:3px solid rgba(56,189,248,.65);box-shadow:0 0 0 6px rgba(56,189,248,.18);transition:.3s}
+
+    /* ✅ Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <div class="brand" id="goHome">
+    <div class="brand" id="goHome" role="button" tabindex="0" aria-label="Ir al inicio">
       <img src="logo.png" alt="SDC" onerror="this.style.display='none'">
       <div>
         <h1>Soluciones <span>Digitales</span></h1>
@@ -284,7 +307,9 @@
       </div>
     </div>
     <div style="display:flex; gap:10px; align-items:center;">
-      <div class="icon-btn" id="themeToggle" title="Tema"><i class="fa-solid fa-sun"></i></div>
+      <div class="icon-btn" id="themeToggle" title="Tema" role="button" tabindex="0" aria-label="Cambiar tema">
+        <i class="fa-solid fa-sun"></i>
+      </div>
     </div>
   </header>
 
@@ -331,14 +356,20 @@
   <div class="location-section">
     <h3 class="sec-title">📍 Base de Operaciones</h3>
     <div class="map-shell" id="mapShell">
-      <button class="map-btn" id="loadMapBtn"><i class="fa-solid fa-map"></i> Cargar mapa</button>
+      <button class="map-btn" id="loadMapBtn" aria-label="Cargar mapa">
+        <i class="fa-solid fa-map"></i> Cargar mapa
+      </button>
     </div>
 
     <div class="location-btns">
-      <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua" target="_blank" class="btn-loc btn-google">
+      <a href="https://www.google.com/maps/search/?api=1&query=Inkmortal+Tattoo+Comayagua"
+         target="_blank" rel="noopener noreferrer"
+         class="btn-loc btn-google">
         <i class="fa-solid fa-map-location-dot"></i> Google Maps
       </a>
-      <a href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes" target="_blank" class="btn-loc btn-waze">
+      <a href="https://waze.com/ul?ll=14.454458,-87.6278246&navigate=yes"
+         target="_blank" rel="noopener noreferrer"
+         class="btn-loc btn-waze">
         <i class="fa-brands fa-waze"></i> Waze
       </a>
     </div>
@@ -371,14 +402,22 @@
 
   <footer>
     <div class="social-bar">
-      <a href="https://www.facebook.com/sdcomayagua/" target="_blank" class="social-btn sb-fb"><i class="fa-brands fa-facebook-f"></i></a>
-      <a href="https://www.instagram.com/sdcomayagua/" target="_blank" class="social-btn sb-insta"><i class="fa-brands fa-instagram"></i></a>
-      <a href="https://www.tiktok.com/@gamer.comayagua" target="_blank" class="social-btn sb-tiktok"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://www.facebook.com/sdcomayagua/" target="_blank" rel="noopener noreferrer" class="social-btn sb-fb" aria-label="Facebook">
+        <i class="fa-brands fa-facebook-f"></i>
+      </a>
+      <a href="https://www.instagram.com/sdcomayagua/" target="_blank" rel="noopener noreferrer" class="social-btn sb-insta" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.tiktok.com/@gamer.comayagua" target="_blank" rel="noopener noreferrer" class="social-btn sb-tiktok" aria-label="TikTok">
+        <i class="fa-brands fa-tiktok"></i>
+      </a>
     </div>
     <p>© 2026 Soluciones Digitales Comayagua<br><span style="font-size:10px; opacity:0.6;">Todos los derechos reservados.</span></p>
   </footer>
 
-  <a class="float-ws" href="https://wa.me/50432429490" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+  <a class="float-ws" href="https://wa.me/50432429490" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
   <div class="toast" id="toast"></div>
 
 <script>
@@ -395,6 +434,10 @@ let currentCategory="";
 let currentSub="";
 let soloOfertasMode=false;
 let pendingPid="";
+let dark=false;
+
+/* ✅ NUEVO: Persistencia */
+const STATE_KEY="sdc_state_v1";
 
 /* ================== HELPERS ================== */
 function norm(s){
@@ -410,6 +453,11 @@ function toast(msg){
   el.classList.add("show");
   clearTimeout(window.__t);
   window.__t=setTimeout(()=>el.classList.remove("show"),1800);
+}
+function escapeHtml(s){
+  return String(s ?? "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
 }
 function getIconForCategory(cat){
   const name=norm(cat);
@@ -428,13 +476,47 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 
-/* ================== SHARE / COPY (NUEVO) ================== */
+/* ✅ NUEVO: guardar / cargar estado */
+function saveState(){
+  try{
+    localStorage.setItem(STATE_KEY, JSON.stringify({
+      dark, currentCategory, currentSub, soloOfertasMode
+    }));
+  }catch{}
+}
+function loadState(){
+  try{
+    return JSON.parse(localStorage.getItem(STATE_KEY) || "null");
+  }catch{ return null; }
+}
+function hasUrlState(){
+  const p=new URLSearchParams(location.search);
+  return p.has("pid") || p.has("cat") || p.has("sub") || p.has("offer");
+}
+function applyTheme(isDark){
+  dark=!!isDark;
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const toggle=document.getElementById("themeToggle");
+  if(toggle){
+    toggle.innerHTML = dark ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+  }
+}
+
+/* ================== SHARE / COPY ================== */
 function buildViewLink({cat="",sub="",offer=false}={}){
   const url=new URL(window.location);
   url.searchParams.delete("pid");
   if(cat) url.searchParams.set("cat",cat); else url.searchParams.delete("cat");
   if(sub) url.searchParams.set("sub",sub); else url.searchParams.delete("sub");
   if(offer) url.searchParams.set("offer","1"); else url.searchParams.delete("offer");
+  return url.toString();
+}
+function buildProductLink(pid){
+  const url=new URL(window.location);
+  url.searchParams.set("pid", pid);
+  url.searchParams.delete("cat");
+  url.searchParams.delete("sub");
+  url.searchParams.delete("offer");
   return url.toString();
 }
 async function copyText(text){
@@ -458,6 +540,16 @@ async function copyText(text){
     toast("⚠️ No se pudo copiar");
   }
 }
+async function shareOrCopy(url){
+  try{
+    if(navigator.share){
+      await navigator.share({ title: document.title, url });
+      toast("✅ Compartido");
+      return;
+    }
+  }catch(e){}
+  copyText(url);
+}
 function bindDoubleTap(el,fn){
   let last=0;
   el.addEventListener("touchend",(e)=>{
@@ -475,7 +567,7 @@ function bindDoubleTap(el,fn){
 }
 function copyCurrentView(){
   const link=buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
-  copyText(link);
+  shareOrCopy(link);
 }
 
 /* ================== URL ================== */
@@ -488,8 +580,8 @@ function updateUrl(){
   window.history.replaceState({}, "", url);
 }
 
-/* ✅ NUEVO: si viene pid, ignoramos cat/sub/offer (link compartido por producto) */
-function loadFromUrl(){
+/* ✅ NUEVO: URL manda; si no, usamos state guardado */
+function loadFromUrlOrState(){
   const params=new URLSearchParams(window.location.search);
   const pid=params.get("pid");
   pendingPid=pid?pid:"";
@@ -499,19 +591,34 @@ function loadFromUrl(){
     soloOfertasMode=false;
     return;
   }
+
   const cat=params.get("cat");
   const sub=params.get("sub");
   const offer=params.get("offer");
-  soloOfertasMode=offer==="1";
-  if(cat) currentCategory=norm(cat);
-  if(sub) currentSub=sub;
+  const hasAny = !!(cat || sub || offer);
+
+  if(hasAny){
+    soloOfertasMode=offer==="1";
+    if(cat) currentCategory=norm(cat);
+    if(sub) currentSub=sub;
+    return;
+  }
+
+  const st=loadState();
+  if(st){
+    soloOfertasMode=!!st.soloOfertasMode;
+    currentCategory=(st.currentCategory??"").toString();
+    currentSub=(st.currentSub??"").toString();
+  }
 }
 
 /* ================== SHEETS FETCH ================== */
 function gvizUrlByGid(gid){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;}
 function gvizUrlBySheet(sheetName){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;}
 function parseGviz(text){
-  const json=JSON.parse(text.substring(47,text.length-2));
+  const start=text.indexOf("{");
+  const end=text.lastIndexOf("}");
+  const json=JSON.parse(text.slice(start, end+1));
   const cols=json.table.cols.map(c=>c&&c.label?norm(c.label):"col");
   const rows=json.table.rows.map(r=>{
     let obj={};
@@ -563,13 +670,20 @@ async function fetchTab(sheetName){
 }
 
 async function loadAll(){
-  loadFromUrl();
+  loadFromUrlOrState();
+
   const sheetNames=await fetchConfigSheets();
   const results=await Promise.all(sheetNames.map(n=>fetchTab(n)));
   products=results.flat().filter(p=>p.estado!=="inactivo" && p.estado!=="0");
 
-  // ✅ index por id para deep-link perfecto
+  // ✅ Index por id (deep-link)
   window.productById=new Map(products.map(p=>[p.id,p]));
+
+  // ✅ Si el estado guardado tiene categoría que ya no existe, lo reseteamos
+  const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
+  if(currentCategory && !availableCats.includes(currentCategory)){
+    currentCategory=""; currentSub=""; soloOfertasMode=false;
+  }
 
   // ✅ Deep link perfecto por producto
   if(pendingPid){
@@ -591,6 +705,9 @@ async function loadAll(){
   render();
   await loadTestimonials();
   if(pendingPid){setTimeout(()=>focusProductById(pendingPid),120);}
+
+  // Guardamos estado inicial (por si venía vacío)
+  saveState();
 }
 
 /* ================== CATEGORY UI ================== */
@@ -607,6 +724,7 @@ function initCategoryBar(){
     initCategoryBar();
     updateSubs();
     render();
+    saveState();
   };
   bar.appendChild(offerChip);
 
@@ -617,7 +735,7 @@ function initCategoryBar(){
   ordered.forEach(cat=>{
     const btn=document.createElement("div");
     btn.className="chip"+(cat===currentCategory?" active":"");
-    btn.innerHTML=`${getIconForCategory(cat)} ${cat}`;
+    btn.textContent=`${getIconForCategory(cat)} ${cat}`;
     btn.onclick=()=>{
       currentCategory=cat;
       currentSub="";
@@ -627,10 +745,11 @@ function initCategoryBar(){
       btn.classList.add("active");
       updateSubs();
       render();
+      saveState();
       window.scrollTo({top:0,behavior:"smooth"});
     };
 
-    // ✅ NUEVO: doble tap/doble click para copiar link de esa categoría
+    // ✅ doble tap/doble click para copiar link de esa categoría (solo COPIAR)
     bindDoubleTap(btn, ()=>{
       copyText(buildViewLink({cat,sub:"",offer:!!soloOfertasMode}));
     });
@@ -648,6 +767,9 @@ function updateSubs(){
   const inMode=base.filter(p=>soloOfertasMode?p._isOffer:!p._isOffer);
   const subs=[...new Set(inMode.map(p=>(p.subcategoria||"").trim()).filter(Boolean))];
 
+  // ✅ si la sub guardada ya no existe, se limpia
+  if(currentSub && !subs.includes(currentSub)) currentSub="";
+
   if(!subs.length){bar.style.display="none";return;}
   bar.style.display="flex";
 
@@ -660,6 +782,7 @@ function updateSubs(){
     updateUrl();
     render();
     setActiveSub(allBtn);
+    saveState();
   };
   // ✅ doble tap copiar vista sin sub
   bindDoubleTap(allBtn, ()=>{
@@ -677,9 +800,10 @@ function updateSubs(){
       updateUrl();
       render();
       setActiveSub(b);
+      saveState();
     };
 
-    // ✅ NUEVO: doble tap copia link de categoría + sub
+    // ✅ doble tap copia link de categoría + sub (solo COPIAR)
     bindDoubleTap(b, ()=>{
       copyText(buildViewLink({cat:currentCategory||"",sub:s,offer:!!soloOfertasMode}));
     });
@@ -726,7 +850,9 @@ function priceForQty(p,qty){
 /* ================== RENDER ================== */
 function buildStatus(count){
   const row=document.getElementById("statusRow");
-  if(!currentCategory && !document.getElementById("searchInput").value.trim()){
+  const q=document.getElementById("searchInput").value.trim();
+
+  if(!currentCategory && !q){
     row.style.display="none";
     row.innerHTML="";
     return;
@@ -734,8 +860,8 @@ function buildStatus(count){
   row.style.display="flex";
   row.innerHTML=`
     <div class="status-pill">Mostrando: <strong>${count}</strong></div>
-    <div class="status-pill">Categoría: <strong>${currentCategory?currentCategory.toUpperCase():"TODAS"}</strong></div>
-    ${currentSub?`<div class="status-pill">Sub: <strong>${currentSub}</strong></div>`:``}
+    <div class="status-pill">Categoría: <strong>${currentCategory?escapeHtml(currentCategory.toUpperCase()):"TODAS"}</strong></div>
+    ${currentSub?`<div class="status-pill">Sub: <strong>${escapeHtml(currentSub)}</strong></div>`:``}
     ${soloOfertasMode?`<div class="status-pill">Solo ofertas ✅</div>`:``}
     ${(currentCategory || currentSub || soloOfertasMode)?`<div class="status-pill action" id="shareViewBtn"><i class="fa-solid fa-link"></i> Compartir</div>`:``}
   `;
@@ -787,18 +913,21 @@ function render(){
     card.className=`card ${isAgotado?"agotado":""} ${isPromoCard && !isAgotado?"promo-mode":""}`;
     card.dataset.pid=p.id||"";
 
-    const imgUrl=p.imagen||"";
+    const imgUrl=(p.imagen||"");
     const ribbon=isAgotado?`<div class="ribbon">AGOTADO</div>`:(isPromoCard?`<div class="ribbon-promo">🔥 HOT SALE</div>`:``);
 
     let videoBadge="";
-    if(p.tiktok) videoBadge=`<a href="${p.tiktok}" target="_blank" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
-    else if(p.youtube) videoBadge=`<a href="${p.youtube}" target="_blank" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
+    if(p.tiktok) videoBadge=`<a href="${p.tiktok}" target="_blank" rel="noopener noreferrer" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
+    else if(p.youtube) videoBadge=`<a href="${p.youtube}" target="_blank" rel="noopener noreferrer" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
 
     let galleryBtn="";
-    if(p.galeria) galleryBtn=`<a href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
+    if(p.galeria) galleryBtn=`<a href="${p.galeria}" target="_blank" rel="noopener noreferrer" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
 
     let rawDesc=(p.descripcion||"");
     let descText=rawDesc.replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,"\n$1").trim();
+
+    const safeName=escapeHtml(p.nombre);
+    const safeDesc=escapeHtml(descText);
 
     const showOld=Number(p.precio_anterior||0)>Number(p.precio||0) && !isPromoCard;
     const priceHTML=`
@@ -831,15 +960,15 @@ function render(){
           </div>
 
           <div class="qty-row">
-            <button class="qty-btn minus">−</button>
+            <button class="qty-btn minus" type="button" aria-label="Disminuir">−</button>
             <div class="qty-pill"><span class="qtyVal">${defaultQty}</span> <span class="qtyUnit">UNIDADES</span></div>
-            <button class="qty-btn plus">+</button>
+            <button class="qty-btn plus" type="button" aria-label="Aumentar">+</button>
           </div>
 
           <div class="tier-grid"></div>
           <div class="hint">El total y WhatsApp se actualizan solos ✅</div>
 
-          <a href="#" target="_blank" class="btn-ws promoBtn"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-ws promoBtn"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
         </div>`;
       btnText="PEDIR";
     }
@@ -849,18 +978,27 @@ function render(){
         <div class="card-img" style="background-image:url('${imgUrl}')"></div>
         ${ribbon}
         ${videoBadge}
+        ${p.id ? `<button class="share-prod" type="button" aria-label="Compartir producto"><i class="fa-solid fa-share-nodes"></i></button>` : ``}
       </div>
       <div class="card-body">
-        <h3>${p.nombre}</h3>
-        <div class="desc">${descText}</div>
+        <h3>${safeName}</h3>
+        <div class="desc">${safeDesc}</div>
         ${galleryBtn}
         ${isPromoCard?promoHTML:priceHTML}
-        ${!isPromoCard?`<a href="${normalLink}" target="_blank" class="btn-ws" style="${isAgotado?'background:#333; color:#aaa; box-shadow:none;':''}">
+        ${!isPromoCard?`<a href="${normalLink}" target="_blank" rel="noopener noreferrer" class="btn-ws" style="${isAgotado?'background:#333; color:#aaa; box-shadow:none;':''}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>`:``}
       </div>
     `;
+
     grid.appendChild(card);
+
+    // ✅ compartir producto (share sheet si existe; si no, copia)
+    const shareBtn=card.querySelector(".share-prod");
+    if(shareBtn && p.id){
+      shareBtn.onclick=()=>shareOrCopy(buildProductLink(p.id));
+    }
+
     if(isPromoCard) initPromoWidget(card,p);
   });
 }
@@ -988,14 +1126,14 @@ function renderTestimonials(list){
     const stars=Array.from({length:t.estrellas}).map(()=>`<i class="fa-solid fa-star"></i>`).join("");
     card.innerHTML=`
       <div class="t-header">
-        <div class="t-avatar">${initials(t.nombre)}</div>
+        <div class="t-avatar">${escapeHtml(initials(t.nombre))}</div>
         <div class="t-info">
-          <h4>${t.nombre}</h4>
-          <span>${t.rol||"Cliente"}</span>
+          <h4>${escapeHtml(t.nombre)}</h4>
+          <span>${escapeHtml(t.rol||"Cliente")}</span>
         </div>
       </div>
       <div class="t-stars">${stars}</div>
-      <p class="t-text">"${t.comentario}"</p>
+      <p class="t-text">"${escapeHtml(t.comentario)}"</p>
     `;
     track.appendChild(card);
   });
@@ -1003,24 +1141,35 @@ function renderTestimonials(list){
 }
 
 /* ================== UI EVENTS ================== */
+/* ✅ Debounce buscador */
+let __searchDeb;
 document.getElementById("searchInput").addEventListener("input",()=>{
   pendingPid="";
   updateUrl();
-  render();
+  clearTimeout(__searchDeb);
+  __searchDeb=setTimeout(()=>render(),120);
 });
+
 window.addEventListener("scroll",()=>{
   const f=document.getElementById("filtersWrapper");
   window.scrollY>50?f.classList.add("scrolled"):f.classList.remove("scrolled");
 });
 function toggleFaq(element){element.parentElement.classList.toggle("open");}
+
+/* ✅ Tema: respeta sistema / storage */
 const toggle=document.getElementById("themeToggle");
-let dark=false;
-document.documentElement.setAttribute("data-theme","light");
+const st=loadState();
+const sysDark=window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+applyTheme(st ? st.dark : sysDark);
+
 toggle.onclick=()=>{
-  dark=!dark;
-  document.documentElement.setAttribute("data-theme",dark?"dark":"light");
-  toggle.innerHTML=dark?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';
+  applyTheme(!dark);
+  saveState();
 };
+toggle.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle.click(); }
+});
+
 document.getElementById("goHome").onclick=()=>{
   currentCategory="";
   currentSub="";
@@ -1030,8 +1179,13 @@ document.getElementById("goHome").onclick=()=>{
   initCategoryBar();
   updateSubs();
   render();
+  saveState();
   window.scrollTo({top:0,behavior:"smooth"});
 };
+document.getElementById("goHome").addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"||e.key===" "){ e.preventDefault(); document.getElementById("goHome").click(); }
+});
+
 document.getElementById("loadMapBtn").onclick=()=>{
   const shell=document.getElementById("mapShell");
   shell.innerHTML=`
@@ -1040,6 +1194,7 @@ document.getElementById("loadMapBtn").onclick=()=>{
       loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen=""></iframe>
   `;
 };
+
 function focusProductById(pid){
   const el=document.querySelector(`[data-pid="${CSS.escape(pid)}"]`);
   if(!el) return;
