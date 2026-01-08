@@ -15,7 +15,6 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- 3 pesos para cargar más rápido -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -26,18 +25,19 @@
       --bg-image:radial-gradient(at top,#1e293b 0%,#0b1120 100%);--danger:#ef4444;
       --promo-color:#ff6b00;--promo-glow:rgba(255,107,0,.55);--promo-bg:rgba(255,107,0,.14);
     }
+    /* ✅ Estética light más premium (menos blanco plano) */
     [data-theme="light"]{
-      --bg:#f8fafc;--card-bg:#ffffff;--primary:#0f172a;--accent:#15803d;--text:#1a1a1a;--text-muted:#64748b;
-      --border:#e2e8f0;--shadow-card:0 4px 15px rgba(0,0,0,.05);--chip-bg:#ffffff;--chip-text:#4b5563;--bg-image:none;
+      --bg:#f3f6fb;--card-bg:#ffffff;--primary:#0f172a;--accent:#15803d;--text:#1a1a1a;--text-muted:#64748b;
+      --border:#e2e8f0;--shadow-card:0 6px 18px rgba(15,23,42,.06);--chip-bg:#ffffff;--chip-text:#4b5563;--bg-image:none;
       --promo-color:#ea580c;--promo-glow:rgba(234,88,12,.18);--promo-bg:#fff7ed;
     }
+
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     body{
       margin:0;font-family:'Outfit',sans-serif;background-color:var(--bg);background-image:var(--bg-image);background-attachment:fixed;
       color:var(--text);padding-bottom:80px;transition:background .3s,color .3s;-webkit-user-select:none;user-select:none
     }
-
-    /* ✅ Permitir copiar textos útiles sin cambiar tu “feel” general */
+    /* ✅ permitir copiar textos útiles */
     .desc, .t-text, .faq-answer, footer, .status-row { -webkit-user-select:text; user-select:text; }
 
     header{
@@ -53,18 +53,20 @@
       display:flex;align-items:center;justify-content:center;cursor:pointer
     }
 
-    .hero-section{padding:36px 20px 12px;text-align:center;margin-bottom:6px}
-    .hero-title{font-size:28px;font-weight:900;margin:0 0 10px;line-height:1.1;color:var(--text);text-transform:uppercase}
+    /* ✅ Estética: menos altura arriba (más compacto en móvil) */
+    .hero-section{padding:26px 16px 8px;text-align:center;margin-bottom:6px}
+    .hero-title{font-size:26px;font-weight:900;margin:0 0 10px;line-height:1.1;color:var(--text);text-transform:uppercase}
     .hero-highlight{
       background:linear-gradient(-45deg,#38bdf8,#818cf8,#2dd4bf,#38bdf8);background-size:300%;
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:textShine 6s ease-in-out infinite
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:textShine 10s ease-in-out infinite; /* ✅ más lento (menos “rápido”) */
     }
     [data-theme="light"] .hero-highlight{
       background:linear-gradient(-45deg,#0284c7,#4f46e5,#059669,#0284c7);background-size:300%;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent
     }
     @keyframes textShine{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .hero-desc{font-size:14px;color:var(--text-muted);margin:0 auto;line-height:1.5;max-width:92%;font-weight:400}
+    .hero-desc{font-size:14px;color:var(--text-muted);margin:0 auto;line-height:1.5;max-width:520px;font-weight:400}
 
     .search-container{padding:0 16px;max-width:800px;margin:18px auto 8px}
     .search-box{position:relative;display:flex;align-items:center}
@@ -77,7 +79,7 @@
     .search-box input:focus{border-color:var(--primary)}
 
     .trust-grid{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px;max-width:800px;margin:18px auto 22px
+      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px;max-width:800px;margin:14px auto 16px
     }
     .trust-item{
       display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:700;color:var(--text-muted);
@@ -88,21 +90,65 @@
     .filters-wrapper{
       position:sticky;top:60px;z-index:90;background:var(--bg);padding:14px 0 10px;border-bottom:1px solid transparent;transition:.25s
     }
-    .filters-wrapper.scrolled{background:var(--card-bg);border-bottom:1px solid var(--border);box-shadow:0 4px 10px rgba(0,0,0,.1)}
-    .category-bar,.sub-bar{display:flex;gap:10px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
+
+    /* ✅ Estética: “glass” en scroll (sin tocar lógica) */
+    .filters-wrapper.scrolled{
+      border-bottom:1px solid var(--border);
+      box-shadow:0 4px 10px rgba(0,0,0,.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    [data-theme="light"] .filters-wrapper.scrolled{ background:rgba(255,255,255,.82); }
+    [data-theme="dark"]  .filters-wrapper.scrolled{ background:rgba(21,30,50,.78); }
+
+    .category-bar,.sub-bar{
+      display:flex;gap:10px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none;
+      position:relative;
+      padding-right:44px; /* ✅ espacio para el fade */
+    }
+
+    /* ✅ Estética/UX: indicador sutil de que se puede deslizar */
+    .category-bar::after,.sub-bar::after{
+      content:"";
+      position:absolute;
+      top:0;right:0;
+      width:44px;height:100%;
+      pointer-events:none;
+      background:linear-gradient(to right, transparent, var(--bg));
+    }
+    .filters-wrapper.scrolled .category-bar::after,
+    .filters-wrapper.scrolled .sub-bar::after{
+      background:linear-gradient(to right, transparent, var(--card-bg));
+    }
+
     .chip{
       padding:8px 18px;border-radius:99px;background:var(--chip-bg);border:1px solid var(--border);color:var(--chip-text);
       font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px;text-transform:uppercase;
       transition:all .2s
     }
-    .chip.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-1px)}
+    .chip.active{
+      background:var(--primary);color:#fff;border-color:var(--primary);
+      box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-1px)
+    }
     [data-theme="dark"] .chip.active{color:#000;font-weight:900}
+
+    /* ✅ Estética: chip activo más coherente en light */
+    [data-theme="light"] .chip.active{
+      background:#0ea5e9;
+      border-color:#0ea5e9;
+      color:#fff;
+      box-shadow:0 8px 18px rgba(14,165,233,.18);
+    }
+
     .chip.promo-active{
       background:linear-gradient(135deg,#f59e0b,#d97706)!important;border-color:#f59e0b!important;color:#fff!important;
       box-shadow:0 0 18px rgba(245,158,11,.65)!important
     }
     .sub-bar .chip{padding:6px 14px;font-size:11px;border-radius:10px;background:transparent;border:1px solid var(--border)}
     .sub-bar .chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
+    [data-theme="light"] .sub-bar .chip.active{
+      background:#0ea5e9;border-color:#0ea5e9;color:#fff;
+    }
 
     .status-row{
       display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
@@ -115,9 +161,22 @@
     }
     [data-theme="light"] .status-pill{background:#fff;border-color:#e2e8f0}
     .status-pill strong{color:var(--text)}
-    /* ✅ Botón compartir en pills */
-    .status-pill.action{cursor:pointer;color:var(--text);border-style:dashed}
-    .status-pill.action i{opacity:.85}
+
+    /* ✅ Estética: botón compartir que se sienta “acción” */
+    .status-pill.action{
+      cursor:pointer;
+      border-style:solid;
+      color:var(--primary);
+      border-color:rgba(56,189,248,.35);
+      background:rgba(56,189,248,.10);
+    }
+    [data-theme="light"] .status-pill.action{
+      color:#0ea5e9;
+      border-color:rgba(14,165,233,.35);
+      background:rgba(14,165,233,.10);
+    }
+    .status-pill.action i{opacity:.9}
+    .status-pill.action:active{transform:scale(.98)}
 
     .grid{
       display:grid;grid-template-columns:1fr;gap:16px;padding:10px 16px;max-width:1200px;margin:0 auto;min-height:200px
@@ -144,7 +203,6 @@
     .card-img{position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat}
     .card.agotado .card-img{filter:grayscale(100%);opacity:.55}
 
-    /* ✅ NUEVO: compartir producto */
     .share-prod{
       position:absolute;bottom:8px;left:8px;z-index:13;
       width:36px;height:36px;border-radius:12px;
@@ -290,7 +348,6 @@
     .float-ws{position:fixed;bottom:20px;right:20px;width:55px;height:55px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:200;text-decoration:none}
     .highlight{outline:3px solid rgba(56,189,248,.65);box-shadow:0 0 0 6px rgba(56,189,248,.18);transition:.3s}
 
-    /* ✅ Reduce motion */
     @media (prefers-reduced-motion: reduce){
       *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
     }
@@ -436,7 +493,7 @@ let soloOfertasMode=false;
 let pendingPid="";
 let dark=false;
 
-/* ✅ NUEVO: Persistencia */
+/* ✅ Persistencia */
 const STATE_KEY="sdc_state_v1";
 
 /* ================== HELPERS ================== */
@@ -476,7 +533,7 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 
-/* ✅ NUEVO: guardar / cargar estado */
+/* ✅ guardar / cargar estado */
 function saveState(){
   try{
     localStorage.setItem(STATE_KEY, JSON.stringify({
@@ -488,10 +545,6 @@ function loadState(){
   try{
     return JSON.parse(localStorage.getItem(STATE_KEY) || "null");
   }catch{ return null; }
-}
-function hasUrlState(){
-  const p=new URLSearchParams(location.search);
-  return p.has("pid") || p.has("cat") || p.has("sub") || p.has("offer");
 }
 function applyTheme(isDark){
   dark=!!isDark;
@@ -580,7 +633,7 @@ function updateUrl(){
   window.history.replaceState({}, "", url);
 }
 
-/* ✅ NUEVO: URL manda; si no, usamos state guardado */
+/* URL manda; si no, usamos state guardado */
 function loadFromUrlOrState(){
   const params=new URLSearchParams(window.location.search);
   const pid=params.get("pid");
@@ -676,16 +729,13 @@ async function loadAll(){
   const results=await Promise.all(sheetNames.map(n=>fetchTab(n)));
   products=results.flat().filter(p=>p.estado!=="inactivo" && p.estado!=="0");
 
-  // ✅ Index por id (deep-link)
   window.productById=new Map(products.map(p=>[p.id,p]));
 
-  // ✅ Si el estado guardado tiene categoría que ya no existe, lo reseteamos
   const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
   if(currentCategory && !availableCats.includes(currentCategory)){
     currentCategory=""; currentSub=""; soloOfertasMode=false;
   }
 
-  // ✅ Deep link perfecto por producto
   if(pendingPid){
     const found=productById.get(pendingPid);
     if(found){
@@ -706,7 +756,6 @@ async function loadAll(){
   await loadTestimonials();
   if(pendingPid){setTimeout(()=>focusProductById(pendingPid),120);}
 
-  // Guardamos estado inicial (por si venía vacío)
   saveState();
 }
 
@@ -749,7 +798,6 @@ function initCategoryBar(){
       window.scrollTo({top:0,behavior:"smooth"});
     };
 
-    // ✅ doble tap/doble click para copiar link de esa categoría (solo COPIAR)
     bindDoubleTap(btn, ()=>{
       copyText(buildViewLink({cat,sub:"",offer:!!soloOfertasMode}));
     });
@@ -767,7 +815,6 @@ function updateSubs(){
   const inMode=base.filter(p=>soloOfertasMode?p._isOffer:!p._isOffer);
   const subs=[...new Set(inMode.map(p=>(p.subcategoria||"").trim()).filter(Boolean))];
 
-  // ✅ si la sub guardada ya no existe, se limpia
   if(currentSub && !subs.includes(currentSub)) currentSub="";
 
   if(!subs.length){bar.style.display="none";return;}
@@ -784,7 +831,6 @@ function updateSubs(){
     setActiveSub(allBtn);
     saveState();
   };
-  // ✅ doble tap copiar vista sin sub
   bindDoubleTap(allBtn, ()=>{
     copyText(buildViewLink({cat:currentCategory||"",sub:"",offer:!!soloOfertasMode}));
   });
@@ -803,7 +849,6 @@ function updateSubs(){
       saveState();
     };
 
-    // ✅ doble tap copia link de categoría + sub (solo COPIAR)
     bindDoubleTap(b, ()=>{
       copyText(buildViewLink({cat:currentCategory||"",sub:s,offer:!!soloOfertasMode}));
     });
@@ -993,7 +1038,6 @@ function render(){
 
     grid.appendChild(card);
 
-    // ✅ compartir producto (share sheet si existe; si no, copia)
     const shareBtn=card.querySelector(".share-prod");
     if(shareBtn && p.id){
       shareBtn.onclick=()=>shareOrCopy(buildProductLink(p.id));
@@ -1141,7 +1185,6 @@ function renderTestimonials(list){
 }
 
 /* ================== UI EVENTS ================== */
-/* ✅ Debounce buscador */
 let __searchDeb;
 document.getElementById("searchInput").addEventListener("input",()=>{
   pendingPid="";
@@ -1149,14 +1192,12 @@ document.getElementById("searchInput").addEventListener("input",()=>{
   clearTimeout(__searchDeb);
   __searchDeb=setTimeout(()=>render(),120);
 });
-
 window.addEventListener("scroll",()=>{
   const f=document.getElementById("filtersWrapper");
   window.scrollY>50?f.classList.add("scrolled"):f.classList.remove("scrolled");
 });
 function toggleFaq(element){element.parentElement.classList.toggle("open");}
 
-/* ✅ Tema: respeta sistema / storage */
 const toggle=document.getElementById("themeToggle");
 const st=loadState();
 const sysDark=window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -1194,7 +1235,6 @@ document.getElementById("loadMapBtn").onclick=()=>{
       loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen=""></iframe>
   `;
 };
-
 function focusProductById(pid){
   const el=document.querySelector(`[data-pid="${CSS.escape(pid)}"]`);
   if(!el) return;
