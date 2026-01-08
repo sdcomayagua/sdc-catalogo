@@ -102,7 +102,7 @@
 
     .status-row{
       display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
-      padding:10px 16px 14px; /* ✅ más aire arriba/abajo */
+      padding:10px 16px 14px;
       max-width:1000px;margin:0 auto
     }
     .status-pill{
@@ -133,7 +133,6 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
     .card.promo-mode{border:2px solid var(--promo-color)!important;box-shadow:0 0 22px var(--promo-glow)!important}
 
-    /* ✅ imagen en div hijo para que AGOTADO no se ponga gris */
     .card-img-container{position:relative;width:100%;aspect-ratio:1/1;background:#fff;border-bottom:1px solid var(--border);overflow:hidden}
     .card-img{
       position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat
@@ -190,7 +189,6 @@
     }
     [data-theme="dark"] .btn-ws{color:#000}
 
-    /* PROMO selector */
     .promo-box{
       margin-top:10px;border:1px solid rgba(255,107,0,.35);background:var(--promo-bg);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px
     }
@@ -223,7 +221,6 @@
 
     .hint{font-size:11px;font-weight:900;color:var(--text-muted);text-align:center;text-transform:uppercase;letter-spacing:.4px}
 
-    /* Toast */
     .toast{
       position:fixed;left:50%;transform:translateX(-50%);bottom:86px;z-index:999;
       background:rgba(0,0,0,.85);color:#fff;padding:10px 12px;border-radius:12px;font-weight:900;font-size:12px;opacity:0;pointer-events:none;
@@ -232,7 +229,6 @@
     [data-theme="light"] .toast{background:rgba(15,23,42,.92)}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
 
-    /* TESTIMONIOS */
     .testimonials-section{padding:28px 16px;margin-top:18px;background:rgba(255,255,255,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     .sec-title{text-align:center;font-size:18px;font-weight:900;margin:0 0 18px;color:var(--text);text-transform:uppercase}
     .testimonials-track{display:flex;gap:15px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
@@ -242,8 +238,8 @@
     [data-theme="dark"] .t-avatar{color:#000}
     .t-info h4{margin:0;font-size:13px;color:var(--text)}
     .t-info span{font-size:10px;color:var(--accent);font-weight:800;text-transform:uppercase}
-    .t-stars{color:#fbbf24;font-size:12px;margin:0} /* ✅ sin espacio extra */
-    .t-text{margin:6px 0 0;font-size:12px;color:var(--text-muted);line-height:1.45;font-style:italic;text-align:justify} /* ✅ justificado */
+    .t-stars{color:#fbbf24;font-size:12px;margin:0}
+    .t-text{margin:6px 0 0;font-size:12px;color:var(--text-muted);line-height:1.45;font-style:italic;text-align:justify}
 
     .location-section{padding:20px 16px;margin-top:10px;text-align:center}
     .map-shell{width:100%;height:250px;border:2px solid var(--border);border-radius:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -329,13 +325,11 @@
 
   <div class="grid" id="productGrid"></div>
 
-  <!-- TESTIMONIOS -->
   <div class="testimonials-section" id="testimonialsSection" style="display:none">
     <h3 class="sec-title">⭐ Lo que dicen los Gamers</h3>
     <div class="testimonials-track" id="testimonialsTrack"></div>
   </div>
 
-  <!-- UBICACIÓN -->
   <div class="location-section">
     <h3 class="sec-title">📍 Base de Operaciones</h3>
     <div class="map-shell" id="mapShell">
@@ -352,7 +346,6 @@
     </div>
   </div>
 
-  <!-- FAQ (3) -->
   <div class="faq-section">
     <h3 class="sec-title" style="margin-top:10px;">❓ Preguntas Frecuentes</h3>
 
@@ -395,7 +388,7 @@
 const SHEET_ID = "1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
 const CONFIG_GID = "1488858707";
 const MY_PHONE = "50432429490";
-const BACKUP_SHEETS = ["ofertas","gamer","pc","movil","streaming","cobertores","power"]; // productos
+const BACKUP_SHEETS = ["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 const TESTIMONIOS_SHEET = "testimonios";
 
 /* ================== STATE ================== */
@@ -453,7 +446,6 @@ function loadFromUrl(){
   const sub = params.get("sub");
   const offer = params.get("offer");
   const pid = params.get("pid");
-
   soloOfertasMode = offer === "1";
   if(cat) currentCategory = norm(cat);
   if(sub) currentSub = sub;
@@ -508,7 +500,6 @@ async function fetchTab(sheetName){
       obj.id = (obj.id ?? "").toString().trim();
       obj.solo_ofertas = norm(obj.solo_ofertas || "");
       obj._isOffer = (obj._sheet === "ofertas") || ["si","sí","1","true","yes"].includes(obj.solo_ofertas);
-      // auto-fix github blob
       if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
         obj.imagen = obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
       }
@@ -528,7 +519,7 @@ async function loadAll(){
   initCategoryBar();
   updateSubs();
   render();
-  await loadTestimonials(); // ✅ testimonios desde Sheets
+  await loadTestimonials();
   if(pendingPid) focusProductById(pendingPid);
 }
 
@@ -537,7 +528,6 @@ function initCategoryBar(){
   const bar = document.getElementById("categoryBar");
   bar.innerHTML = "";
 
-  // SOLO OFERTAS toggle chip (no depende de categoria)
   const offerChip = document.createElement("div");
   offerChip.className = "chip" + (soloOfertasMode ? " active promo-active" : "");
   offerChip.textContent = "💥 SOLO OFERTAS";
@@ -550,7 +540,6 @@ function initCategoryBar(){
   };
   bar.appendChild(offerChip);
 
-  // categorías reales
   const availableCats = [...new Set(products.map(p => p.categoria).filter(Boolean))];
   const preferredOrder = ["gamer","pc","movil","streaming","cobertores","power"];
   const ordered = [
@@ -628,7 +617,6 @@ function setActiveSub(btn){
 
 /* ================== PROMOS ================== */
 function extractPromos(p){
-  // Busca promo1_cant / promo1_precio ... promo99_*
   const promos = [];
   for(const k in p){
     const m = k.match(/^promo(\d+)_cant$/i);
@@ -642,7 +630,6 @@ function extractPromos(p){
     }
   }
   promos.sort((a,b)=>a.cant-b.cant);
-  // elimina duplicados por cant (mantén el menor precio)
   const map = new Map();
   promos.forEach(x=>{
     if(!map.has(x.cant)) map.set(x.cant, x.precio);
@@ -686,7 +673,6 @@ function render(){
 
   const q = norm(document.getElementById("searchInput").value);
 
-  // ✅ si no hay categoría pero sí hay búsqueda, buscamos en todo
   let list = products.slice();
   if(currentCategory) list = list.filter(p => p.categoria === currentCategory);
   if(currentSub) list = list.filter(p => (p.subcategoria||"").trim() === currentSub);
@@ -720,7 +706,6 @@ function render(){
 
   list.forEach(p=>{
     const isAgotado = Number(p.stock || 0) <= 0;
-    const hasVideo = p.tiktok || p.youtube;
     const promos = extractPromos(p);
     const isPromoCard = p._isOffer && promos.length;
 
@@ -738,11 +723,9 @@ function render(){
     let galleryBtn = "";
     if(p.galeria) galleryBtn = `<a href="${p.galeria}" target="_blank" class="btn-gallery"><i class="fa-regular fa-images"></i> Ver Más Fotos</a>`;
 
-    // Descripción “bonita”
     let rawDesc = (p.descripcion || "");
     let descText = rawDesc.replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,"\n$1").trim();
 
-    // Precio normal
     const showOld = Number(p.precio_anterior||0) > Number(p.precio||0) && !isPromoCard;
     const priceHTML = `
       <div class="price-bar">
@@ -753,25 +736,20 @@ function render(){
         </div>
       </div>`;
 
-    // WhatsApp normal
     const normalMsg = p.whatsapp && p.whatsapp.toString().trim().length > 5
       ? p.whatsapp
       : `Hola SDC, me interesa: *${p.nombre}*\nPrecio: Lps. ${money(p.precio||0)}\nQuedo atento(a). Gracias.`;
 
     const normalLink = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(normalMsg)}`;
 
-    // Promo UI (solo en ofertas con promos)
     let promoHTML = "";
-    let waLink = normalLink;
     let btnText = isAgotado ? "CONSULTAR" : "PEDIR AHORA 🚀";
 
     if(isPromoCard){
-      // qty default: 1 (o 2 si existe promo 2+ y hay stock)
       let defaultQty = 1;
       const stock = Number(p.stock||0);
       if(promos.some(x=>x.cant===2) && stock >= 2) defaultQty = 2;
 
-      // construir UI con dataset
       promoHTML = `
         <div class="promo-box" data-pid="${p.id}" data-qty="${defaultQty}">
           <div class="promo-top">
@@ -790,7 +768,6 @@ function render(){
 
           <a href="#" target="_blank" class="btn-ws promoBtn"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
         </div>`;
-
       btnText = "PEDIR";
     }
 
@@ -811,12 +788,9 @@ function render(){
       </div>
     `;
     grid.appendChild(card);
-
-    // Activar promo UI después de insertar
     if(isPromoCard) initPromoWidget(card, p);
   });
 
-  // marcar chip activo según categoría actual
   document.querySelectorAll(".category-bar .chip").forEach(ch=>{
     if(norm(ch.textContent).includes(currentCategory) && currentCategory) ch.classList.add("active");
   });
@@ -831,7 +805,6 @@ function initPromoWidget(card, p){
   const unidad = p.unidad || "unidad";
   const promos = extractPromos(p);
 
-  // tiers a mostrar: 1,2,3,4 y los promo_cant (sin repetir)
   const tierSet = new Set([1,2,3,4]);
   promos.forEach(x=>tierSet.add(x.cant));
   const tiers = [...tierSet].sort((a,b)=>a-b);
@@ -881,7 +854,6 @@ function initPromoWidget(card, p){
   };
 
   function updatePromoUI(){
-    // clamp por stock
     if(stock > 0 && qty > stock){
       qty = stock;
       toast(`Solo hay ${stock} disponibles`);
@@ -896,21 +868,19 @@ function initPromoWidget(card, p){
     box.querySelector(".qtyVal").textContent = qty;
     box.querySelector(".qtyUnit").textContent = unitLabel;
 
-    // activar tier
-    box.querySelectorAll(".tier").forEach(el=>{
-      el.classList.remove("active");
-      const c = Number(el.dataset.cant||0);
-      const isDisabled = el.classList.contains("disabled");
-      if(isDisabled) return;
-      // tier activo: el que define el precio actual (último umbral)
-      if(c === tier.cant) el.classList.add("active");
-    });
+    /* ✅ FIX: chip activo = cantidad exacta si existe; si no, el tier (umbral) */
+    box.querySelectorAll(".tier").forEach(el=>el.classList.remove("active"));
+    const exact = box.querySelector(`.tier[data-cant="${qty}"]:not(.disabled)`);
+    if(exact){
+      exact.classList.add("active");
+    }else{
+      const byTier = box.querySelector(`.tier[data-cant="${tier.cant}"]:not(.disabled)`);
+      if(byTier) byTier.classList.add("active");
+    }
 
-    // botones +/-
     minus.classList.toggle("disabled", qty <= 1);
     plus.classList.toggle("disabled", stock > 0 && qty >= stock);
 
-    // WhatsApp msg
     const unitStr = pluralize(unidad, qty);
     const tierLabel = tier.cant > 1 ? `Promo ${tier.cant}+` : `Precio normal`;
     const msg = `Hola SDC, quiero *${qty} ${unitStr}* de:\n*${p.nombre}*\n\n${tierLabel}\nPrecio unitario: Lps. ${money(unitPrice)}\nTotal: Lps. ${money(total)}\nStock disponible: ${stock}\n\nQuedo atento(a). Gracias.`;
