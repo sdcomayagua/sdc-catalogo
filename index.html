@@ -370,7 +370,7 @@
       box-shadow: 0 2px 10px rgba(239,68,68,.30);
     }
 
-    /* ✅ NUEVO: marca de agua + sello AGOTADO en la imagen */
+    /* ✅ SOLO marca de agua diagonal (más grande) — sin “botón” abajo */
     .card.agotado .card-img-container::before{
       content:"AGOTADO";
       position:absolute;
@@ -378,33 +378,13 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:36px;
-      font-weight:900;
-      letter-spacing:4px;
-      transform:rotate(-18deg);
-      color:rgba(239,68,68,.24); /* rojo suave */
-      text-shadow:0 8px 18px rgba(0,0,0,.18);
+      font-size: clamp(60px, 12vw, 96px); /* ✅ MÁS GRANDE */
+      font-weight: 900;
+      letter-spacing: 8px;
+      transform: rotate(-18deg);
+      color: rgba(239,68,68,.34); /* rojo suave */
+      text-shadow: 0 10px 22px rgba(0,0,0,.18);
       z-index:9; /* debajo de ribbon (10), badge (12) y share (13) */
-      pointer-events:none;
-    }
-    .card.agotado .card-img-container::after{
-      content:"AGOTADO";
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:58px; /* subido para no estorbar badges */
-      padding:8px 10px;
-      border-radius:12px;
-      text-align:center;
-      font-weight:900;
-      font-size:12px;
-      letter-spacing:1px;
-      color:var(--sold-text);
-      background:var(--sold-bg);
-      border:1px solid var(--sold-border);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index:11;
       pointer-events:none;
     }
 
