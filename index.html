@@ -25,12 +25,13 @@
       --bg-image:radial-gradient(at top,#1e293b 0%,#0b1120 100%);--danger:#ef4444;
       --promo-color:#ff6b00;--promo-glow:rgba(255,107,0,.55);--promo-bg:rgba(255,107,0,.14);
 
-      /* ✅ AGOTADO (colores suaves) */
+      /* ✅ AGOTADO (suave, no chillón) */
       --sold-bg: rgba(239,68,68,.10);
       --sold-border: rgba(239,68,68,.28);
       --sold-text: #ef4444;
       --sold-ribbon: rgba(239,68,68,.92);
     }
+
     /* ✅ Estética light más premium (menos blanco plano) */
     [data-theme="light"]{
       --bg:#f3f6fb;--card-bg:#ffffff;--primary:#0f172a;--accent:#15803d;--text:#1a1a1a;--text-muted:#64748b;
@@ -38,10 +39,10 @@
       --promo-color:#ea580c;--promo-glow:rgba(234,88,12,.18);--promo-bg:#fff7ed;
 
       /* ✅ AGOTADO (light) */
-      --sold-bg: #fff1f2;      /* rojo muy suave */
-      --sold-border: #fecdd3;  /* borde rosado suave */
-      --sold-text: #e11d48;    /* rojo bonito para texto */
-      --sold-ribbon: #ef4444;  /* rojo sólido para la cinta */
+      --sold-bg: #fff1f2;
+      --sold-border: #fecdd3;
+      --sold-text: #e11d48;
+      --sold-ribbon: #ef4444;
     }
 
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -65,13 +66,12 @@
       display:flex;align-items:center;justify-content:center;cursor:pointer
     }
 
-    /* ✅ Estética: menos altura arriba (más compacto en móvil) */
     .hero-section{padding:26px 16px 8px;text-align:center;margin-bottom:6px}
     .hero-title{font-size:26px;font-weight:900;margin:0 0 10px;line-height:1.1;color:var(--text);text-transform:uppercase}
     .hero-highlight{
       background:linear-gradient(-45deg,#38bdf8,#818cf8,#2dd4bf,#38bdf8);background-size:300%;
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      animation:textShine 10s ease-in-out infinite; /* ✅ más lento (menos “rápido”) */
+      animation:textShine 10s ease-in-out infinite;
     }
     [data-theme="light"] .hero-highlight{
       background:linear-gradient(-45deg,#0284c7,#4f46e5,#059669,#0284c7);background-size:300%;
@@ -102,8 +102,6 @@
     .filters-wrapper{
       position:sticky;top:60px;z-index:90;background:var(--bg);padding:14px 0 10px;border-bottom:1px solid transparent;transition:.25s
     }
-
-    /* ✅ Estética: “glass” en scroll (sin tocar lógica) */
     .filters-wrapper.scrolled{
       border-bottom:1px solid var(--border);
       box-shadow:0 4px 10px rgba(0,0,0,.1);
@@ -116,10 +114,8 @@
     .category-bar,.sub-bar{
       display:flex;gap:10px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none;
       position:relative;
-      padding-right:44px; /* ✅ espacio para el fade */
+      padding-right:44px;
     }
-
-    /* ✅ Estética/UX: indicador sutil de que se puede deslizar */
     .category-bar::after,.sub-bar::after{
       content:"";
       position:absolute;
@@ -143,8 +139,6 @@
       box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-1px)
     }
     [data-theme="dark"] .chip.active{color:#000;font-weight:900}
-
-    /* ✅ Estética: chip activo más coherente en light */
     [data-theme="light"] .chip.active{
       background:#0ea5e9;
       border-color:#0ea5e9;
@@ -158,9 +152,7 @@
     }
     .sub-bar .chip{padding:6px 14px;font-size:11px;border-radius:10px;background:transparent;border:1px solid var(--border)}
     .sub-bar .chip.active{background:var(--text);border-color:var(--text);color:var(--bg)}
-    [data-theme="light"] .sub-bar .chip.active{
-      background:#0ea5e9;border-color:#0ea5e9;color:#fff;
-    }
+    [data-theme="light"] .sub-bar .chip.active{ background:#0ea5e9;border-color:#0ea5e9;color:#fff; }
 
     .status-row{
       display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
@@ -173,8 +165,6 @@
     }
     [data-theme="light"] .status-pill{background:#fff;border-color:#e2e8f0}
     .status-pill strong{color:var(--text)}
-
-    /* ✅ Estética: botón compartir que se sienta “acción” */
     .status-pill.action{
       cursor:pointer;
       border-style:solid;
@@ -277,7 +267,7 @@
     }
     [data-theme="dark"] .btn-ws{color:#000}
 
-    /* ✅ BOTÓN CONSULTAR (AGOTADO): rojo suave, no fuerte */
+    /* ✅ CONSULTAR (AGOTADO): rojo suave */
     .btn-ws.btn-agotado{
       background: var(--sold-bg);
       border: 1px solid var(--sold-border);
@@ -370,18 +360,11 @@
     .float-ws{position:fixed;bottom:20px;right:20px;width:55px;height:55px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:200;text-decoration:none}
     .highlight{outline:3px solid rgba(56,189,248,.65);box-shadow:0 0 0 6px rgba(56,189,248,.18);transition:.3s}
 
-    /* ✅ AGOTADO: banda roja suave + precio rojo + cinta más pro */
-    .card.agotado{
-      border-color: var(--sold-border);
-    }
-    .card.agotado .price-bar{
-      background: var(--sold-bg);
-      border-color: var(--sold-border);
-    }
+    /* ✅ AGOTADO: tarjeta + precio rojo + banda roja suave + cinta más pro */
+    .card.agotado{ border-color: var(--sold-border); }
+    .card.agotado .price-bar{ background: var(--sold-bg); border-color: var(--sold-border); }
     .card.agotado .current-price-row,
-    .card.agotado .price-icon{
-      color: var(--sold-text);
-    }
+    .card.agotado .price-icon{ color: var(--sold-text); }
     .card.agotado .ribbon{
       background: linear-gradient(135deg, var(--sold-ribbon), rgba(190,18,60,.96));
       box-shadow: 0 2px 10px rgba(239,68,68,.30);
@@ -572,6 +555,18 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 
+/* ✅ fetch con timeout: evita quedarse pegado */
+async function fetchText(url, timeoutMs = 12000){
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try{
+    const res = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
+    return await res.text();
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 /* ✅ guardar / cargar estado */
 function saveState(){
   try{
@@ -721,7 +716,7 @@ function parseGviz(text){
 }
 async function fetchConfigSheets(){
   try{
-    const t=await (await fetch(gvizUrlByGid(CONFIG_GID))).text();
+    const t = await fetchText(gvizUrlByGid(CONFIG_GID));
     const {rows}=parseGviz(t);
     const names=rows.map(r=>r.sheet??r.col??"").map(s=>(s??"").toString().trim()).filter(Boolean);
     const clean=names.filter(n=>norm(n)!=="sheet");
@@ -733,7 +728,7 @@ async function fetchConfigSheets(){
 }
 async function fetchTab(sheetName){
   try{
-    const t=await (await fetch(gvizUrlBySheet(sheetName))).text();
+    const t = await fetchText(gvizUrlBySheet(sheetName));
     const {rows}=parseGviz(t);
     return rows.map(o=>{
       const obj={...o};
@@ -761,41 +756,56 @@ async function fetchTab(sheetName){
   }
 }
 
+/* ✅ loadAll a prueba de fallos: nunca se queda en CARGANDO */
 async function loadAll(){
   loadFromUrlOrState();
 
-  const sheetNames=await fetchConfigSheets();
-  const results=await Promise.all(sheetNames.map(n=>fetchTab(n)));
-  products=results.flat().filter(p=>p.estado!=="inactivo" && p.estado!=="0");
+  try{
+    const sheetNames=await fetchConfigSheets();
+    const results=await Promise.all(sheetNames.map(n=>fetchTab(n)));
+    products=results.flat().filter(p=>p.estado!=="inactivo" && p.estado!=="0");
 
-  window.productById=new Map(products.map(p=>[p.id,p]));
+    window.productById=new Map(products.map(p=>[p.id,p]));
 
-  const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
-  if(currentCategory && !availableCats.includes(currentCategory)){
-    currentCategory=""; currentSub=""; soloOfertasMode=false;
-  }
-
-  if(pendingPid){
-    const found=productById.get(pendingPid);
-    if(found){
-      currentCategory=found.categoria||"";
-      soloOfertasMode=!!found._isOffer;
-      currentSub=(found.subcategoria||"").trim();
-      const si=document.getElementById("searchInput");
-      if(si) si.value="";
-    }else{
-      toast("⚠️ Producto no encontrado");
+    const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
+    if(currentCategory && !availableCats.includes(currentCategory)){
+      currentCategory=""; currentSub=""; soloOfertasMode=false;
     }
+
+    if(pendingPid){
+      const found=productById.get(pendingPid);
+      if(found){
+        currentCategory=found.categoria||"";
+        soloOfertasMode=!!found._isOffer;
+        currentSub=(found.subcategoria||"").trim();
+        const si=document.getElementById("searchInput");
+        if(si) si.value="";
+      }else{
+        toast("⚠️ Producto no encontrado");
+      }
+    }
+
+    initCategoryBar();
+    updateSubs();
+    render();
+    await loadTestimonials();
+    if(pendingPid){setTimeout(()=>focusProductById(pendingPid),120);}
+
+    saveState();
+  }catch(e){
+    console.error("❌ Error en loadAll:", e);
+    toast("⚠️ No se pudo cargar el catálogo (revisa internet o Sheets)");
+    try{
+      initCategoryBar();
+      updateSubs();
+      render();
+    }catch(err){
+      console.error("❌ Error en fallback:", err);
+    }
+  }finally{
+    const loader=document.getElementById("loader");
+    if(loader) loader.style.display="none";
   }
-
-  document.getElementById("loader").style.display="none";
-  initCategoryBar();
-  updateSubs();
-  render();
-  await loadTestimonials();
-  if(pendingPid){setTimeout(()=>focusProductById(pendingPid),120);}
-
-  saveState();
 }
 
 /* ================== CATEGORY UI ================== */
@@ -992,11 +1002,11 @@ function render(){
     const isAgotado=Number(p.stock||0)<=0;
     const promos=extractPromos(p);
 
-    /* ✅ si está AGOTADO, NO mostramos el widget promo (solo precio + consultar) */
+    /* ✅ si está AGOTADO, NO mostramos widget promo */
     const isPromoCard = p._isOffer && promos.length && !isAgotado;
 
     const card=document.createElement("div");
-    card.className=`card ${isAgotado?"agotado":""} ${isPromoCard && !isAgotado?"promo-mode":""}`;
+    card.className=`card ${isAgotado?"agotado":""} ${isPromoCard?"promo-mode":""}`;
     card.dataset.pid=p.id||"";
 
     const imgUrl=(p.imagen||"");
@@ -1174,7 +1184,7 @@ function initPromoWidget(card,p){
 /* ================== TESTIMONIOS ================== */
 async function loadTestimonials(){
   try{
-    const t=await (await fetch(gvizUrlBySheet(TESTIMONIOS_SHEET))).text();
+    const t = await fetchText(gvizUrlBySheet(TESTIMONIOS_SHEET));
     const {rows}=parseGviz(t);
     const clean=rows.map(r=>{
       const nombre=(r.nombre??"").toString().trim();
@@ -1192,4 +1202,100 @@ async function loadTestimonials(){
     console.warn("Testimonios no cargaron, fallback:",e);
     renderTestimonials([
       {nombre:"Cliente SDC",rol:"Cliente",estrellas:5,comentario:"Buena atención y productos de calidad. Recomendado.",estado:"activo"},
-      {nombre:"Gamer Comayagua",rol:"Gamer",estrellas:5,comentario:"Las promos por cantidad están brutales. Rápido y confiabl
+      {nombre:"Gamer Comayagua",rol:"Gamer",estrellas:5,comentario:"Las promos por cantidad están brutales. Rápido y confiable.",estado:"activo"},
+      {nombre:"Cliente Verificado",rol:"Cliente",estrellas:5,comentario:"El envío llegó bien y el producto sellado. Excelente.",estado:"activo"},
+    ]);
+  }
+}
+function initials(name){
+  const parts=(name||"").trim().split(/\s+/).slice(0,2);
+  return parts.map(p=>p[0]?.toUpperCase()||"").join("")||"SD";
+}
+function renderTestimonials(list){
+  const section=document.getElementById("testimonialsSection");
+  const track=document.getElementById("testimonialsTrack");
+  track.innerHTML="";
+  list.forEach(t=>{
+    const card=document.createElement("div");
+    card.className="t-card";
+    const stars=Array.from({length:t.estrellas}).map(()=>`<i class="fa-solid fa-star"></i>`).join("");
+    card.innerHTML=`
+      <div class="t-header">
+        <div class="t-avatar">${escapeHtml(initials(t.nombre))}</div>
+        <div class="t-info">
+          <h4>${escapeHtml(t.nombre)}</h4>
+          <span>${escapeHtml(t.rol||"Cliente")}</span>
+        </div>
+      </div>
+      <div class="t-stars">${stars}</div>
+      <p class="t-text">"${escapeHtml(t.comentario)}"</p>
+    `;
+    track.appendChild(card);
+  });
+  section.style.display="block";
+}
+
+/* ================== UI EVENTS ================== */
+let __searchDeb;
+document.getElementById("searchInput").addEventListener("input",()=>{
+  pendingPid="";
+  updateUrl();
+  clearTimeout(__searchDeb);
+  __searchDeb=setTimeout(()=>render(),120);
+});
+window.addEventListener("scroll",()=>{
+  const f=document.getElementById("filtersWrapper");
+  window.scrollY>50?f.classList.add("scrolled"):f.classList.remove("scrolled");
+});
+function toggleFaq(element){element.parentElement.classList.toggle("open");}
+
+const toggle=document.getElementById("themeToggle");
+const st=loadState();
+const sysDark=window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+applyTheme(st ? st.dark : sysDark);
+
+toggle.onclick=()=>{
+  applyTheme(!dark);
+  saveState();
+};
+toggle.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle.click(); }
+});
+
+document.getElementById("goHome").onclick=()=>{
+  currentCategory="";
+  currentSub="";
+  soloOfertasMode=false;
+  pendingPid="";
+  updateUrl();
+  initCategoryBar();
+  updateSubs();
+  render();
+  saveState();
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+document.getElementById("goHome").addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"||e.key===" "){ e.preventDefault(); document.getElementById("goHome").click(); }
+});
+
+document.getElementById("loadMapBtn").onclick=()=>{
+  const shell=document.getElementById("mapShell");
+  shell.innerHTML=`
+    <iframe class="map-frame" style="width:100%;height:250px;border:0;"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1933.2843779837946!2d-87.6289189153322!3d14.454458000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6585356521890d%3A0x5e9e0d326671793d!2sInkmortal%20Tattoo%20Comayagua!5e0!3m2!1ses!2shn!4v1709660000000!5m2!1ses!2shn"
+      loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen=""></iframe>
+  `;
+};
+function focusProductById(pid){
+  const el=document.querySelector(`[data-pid="${CSS.escape(pid)}"]`);
+  if(!el) return;
+  el.classList.add("highlight");
+  el.scrollIntoView({behavior:"smooth",block:"center"});
+  setTimeout(()=>el.classList.remove("highlight"),1800);
+}
+
+/* ================== START ================== */
+loadAll();
+</script>
+</body>
+</html>
