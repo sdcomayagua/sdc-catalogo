@@ -212,11 +212,13 @@
       background:rgba(0,0,0,.45);color:#fff;
       display:flex;align-items:center;justify-content:center;
       cursor:pointer;backdrop-filter:blur(4px);
-      transition:.2s
+      transition:.2s;
+      padding:0; appearance:none; -webkit-appearance:none;
     }
     .share-prod:hover{transform:scale(1.05)}
     [data-theme="light"] .share-prod{background:rgba(15,23,42,.75)}
     .card.agotado .share-prod{opacity:.6}
+    .share-prod:focus-visible{ outline:3px solid rgba(56,189,248,.65); outline-offset:2px; }
 
     .ribbon{
       position:absolute;top:16px;left:-34px;width:110px;background:var(--danger);color:#fff;font-size:10px;font-weight:900;
@@ -235,6 +237,36 @@
     .video-badge:hover{transform:scale(1.05)}
     .video-badge.tiktok{background:rgba(0,0,0,.9);border:1px solid rgba(255,255,255,.2)}
     .video-badge.youtube{background:rgba(220,38,38,.95);border:1px solid rgba(255,255,255,.2)}
+
+    /* ✅ (2) BADGES: Compatible / Incluye / Quedan X */
+    .img-badges{
+      position:absolute;top:8px;left:8px;z-index:12;
+      display:flex;flex-direction:column;gap:6px
+    }
+    /* si hay ribbon, bajamos un poco para no taparlo */
+    .card-img-container.has-ribbon .img-badges{ top:44px; }
+
+    .img-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:12px;
+      font-size:10px;font-weight:900;text-transform:uppercase;
+      color:#fff;
+      background:rgba(15,23,42,.65);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)
+    }
+    .img-badge.compat{ background:rgba(2,132,199,.78); }
+    .img-badge.incluye{ background:rgba(234,88,12,.72); }
+
+    .stock-badge{
+      position:absolute;top:8px;right:8px;z-index:12;
+      padding:6px 10px;border-radius:999px;
+      font-size:10px;font-weight:900;text-transform:uppercase;
+      color:#fff;background:rgba(22,163,74,.82);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)
+    }
+    .stock-badge.promo{ top:34px; } /* para no chocar con HOT SALE */
 
     .card-body{padding:16px;display:flex;flex-direction:column;gap:8px;flex-grow:1}
     .card h3{
@@ -378,13 +410,13 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size: clamp(60px, 12vw, 96px); /* ✅ MÁS GRANDE */
+      font-size: clamp(60px, 12vw, 96px);
       font-weight: 900;
       letter-spacing: 8px;
       transform: rotate(-18deg);
-      color: rgba(239,68,68,.34); /* rojo suave */
+      color: rgba(239,68,68,.34);
       text-shadow: 0 10px 22px rgba(0,0,0,.18);
-      z-index:9; /* debajo de ribbon (10), badge (12) y share (13) */
+      z-index:9;
       pointer-events:none;
     }
 
@@ -571,6 +603,28 @@ function pluralize(unidad,qty){
   if(u==="par") return qty===1?"par":"pares";
   if(u==="uno") return qty===1?"unidad":"unidades";
   return qty===1?"unidad":"unidades";
+}
+
+/* ✅ (2) Badges helpers */
+function cleanOneLine(s){
+  return (s??"").toString().trim().replace(/\s+/g," ");
+}
+function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
+  const parts=[];
+  const comp = cleanOneLine(p.compatible);
+  const inc  = cleanOneLine(p.incluye);
+
+  if(comp) parts.push(`<div class="img-badge compat">✅ ${escapeHtml(comp)}</div>`);
+  if(inc)  parts.push(`<div class="img-badge incluye">📦 ${escapeHtml("Incluye: " + inc)}</div>`);
+
+  const left = parts.length ? `<div class="img-badges">${parts.join("")}</div>` : "";
+
+  const stock = Number(p.stock||0);
+  const stockBadge = (!isAgotado && stock>0 && stock<=3)
+    ? `<div class="stock-badge${isPromoCard?" promo":""}">Quedan ${stock}</div>`
+    : "";
+
+  return left + stockBadge;
 }
 
 /* ✅ fetch con timeout: evita quedarse pegado */
@@ -997,6 +1051,14 @@ function render(){
     list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q));
   }
 
+  /* ✅ (1) Disponibles primero (arregla "agotados arriba") */
+  list.sort((a,b)=>{
+    const aOut = Number(a.stock||0) <= 0;
+    const bOut = Number(b.stock||0) <= 0;
+    if(aOut !== bOut) return aOut - bOut; // disponibles primero
+    return norm(a.nombre).localeCompare(norm(b.nombre), "es");
+  });
+
   buildStatus(list.length);
 
   if(!currentCategory && !q){
@@ -1023,6 +1085,7 @@ function render(){
 
     /* ✅ si está AGOTADO, NO mostramos widget promo */
     const isPromoCard = p._isOffer && promos.length && !isAgotado;
+    const hasRibbon = isAgotado || isPromoCard;
 
     const card=document.createElement("div");
     card.className=`card ${isAgotado?"agotado":""} ${isPromoCard?"promo-mode":""}`;
@@ -1088,11 +1151,15 @@ function render(){
       btnText="PEDIR";
     }
 
+    /* ✅ (2) Badges automáticos (compatible / incluye / quedan X) */
+    const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
+
     card.innerHTML=`
-      <div class="card-img-container">
+      <div class="card-img-container ${hasRibbon?'has-ribbon':''}">
         <div class="card-img" style="background-image:url('${imgUrl}')"></div>
         ${ribbon}
         ${videoBadge}
+        ${badgesHTML}
         ${p.id ? `<button class="share-prod" type="button" aria-label="Compartir producto"><i class="fa-solid fa-share-nodes"></i></button>` : ``}
       </div>
       <div class="card-body">
