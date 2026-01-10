@@ -551,8 +551,13 @@
 
 <script>
 /* ================== CONFIG ================== */
-const SHEET_ID="1J-y47gPZuuyQOxaj9OJa4tMzR2IjfQVAzCR1i928dng";
-const CONFIG_GID="1488858707";
+/* ✅ TU NUEVO ID (ya puesto) */
+const SHEET_ID="1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE";
+
+/* ✅ Ya NO dependemos de GID (en Sheet nuevo cambia).
+   Recomendado: crea una pestaña "config" con columna "sheet" listando pestañas. */
+const CONFIG_SHEET_NAMES=["config","CONFIG","sheets","SHEETS","tabs","TABS","catalogo_config","CATALOGO_CONFIG"];
+
 const MY_PHONE="50432429490";
 const BACKUP_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 const TESTIMONIOS_SHEET="testimonios";
@@ -772,8 +777,10 @@ function loadFromUrlOrState(){
 }
 
 /* ================== SHEETS FETCH ================== */
-function gvizUrlByGid(gid){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;}
-function gvizUrlBySheet(sheetName){return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;}
+/* ✅ anti-cache: cb= */
+function gvizUrlBySheet(sheetName){
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&cb=${Date.now()}`;
+}
 function parseGviz(text){
   const start=text.indexOf("{");
   const end=text.lastIndexOf("}");
@@ -786,18 +793,38 @@ function parseGviz(text){
   });
   return {cols,rows};
 }
+
+/* ✅ CONFIG por nombre de hoja (estable en cualquier Sheet nuevo) */
 async function fetchConfigSheets(){
-  try{
-    const t = await fetchText(gvizUrlByGid(CONFIG_GID));
-    const {rows}=parseGviz(t);
-    const names=rows.map(r=>r.sheet??r.col??"").map(s=>(s??"").toString().trim()).filter(Boolean);
-    const clean=names.filter(n=>norm(n)!=="sheet");
-    return clean.length?clean:BACKUP_SHEETS;
-  }catch(e){
-    console.warn("Config falló, usando respaldo",e);
-    return BACKUP_SHEETS;
+  const keyCandidates=["sheet","hoja","tab","pestana","pestaña","nombre","name","col"];
+
+  for(const cfgName of CONFIG_SHEET_NAMES){
+    try{
+      const t = await fetchText(gvizUrlBySheet(cfgName));
+      const {rows}=parseGviz(t);
+
+      const names = rows
+        .map(r=>{
+          for(const k of keyCandidates){
+            if(r[k]!==undefined && r[k]!==null && String(r[k]).trim()!==""){
+              return String(r[k]).trim();
+            }
+          }
+          return "";
+        })
+        .filter(Boolean);
+
+      const clean = names.filter(n => norm(n) !== "sheet" && norm(n) !== "hoja" && norm(n) !== "tab");
+      if(clean.length) return clean;
+    }catch(e){
+      // probar siguiente nombre
+    }
   }
+
+  console.warn("Config no encontrada (por nombre). Usando BACKUP_SHEETS");
+  return BACKUP_SHEETS;
 }
+
 async function fetchTab(sheetName){
   try{
     const t = await fetchText(gvizUrlBySheet(sheetName));
@@ -1051,11 +1078,11 @@ function render(){
     list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q));
   }
 
-  /* ✅ (1) Disponibles primero (arregla "agotados arriba") */
+  /* ✅ (1) Disponibles primero */
   list.sort((a,b)=>{
     const aOut = Number(a.stock||0) <= 0;
     const bOut = Number(b.stock||0) <= 0;
-    if(aOut !== bOut) return aOut - bOut; // disponibles primero
+    if(aOut !== bOut) return aOut - bOut;
     return norm(a.nombre).localeCompare(norm(b.nombre), "es");
   });
 
@@ -1083,7 +1110,6 @@ function render(){
     const isAgotado=Number(p.stock||0)<=0;
     const promos=extractPromos(p);
 
-    /* ✅ si está AGOTADO, NO mostramos widget promo */
     const isPromoCard = p._isOffer && promos.length && !isAgotado;
     const hasRibbon = isAgotado || isPromoCard;
 
@@ -1151,7 +1177,6 @@ function render(){
       btnText="PEDIR";
     }
 
-    /* ✅ (2) Badges automáticos (compatible / incluye / quedan X) */
     const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
 
     card.innerHTML=`
