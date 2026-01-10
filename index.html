@@ -551,15 +551,14 @@
 
 <script>
 /* ================== CONFIG ================== */
-/* ✅ TU NUEVO ID (ya puesto) */
+/* ✅ TU NUEVO SHEET ID */
 const SHEET_ID="1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE";
 
-/* ✅ Ya NO dependemos de GID (en Sheet nuevo cambia).
-   Recomendado: crea una pestaña "config" con columna "sheet" listando pestañas. */
-const CONFIG_SHEET_NAMES=["config","CONFIG","sheets","SHEETS","tabs","TABS","catalogo_config","CATALOGO_CONFIG"];
-
 const MY_PHONE="50432429490";
-const BACKUP_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
+
+/* ✅ SOLO ESTAS PESTAÑAS (en este orden) */
+const ALLOWED_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
+const CONFIG_SHEET_NAME="_config"; // (opcional, pero ya no depende de GID)
 const TESTIMONIOS_SHEET="testimonios";
 
 /* ================== STATE ================== */
@@ -773,13 +772,17 @@ function loadFromUrlOrState(){
     soloOfertasMode=!!st.soloOfertasMode;
     currentCategory=(st.currentCategory??"").toString();
     currentSub=(st.currentSub??"").toString();
+    return;
   }
+
+  /* ✅ primer arranque: abre GAMER para que SIEMPRE veas catálogo */
+  currentCategory="gamer";
+  soloOfertasMode=false;
 }
 
 /* ================== SHEETS FETCH ================== */
-/* ✅ anti-cache: cb= */
 function gvizUrlBySheet(sheetName){
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&cb=${Date.now()}`;
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 }
 function parseGviz(text){
   const start=text.indexOf("{");
@@ -794,45 +797,46 @@ function parseGviz(text){
   return {cols,rows};
 }
 
-/* ✅ CONFIG por nombre de hoja (estable en cualquier Sheet nuevo) */
+/* ✅ ya no dependemos de GID: solo usamos el nombre _config (si existe) */
 async function fetchConfigSheets(){
-  const keyCandidates=["sheet","hoja","tab","pestana","pestaña","nombre","name","col"];
+  try{
+    const t = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
+    const {rows}=parseGviz(t);
 
-  for(const cfgName of CONFIG_SHEET_NAMES){
-    try{
-      const t = await fetchText(gvizUrlBySheet(cfgName));
-      const {rows}=parseGviz(t);
+    const names = rows
+      .map(r => r.sheet ?? r.col ?? "")
+      .map(s => (s ?? "").toString().trim())
+      .filter(Boolean)
+      .map(norm);
 
-      const names = rows
-        .map(r=>{
-          for(const k of keyCandidates){
-            if(r[k]!==undefined && r[k]!==null && String(r[k]).trim()!==""){
-              return String(r[k]).trim();
-            }
-          }
-          return "";
-        })
-        .filter(Boolean);
-
-      const clean = names.filter(n => norm(n) !== "sheet" && norm(n) !== "hoja" && norm(n) !== "tab");
-      if(clean.length) return clean;
-    }catch(e){
-      // probar siguiente nombre
-    }
+    /* ✅ SOLO permitimos estas y siempre en este orden */
+    const set = new Set(names);
+    const ordered = ALLOWED_SHEETS.filter(s => set.has(s) || true); // siempre true = siempre salen
+    return ordered;
+  }catch(e){
+    console.warn("Config falló, usando lista fija",e);
+    return ALLOWED_SHEETS.slice();
   }
-
-  console.warn("Config no encontrada (por nombre). Usando BACKUP_SHEETS");
-  return BACKUP_SHEETS;
 }
 
 async function fetchTab(sheetName){
   try{
+    const sheetNorm = norm(sheetName);
     const t = await fetchText(gvizUrlBySheet(sheetName));
     const {rows}=parseGviz(t);
+
     return rows.map(o=>{
       const obj={...o};
-      obj._sheet=norm(sheetName);
-      obj.categoria=norm(obj.categoria||sheetName);
+      obj._sheet=sheetNorm;
+
+      /* ✅ categoria: SOLO estas 6 categorias (OFERTAS es solo modo) */
+      const cellCat = norm(obj.categoria || "");
+      if(sheetNorm !== "ofertas" && ALLOWED_SHEETS.includes(sheetNorm)){
+        obj.categoria = sheetNorm; // gamer/pc/movil/streaming/cobertores/power
+      }else{
+        obj.categoria = ["gamer","pc","movil","streaming","cobertores","power"].includes(cellCat) ? cellCat : "gamer";
+      }
+
       obj.subcategoria=(obj.subcategoria??"").toString().trim();
       obj.nombre=(obj.nombre??"").toString().trim();
       obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
@@ -843,38 +847,60 @@ async function fetchTab(sheetName){
       obj.unidad=(obj.unidad??"").toString().trim()||"unidad";
       obj.id=(obj.id??"").toString().trim();
       obj.solo_ofertas=norm(obj.solo_ofertas||"");
+
+      /* ✅ ofertas: por pestaña OFERTAS o por solo_ofertas = si */
       obj._isOffer=(obj._sheet==="ofertas")||["si","sí","1","true","yes"].includes(obj.solo_ofertas);
+
       if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
         obj.imagen=obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
       }
       return obj;
-    }).filter(p=>p.nombre);
+    }).filter(p=>{
+      if(!p || !p.nombre) return false;
+      if(p.estado==="inactivo" || p.estado==="0") return false;
+
+      /* ✅ ignora separadores grandes tipo "COOLERS / DEDALES / GAMEPAD" */
+      const isSeparator =
+        (p.nombre === p.nombre.toUpperCase()) &&
+        Number(p.precio||0) <= 0 &&
+        Number(p.stock||0) <= 0 &&
+        !p.imagen && !p.galeria &&
+        !p.descripcion &&
+        !p.whatsapp && !p.tiktok && !p.youtube &&
+        !p.id;
+
+      return !isSeparator;
+    });
   }catch(e){
     console.warn("Tab falló:",sheetName,e);
     return [];
   }
 }
 
-/* ✅ loadAll a prueba de fallos: nunca se queda en CARGANDO */
+/* ✅ loadAll a prueba de fallos */
 async function loadAll(){
   loadFromUrlOrState();
 
   try{
     const sheetNames=await fetchConfigSheets();
+
     const results=await Promise.all(sheetNames.map(n=>fetchTab(n)));
-    products=results.flat().filter(p=>p.estado!=="inactivo" && p.estado!=="0");
+    products=results.flat();
 
     window.productById=new Map(products.map(p=>[p.id,p]));
 
-    const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
-    if(currentCategory && !availableCats.includes(currentCategory)){
-      currentCategory=""; currentSub=""; soloOfertasMode=false;
+    /* ✅ solo permitimos estas 6 */
+    const allowedCats=["gamer","pc","movil","streaming","cobertores","power"];
+    if(currentCategory && !allowedCats.includes(currentCategory)){
+      currentCategory="gamer";
+      currentSub="";
+      soloOfertasMode=false;
     }
 
     if(pendingPid){
       const found=productById.get(pendingPid);
       if(found){
-        currentCategory=found.categoria||"";
+        currentCategory=found.categoria||"gamer";
         soloOfertasMode=!!found._isOffer;
         currentSub=(found.subcategoria||"").trim();
         const si=document.getElementById("searchInput");
@@ -894,14 +920,7 @@ async function loadAll(){
     saveState();
   }catch(e){
     console.error("❌ Error en loadAll:", e);
-    toast("⚠️ No se pudo cargar el catálogo (revisa internet o Sheets)");
-    try{
-      initCategoryBar();
-      updateSubs();
-      render();
-    }catch(err){
-      console.error("❌ Error en fallback:", err);
-    }
+    toast("⚠️ No se pudo cargar el catálogo (revisa permisos del Sheets)");
   }finally{
     const loader=document.getElementById("loader");
     if(loader) loader.style.display="none";
@@ -913,9 +932,10 @@ function initCategoryBar(){
   const bar=document.getElementById("categoryBar");
   bar.innerHTML="";
 
+  /* ✅ Ofertas (modo) */
   const offerChip=document.createElement("div");
   offerChip.className="chip"+(soloOfertasMode?" active promo-active":"");
-  offerChip.textContent="💥 SOLO OFERTAS";
+  offerChip.textContent="🔥 OFERTAS";
   offerChip.onclick=()=>{
     soloOfertasMode=!soloOfertasMode;
     updateUrl();
@@ -926,14 +946,13 @@ function initCategoryBar(){
   };
   bar.appendChild(offerChip);
 
-  const availableCats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
-  const preferredOrder=["gamer","pc","movil","streaming","cobertores","power"];
-  const ordered=[...preferredOrder.filter(c=>availableCats.includes(c)),...availableCats.filter(c=>!preferredOrder.includes(c))];
+  /* ✅ Categorías fijas (en este orden) */
+  const ordered=["gamer","pc","movil","streaming","cobertores","power"];
 
   ordered.forEach(cat=>{
     const btn=document.createElement("div");
     btn.className="chip"+(cat===currentCategory?" active":"");
-    btn.textContent=`${getIconForCategory(cat)} ${cat}`;
+    btn.textContent=`${getIconForCategory(cat)} ${cat.toUpperCase()}`;
     btn.onclick=()=>{
       currentCategory=cat;
       currentSub="";
@@ -954,6 +973,7 @@ function initCategoryBar(){
     bar.appendChild(btn);
   });
 }
+
 function updateSubs(){
   const bar=document.getElementById("subBar");
   bar.innerHTML="";
@@ -1046,17 +1066,12 @@ function buildStatus(count){
   const row=document.getElementById("statusRow");
   const q=document.getElementById("searchInput").value.trim();
 
-  if(!currentCategory && !q){
-    row.style.display="none";
-    row.innerHTML="";
-    return;
-  }
   row.style.display="flex";
   row.innerHTML=`
     <div class="status-pill">Mostrando: <strong>${count}</strong></div>
     <div class="status-pill">Categoría: <strong>${currentCategory?escapeHtml(currentCategory.toUpperCase()):"TODAS"}</strong></div>
     ${currentSub?`<div class="status-pill">Sub: <strong>${escapeHtml(currentSub)}</strong></div>`:``}
-    ${soloOfertasMode?`<div class="status-pill">Solo ofertas ✅</div>`:``}
+    ${soloOfertasMode?`<div class="status-pill">Ofertas ✅</div>`:``}
     ${(currentCategory || currentSub || soloOfertasMode)?`<div class="status-pill action" id="shareViewBtn"><i class="fa-solid fa-link"></i> Compartir</div>`:``}
   `;
   const shareBtn=document.getElementById("shareViewBtn");
@@ -1078,7 +1093,7 @@ function render(){
     list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q));
   }
 
-  /* ✅ (1) Disponibles primero */
+  /* ✅ Disponibles primero */
   list.sort((a,b)=>{
     const aOut = Number(a.stock||0) <= 0;
     const bOut = Number(b.stock||0) <= 0;
@@ -1088,20 +1103,13 @@ function render(){
 
   buildStatus(list.length);
 
-  if(!currentCategory && !q){
-    grid.innerHTML=`
-      <div class="welcome-state">
-        <div class="welcome-icon"><i class="fa-solid fa-hand-pointer"></i></div>
-        <h3 class="welcome-title">¡Empieza tu búsqueda!</h3>
-        <p class="welcome-text">Selecciona una categoría arriba o escribe en el buscador para ver resultados.</p>
-      </div>`;
-    return;
-  }
-
   if(list.length===0){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
       <i class="fa-solid fa-ghost" style="font-size:40px;margin-bottom:10px;"></i>
       <p style="font-weight:900;letter-spacing:1px;">NO HAY RESULTADOS</p>
+      <p style="font-size:12px;max-width:520px;margin:10px auto 0;line-height:1.5;">
+        Tip: si activaste <b>🔥 OFERTAS</b>, desactívalo para ver el catálogo normal.
+      </p>
     </div>`;
     return;
   }
@@ -1110,6 +1118,7 @@ function render(){
     const isAgotado=Number(p.stock||0)<=0;
     const promos=extractPromos(p);
 
+    /* ✅ si está AGOTADO, NO mostramos widget promo */
     const isPromoCard = p._isOffer && promos.length && !isAgotado;
     const hasRibbon = isAgotado || isPromoCard;
 
@@ -1177,6 +1186,7 @@ function render(){
       btnText="PEDIR";
     }
 
+    /* ✅ Badges automáticos (compatible / incluye / quedan X) */
     const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
 
     card.innerHTML=`
@@ -1374,7 +1384,7 @@ toggle.addEventListener("keydown",(e)=>{
 });
 
 document.getElementById("goHome").onclick=()=>{
-  currentCategory="";
+  currentCategory="gamer";
   currentSub="";
   soloOfertasMode=false;
   pendingPid="";
