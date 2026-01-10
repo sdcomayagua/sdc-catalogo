@@ -16,7 +16,7 @@
   <meta property="og:url" content="https://sdcomayagua.github.io/sdc-catalogo/" />
   <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo 2026" />
   <meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC, Móvil y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
-  <meta property="og:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png" />
+  <meta property="og:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png?v=20260110" />
   <meta property="og:image:secure_url" content="https://sdcomayagua.github.io/sdc-catalogo/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Soluciones Digitales Comayagua | Catálogo 2026" />
   <meta name="twitter:description" content="Catálogo oficial de accesorios Gamer, PC, Móvil y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
-  <meta name="twitter:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png" />
+  <meta name="twitter:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png?v=20260110" />
 
 
 <meta name="theme-color" content="#0b1120" />
@@ -800,6 +800,9 @@ const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","p
 
 /* ================== STATE ================== */
 let products=[];
+const OG_IMAGE_VERSION='20260110';
+const SITE_BASE = new URL('.', location.href).toString();
+let lastVisibleProducts=[];
 let currentCategory="";
 let currentSub="";
 let soloOfertasMode=false;
@@ -1052,7 +1055,28 @@ function buildProductLink(pid){
   url.searchParams.delete("stock");
   return url.toString();
 }
-async function copyText(text){
+async function resolveUrl(u){
+  if(!u) return "";
+  try{ return new URL(String(u).trim(), SITE_BASE).toString(); }
+  catch(e){ return String(u).trim(); }
+}
+
+function pickShareImage(list){
+  const arr = Array.isArray(list) ? list : [];
+  const p = arr.find(x => x && x.imagen);
+  return p ? resolveUrl(p.imagen) : resolveUrl('og.png?v=' + OG_IMAGE_VERSION);
+}
+
+function shareProduct(p){
+  if(!p) return;
+  const url = buildProductLink(p.id);
+  const img = resolveUrl(p.imagen) || resolveUrl('og.png?v=' + OG_IMAGE_VERSION);
+  const name = (p.nombre || "Producto").toString().trim();
+  const text = `📸 ${img}\n🛒 ${name}`;
+  shareOrCopy(url, { title: `${name} | Soluciones Digitales Comayagua`, text });
+}
+
+function copyText(text){
   try{
     if(navigator.clipboard && window.isSecureContext){
       await navigator.clipboard.writeText(text);
@@ -1088,15 +1112,37 @@ function scrollToHash(){
   }
 }
 
-async function shareOrCopy(url){
+async function shareOrCopy(url, opts={}){
+  const title = opts.title || document.title;
+  const text = (opts.text || "").trim();
+
+  const payload = text ? { title, text, url } : { title, url };
+
   try{
     if(navigator.share){
-      await navigator.share({ title: document.title, url });
-      toast("✅ Compartido");
+      await navigator.share(payload);
       return;
     }
-  }catch(e){}
-  copyText(url);
+  }catch(e){ /* user canceled */ }
+
+  // Fallback: copy to clipboard
+  const copyStr = text ? (text + "
+" + url) : url;
+  try{
+    await navigator.clipboard.writeText(copyStr);
+    toast("✅ Copiado. Pégalo en WhatsApp / Facebook.");
+  }catch(e){
+    // legacy fallback
+    const ta=document.createElement("textarea");
+    ta.value=copyStr;
+    ta.style.position="fixed";
+    ta.style.opacity="0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    toast("✅ Copiado. Pégalo en WhatsApp / Facebook.");
+  }
 }
 function bindDoubleTap(el,fn){
   let last=0;
@@ -1114,9 +1160,28 @@ function bindDoubleTap(el,fn){
   });
 }
 function copyCurrentView(){
-  const link=buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
-  shareOrCopy(link);
+  const url = buildViewLink({cat: currentCategory, sub: currentSub, offer: offersMode});
+
+  const catLabel = (currentCategory || "INICIO").toString().trim();
+  const label = currentSub ? `${catLabel.toUpperCase()} / ${currentSub}` : catLabel.toUpperCase();
+
+  // Truco: ponemos primero el link de la FOTO (para que WhatsApp muestre miniatura),
+  // y luego el link del catálogo.
+  const img = pickShareImage(lastVisibleProducts);
+  const text = img ? `📸 ${img}
+🧭 ${label}` : `🧭 ${label}`;
+
+  shareOrCopy(url, { title: `${label} | Soluciones Digitales Comayagua`, text });
 }
+
+function copyHomeLink(){
+  const url = buildViewLink({cat:"", sub:"", offer:false});
+  const img = resolveUrl('og.png?v=' + OG_IMAGE_VERSION);
+  const text = `📸 ${img}\n🧭 INICIO`;
+  shareOrCopy(url, { title: "INICIO | Soluciones Digitales Comayagua", text });
+}
+
+
 
 /* ================== URL ================== */
 function updateUrl(){
@@ -1379,7 +1444,7 @@ function initCategoryBar(forceFallback=false){
   homeChip.className="chip"+(!currentCategory && !currentSub && !soloOfertasMode ? " active":"");
   homeChip.innerHTML=`🏠 INICIO`;
   homeChip.onclick=startHome;
-  bindDoubleTap(homeChip, ()=> shareOrCopy(buildViewLink({cat:"",sub:"",offer:false})));
+  bindDoubleTap(homeChip, ()=> copyHomeLink());
   bar.appendChild(homeChip);
 
   const offerCount = countOffersTotal();
@@ -1419,7 +1484,7 @@ function initCategoryBar(forceFallback=false){
     };
 
     bindDoubleTap(btn, ()=>{
-      copyText(buildViewLink({cat:norm(cat),sub:"",offer:!!soloOfertasMode}));
+      copyCurrentView();
     });
 
     bar.appendChild(btn);
@@ -1453,7 +1518,7 @@ function updateSubs(){
     saveState();
   };
   bindDoubleTap(allBtn, ()=>{
-    copyText(buildViewLink({cat:currentCategory||"",sub:"",offer:!!soloOfertasMode}));
+    copyCurrentView();
   });
   bar.appendChild(allBtn);
 
@@ -1471,7 +1536,7 @@ function updateSubs(){
     };
 
     bindDoubleTap(b, ()=>{
-      copyText(buildViewLink({cat:currentCategory||"",sub:s,offer:!!soloOfertasMode}));
+      copyCurrentView();
     });
 
     bar.appendChild(b);
@@ -1584,6 +1649,7 @@ function render(){
 
   if(isHome){
     buildStatus(0);
+    lastVisibleProducts = [];
     grid.innerHTML=`
       <div class="welcome-state">
         <div class="welcome-icon">👾</div>
@@ -1626,6 +1692,7 @@ function render(){
   });
 
   buildStatus(list.length);
+  lastVisibleProducts = list.slice();
 
   if(list.length===0){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
@@ -1748,7 +1815,7 @@ function render(){
 
     const shareBtn=card.querySelector(".share-prod");
     if(shareBtn && p.id){
-      shareBtn.onclick=()=>shareOrCopy(buildProductLink(p.id));
+      shareBtn.onclick=()=>shareProduct(p);
     }
 
     if(isPromoCard) initPromoWidget(card,p);
