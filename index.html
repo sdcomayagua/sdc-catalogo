@@ -144,6 +144,7 @@
       display:flex;gap:10px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none;
       position:relative;
       padding-right:44px;
+      isolation:isolate; /* evita que el degradado tape el último botón */
     }
     .category-bar::after,.sub-bar::after{
       content:"";
@@ -151,11 +152,17 @@
       top:0;right:0;
       width:44px;height:100%;
       pointer-events:none;
-      background:linear-gradient(to right, transparent, rgba(0,0,0,0));
+      z-index:0;
+      background:linear-gradient(to right, rgba(0,0,0,0), var(--bg));
+    }
+    .category-bar .chip,
+    .sub-bar .chip{
+      position:relative;
+      z-index:1;
     }
     .filters-wrapper.scrolled .category-bar::after,
     .filters-wrapper.scrolled .sub-bar::after{
-      background:linear-gradient(to right, transparent, var(--card-bg));
+      background:linear-gradient(to right, rgba(0,0,0,0), var(--card-bg));
     }
 
     .chip{
