@@ -9,26 +9,25 @@
   <meta name="description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
 
 <link rel="canonical" href="https://sdcomayagua.github.io/sdc-catalogo/" />
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Soluciones Digitales Comayagua" />
+  <meta property="og:locale" content="es_HN" />
+  <meta property="og:url" content="https://sdcomayagua.github.io/sdc-catalogo/" />
+  <meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo 2026" />
+  <meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC, Móvil y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
+  <meta property="og:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png" />
+  <meta property="og:image:secure_url" content="https://sdcomayagua.github.io/sdc-catalogo/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Soluciones Digitales Comayagua - Catálogo 2026" />
 
-<meta property="og:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
-<meta property="og:description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="Soluciones Digitales Comayagua" />
-<meta property="og:locale" content="es_HN" />
-<meta property="og:url" content="https://sdcomayagua.github.io/sdc-catalogo/" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Soluciones Digitales Comayagua | Catálogo 2026" />
+  <meta name="twitter:description" content="Catálogo oficial de accesorios Gamer, PC, Móvil y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
+  <meta name="twitter:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png" />
 
-<!-- Imagen principal (recomendado: que exista en tu GitHub Pages) -->
-<meta property="og:image" content="https://sdcomayagua.github.io/sdc-catalogo/PORTADA%20-%20SDC%20-%202026.png" />
-<meta property="og:image:secure_url" content="https://sdcomayagua.github.io/sdc-catalogo/PORTADA%20-%20SDC%20-%202026.png" />
-<meta property="og:image:alt" content="Catálogo Soluciones Digitales Comayagua" />
-
-<!-- Imagen respaldo (por si algún scraper no carga la anterior) -->
-<meta property="og:image" content="https://raw.githubusercontent.com/sdcomayagua/sdc-catalogo/94d9f2b52faa08cccf5bfff9c50f2b8458ea4b04/PORTADA%20-%20SDC%20-%202026.png" />
-
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Soluciones Digitales Comayagua | Catálogo Gamer 2026" />
-<meta name="twitter:description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
-<meta name="twitter:image" content="https://sdcomayagua.github.io/sdc-catalogo/PORTADA%20-%20SDC%20-%202026.png" />
 
 <meta name="theme-color" content="#0b1120" />
 
@@ -602,7 +601,32 @@
     @media (prefers-reduced-motion: reduce){
       *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
     }
-  </style>
+  
+    /* Anchor for deep-links (e.g. #ubicacion) */
+    .anchor{ position: relative; top: -90px; height: 0; }
+
+    .copy-link-btn{
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--chip-bg);
+      color: var(--primary);
+      font-weight: 900;
+      letter-spacing: .2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-card);
+      transition: transform .12s ease, filter .12s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+</style>
 </head>
 
 <body>
@@ -682,9 +706,11 @@
 
     <!-- Ubicación (solo botones, sin mapa embed) -->
     <div class="location-section" id="locationSection">
+    <div id="ubicacion" class="anchor" aria-hidden="true"></div>
       <h3 class="sec-title">📍 Ubicación</h3>
       <div class="loc-card">
         <p class="loc-note">Toca tu app favorita para ver la tienda en grande (Android y iPhone).</p>
+        <button class="copy-link-btn" type="button" onclick="copyLocationLink()">🔗 Copiar link de ubicación</button>
         <div class="location-btns">
           <a href="https://maps.app.goo.gl/uDTJRhm7uXLLWuZj6"
              target="_blank" rel="noopener noreferrer"
@@ -952,6 +978,21 @@ async function copyText(text){
     toast("⚠️ No se pudo copiar");
   }
 }
+function copyLocationLink(){
+  const u = new URL(window.location.href);
+  u.hash = "ubicacion";
+  copyText(u.toString());
+}
+
+function scrollToHash(){
+  const raw = (window.location.hash || "").replace("#","").trim();
+  if(!raw) return;
+  const el = document.getElementById(raw);
+  if(el){
+    el.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+}
+
 async function shareOrCopy(url){
   try{
     if(navigator.share){
@@ -996,6 +1037,8 @@ function updateUrl(){
 /* URL manda; si no, usamos state guardado */
 function loadFromUrlOrState(){
   const params=new URLSearchParams(window.location.search);
+  const goto = params.get("goto");
+  if(goto && !window.location.hash) window.location.hash = goto;
   const pid=params.get("pid");
   pendingPid=pid?pid:"";
   if(pendingPid){
