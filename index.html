@@ -816,6 +816,94 @@ const STATE_KEY="sdc_state_v2";
 function norm(s){
   return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
+
+function isDefaultSheetName(name){
+  const n = norm(name);
+  return /^sheet\d*$/.test(n) || /^hoja\s*\d*$/.test(n) || n==="sheet" || n==="hoja";
+}
+function isBadCategoryName(cat){
+  const n = norm(cat);
+  return !n || isDefaultSheetName(n);
+}
+function canonicalKey(p){
+  const id = (p?.id ?? "").toString().trim();
+  if(id) return "id:" + id;
+  const name = norm(p?.nombre);
+  const sub  = norm(p?.subcategoria);
+  const price = (p?.precio ?? "").toString().trim();
+  const prev  = (p?.precio_anterior ?? "").toString().trim();
+  const img   = (p?.imagen ?? "").toString().trim();
+  return "k:" + [name,sub,price,prev,img].join("|");
+}
+function pickBestCategory(aCat, bCat){
+  const a = norm(aCat), b = norm(bCat);
+  const good = (x)=> x && x !== "ofertas" && !isBadCategoryName(x);
+  if(good(a) && !good(b)) return a;
+  if(good(b) && !good(a)) return b;
+  if(good(a) && good(b)) return a; // mantenemos el actual para no "mover" productos de categoría
+  return a || b || "";
+}
+function mergeProducts(a,b){
+  const out = {...a};
+
+  // Categoría: preferir una real (no "ofertas", no "sheet/hoja")
+  out.categoria = pickBestCategory(a.categoria, b.categoria);
+
+  // Subcategoría / nombre
+  out.subcategoria = out.subcategoria || b.subcategoria || "";
+  out.nombre = out.nombre || b.nombre || "";
+
+  // Bandera de oferta
+  out._isOffer = Boolean(a._isOffer || b._isOffer || a._sheet === "ofertas" || b._sheet === "ofertas");
+
+  // Sheet (para orden): si existe una no-ofertas, usar esa
+  if(out._sheet === "ofertas" && b._sheet !== "ofertas") out._sheet = b._sheet;
+
+  // Rellenar campos vacíos (sin sobreescribir)
+  const fill = ["descripcion","whatsapp","instagram","facebook","galeria","tiktok","video","link","url"];
+  for(const f of fill){
+    if(!String(out[f] ?? "").trim() && String(b[f] ?? "").trim()) out[f] = b[f];
+  }
+
+  // Imagen
+  if(!String(out.imagen ?? "").trim() && String(b.imagen ?? "").trim()) out.imagen = b.imagen;
+
+  // Stock: tomar el mayor (si hay números), o el que exista
+  const stA = Number(out.stock), stB = Number(b.stock);
+  if(!Number.isNaN(stB)){
+    if(Number.isNaN(stA)) out.stock = stB;
+    else out.stock = Math.max(stA, stB);
+  } else if(!String(out.stock ?? "").trim() && String(b.stock ?? "").trim()){
+    out.stock = b.stock;
+  }
+
+  // Estado: preferir ACTIVO si uno lo tiene
+  const estA = norm(out.estado), estB = norm(b.estado);
+  if(estA !== "activo" && estB === "activo") out.estado = b.estado;
+  if(!String(out.estado ?? "").trim() && String(b.estado ?? "").trim()) out.estado = b.estado;
+
+  // Precios: si viene de "ofertas", puede sobrescribir
+  const bIsOffers = (b._sheet === "ofertas");
+  if(bIsOffers){
+    if(String(b.precio ?? "").trim()) out.precio = b.precio;
+    if(String(b.precio_anterior ?? "").trim()) out.precio_anterior = b.precio_anterior;
+  } else {
+    if(!String(out.precio ?? "").trim() && String(b.precio ?? "").trim()) out.precio = b.precio;
+    if(!String(out.precio_anterior ?? "").trim() && String(b.precio_anterior ?? "").trim()) out.precio_anterior = b.precio_anterior;
+  }
+
+  return out;
+}
+function dedupeProducts(list){
+  const map = new Map();
+  for(const p of (list || [])){
+    const k = canonicalKey(p);
+    if(!map.has(k)){ map.set(k, p); continue; }
+    map.set(k, mergeProducts(map.get(k), p));
+  }
+  return [...map.values()];
+}
+
 function money(n){
   const x=Number(n||0);
   return x.toLocaleString("es-HN",{maximumFractionDigits:0});
@@ -1113,16 +1201,16 @@ async function fetchConfigSheets(){
       .map(s => (s ?? "").toString().trim())
       .filter(Boolean)
       .map(norm)
-      .filter(n => n && n !== CONFIG_SHEET_NAME && n !== TESTIMONIOS_SHEET);
+      .filter(n => n && n !== CONFIG_SHEET_NAME && n !== TESTIMONIOS_SHEET && !isDefaultSheetName(n));
 
     if(!names.length) return DEFAULT_SHEETS.slice();
 
     const uniq=[];
     names.forEach(n=>{ if(!uniq.includes(n)) uniq.push(n); });
     if(uniq.includes("ofertas")){
-      return ["ofertas", ...uniq.filter(x=>x!=="ofertas")];
+      return ["ofertas", ...uniq.filter(x=>x!=="ofertas")].filter(n => !isDefaultSheetName(n));
     }
-    return uniq;
+    return uniq.filter(n => !isDefaultSheetName(n));
   }catch(e){
     console.warn("Config falló, usando fallback",e);
     return DEFAULT_SHEETS.slice();
@@ -1185,10 +1273,10 @@ async function fetchTab(sheetName){
 }
 
 function computeCategories(){
-  const set=new Set(products.map(p=>norm(p.categoria)).filter(Boolean));
+  const set=new Set(products.map(p=>norm(p.categoria)).filter(c=>c && !isBadCategoryName(c)));
   set.delete("ofertas");
 
-  const pref = loadedSheetNames.map(norm).filter(n=>n && n!=="ofertas" && n!==CONFIG_SHEET_NAME && n!==TESTIMONIOS_SHEET);
+  const pref = loadedSheetNames.map(norm).filter(n=>n && !isDefaultSheetName(n) && n!=="ofertas" && n!==CONFIG_SHEET_NAME && n!==TESTIMONIOS_SHEET);
   const ordered = pref.filter(c=>set.has(c));
   const rest = [...set].filter(c=>!ordered.includes(c)).sort((a,b)=>a.localeCompare(b,"es"));
 
@@ -1208,6 +1296,7 @@ async function loadAll(){
 
     const results = await Promise.all(loadedSheetNames.map(n=>fetchTab(n)));
     products = results.flat();
+    products = dedupeProducts(products);
 
     window.productById = new Map(products.map(p=>[p.id,p]));
 
