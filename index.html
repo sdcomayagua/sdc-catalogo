@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
   <meta name="description" content="Catálogo oficial de accesorios Gamer, PC y Streaming. Envíos a toda Honduras. ¡Equípate con lo mejor!" />
 
-  <link rel="canonical" href="https://sdcomayagua.github.io/sdc-catalogo/" />
+<link rel="canonical" href="https://sdcomayagua.github.io/sdc-catalogo/" />
   <!-- Open Graph / Social -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Soluciones Digitales Comayagua" />
@@ -28,8 +28,10 @@
   <meta name="twitter:description" content="Catálogo oficial de accesorios Gamer, PC, Móvil y Streaming. Envíos a toda Honduras. Atención directa por WhatsApp." />
   <meta name="twitter:image" content="https://sdcomayagua.github.io/sdc-catalogo/og.png?v=20260110" />
 
-  <meta name="theme-color" content="#0b1120" />
-  <meta name="color-scheme" content="light dark" />
+
+<meta name="theme-color" content="#0b1120" />
+
+<meta name="color-scheme" content="light dark" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -142,7 +144,7 @@
       display:flex;gap:10px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none;
       position:relative;
       padding-right:44px;
-      isolation:isolate;
+      isolation:isolate; /* evita que el degradado tape el último botón */
     }
     .category-bar::after,.sub-bar::after{
       content:"";
@@ -631,7 +633,7 @@
       -webkit-tap-highlight-color: transparent;
     }
     .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
-  </style>
+</style>
 </head>
 
 <body>
@@ -711,7 +713,7 @@
 
     <!-- Ubicación (solo botones, sin mapa embed) -->
     <div class="location-section" id="locationSection">
-      <div id="ubicacion" class="anchor" aria-hidden="true"></div>
+    <div id="ubicacion" class="anchor" aria-hidden="true"></div>
       <h3 class="sec-title">📍 Ubicación</h3>
       <div class="loc-card">
         <p class="loc-note">Toca tu app favorita para ver la tienda en grande (Android y iPhone).</p>
@@ -797,15 +799,14 @@ const TESTIMONIOS_SHEET="testimonios";
 const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 
 const BUILD_VERSION="20260110";
-window.addEventListener("error",()=>{try{document.getElementById("loader").style.display="none";}catch(e){}});
-window.addEventListener("unhandledrejection",()=>{try{document.getElementById("loader").style.display="none";}catch(e){}});
-
+window.addEventListener("error",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
+window.addEventListener("unhandledrejection",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 /* ================== STATE ================== */
 let products=[];
 let currentCategory="";
 let currentSub="";
 let soloOfertasMode=false;
-let onlyInStock=false;
+let onlyInStock=false; // ✅ mejora: ocultar agotados
 let pendingPid="";
 let dark=false;
 
@@ -818,13 +819,11 @@ const STATE_KEY="sdc_state_v2";
 function norm(s){
   return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
-
-/* ✅ FIX: NO normalizar URL (rompía imágenes/links) */
 function absUrl(u){
-  u = (u ?? "").toString().trim();
+  // ✅ no bajar a lower-case para no romper URLs
+  u=(u??"").toString().trim();
   if(!u) return "";
-  try{ return new URL(u, location.origin + location.pathname).href; }
-  catch(e){ return u; }
+  try{return new URL(u, location.origin+location.pathname).href;}catch(e){return u;}
 }
 
 function isDefaultSheetName(name){
@@ -850,24 +849,35 @@ function pickBestCategory(aCat, bCat){
   const good = (x)=> x && x !== "ofertas" && !isBadCategoryName(x);
   if(good(a) && !good(b)) return a;
   if(good(b) && !good(a)) return b;
-  if(good(a) && good(b)) return a;
+  if(good(a) && good(b)) return a; // mantenemos el actual para no "mover" productos de categoría
   return a || b || "";
 }
 function mergeProducts(a,b){
   const out = {...a};
+
+  // Categoría: preferir una real (no "ofertas", no "sheet/hoja")
   out.categoria = pickBestCategory(a.categoria, b.categoria);
+
+  // Subcategoría / nombre
   out.subcategoria = out.subcategoria || b.subcategoria || "";
   out.nombre = out.nombre || b.nombre || "";
+
+  // Bandera de oferta
   out._isOffer = Boolean(a._isOffer || b._isOffer || a._sheet === "ofertas" || b._sheet === "ofertas");
+
+  // Sheet (para orden): si existe una no-ofertas, usar esa
   if(out._sheet === "ofertas" && b._sheet !== "ofertas") out._sheet = b._sheet;
 
-  const fill = ["descripcion","whatsapp","instagram","facebook","galeria","tiktok","video","link","url"];
+  // Rellenar campos vacíos (sin sobreescribir)
+  const fill = ["descripcion","whatsapp","instagram","facebook","galeria","tiktok","video","link","url","ideal_para","beneficio","compatible","incluye","nota"];
   for(const f of fill){
     if(!String(out[f] ?? "").trim() && String(b[f] ?? "").trim()) out[f] = b[f];
   }
 
+  // Imagen
   if(!String(out.imagen ?? "").trim() && String(b.imagen ?? "").trim()) out.imagen = b.imagen;
 
+  // Stock: tomar el mayor (si hay números), o el que exista
   const stA = Number(out.stock), stB = Number(b.stock);
   if(!Number.isNaN(stB)){
     if(Number.isNaN(stA)) out.stock = stB;
@@ -876,10 +886,12 @@ function mergeProducts(a,b){
     out.stock = b.stock;
   }
 
+  // Estado: preferir ACTIVO si uno lo tiene
   const estA = norm(out.estado), estB = norm(b.estado);
   if(estA !== "activo" && estB === "activo") out.estado = b.estado;
   if(!String(out.estado ?? "").trim() && String(b.estado ?? "").trim()) out.estado = b.estado;
 
+  // Precios: si viene de "ofertas", puede sobrescribir
   const bIsOffers = (b._sheet === "ofertas");
   if(bIsOffers){
     if(String(b.precio ?? "").trim()) out.precio = b.precio;
@@ -888,6 +900,7 @@ function mergeProducts(a,b){
     if(!String(out.precio ?? "").trim() && String(b.precio ?? "").trim()) out.precio = b.precio;
     if(!String(out.precio_anterior ?? "").trim() && String(b.precio_anterior ?? "").trim()) out.precio_anterior = b.precio_anterior;
   }
+
   return out;
 }
 function dedupeProducts(list){
@@ -936,11 +949,36 @@ function cleanOneLine(s){
   return (s??"").toString().trim().replace(/\s+/g," ");
 }
 
-/* ✅ Galería: detección rápida */
-function isInstagramLink(url){ return /instagram\.com|instagr\.am/i.test((url||"").toString()); }
-function isFacebookLink(url){ return /facebook\.com|fb\.me|fb\.watch/i.test((url||"").toString()); }
-function cleanUrl(url){ return (url??"").toString().trim(); }
+/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía */
+function buildAutoDesc(p){
+  const lines = [];
 
+  const ideal = cleanOneLine(p.ideal_para || p.ideal || "");
+  const bene  = cleanOneLine(p.beneficio || "");
+  const comp  = cleanOneLine(p.compatible || "");
+  const inc   = cleanOneLine(p.incluye || "");
+
+  if(ideal) lines.push(`✅ Ideal: ${ideal}`);
+  if(bene)  lines.push(`⚡ Beneficio: ${bene}`);
+  if(comp)  lines.push(`📱 Compatible: ${comp}`);
+  if(inc)   lines.push(`📦 Incluye: ${inc}`);
+
+  const nota = cleanOneLine(p.nota || "");
+  if(lines.length < 4 && nota) lines.push(`🧾 Nota: ${nota}`);
+
+  return lines.slice(0,4).join("\n");
+}
+
+/* ✅ Galería: detección rápida (compatibilidad con columna "galeria") */
+function isInstagramLink(url){
+  return /instagram\.com|instagr\.am/i.test((url||"").toString());
+}
+function isFacebookLink(url){
+  return /facebook\.com|fb\.me|fb\.watch/i.test((url||"").toString());
+}
+function cleanUrl(url){
+  return (url??"").toString().trim();
+}
 function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
   const parts=[];
   const comp = cleanOneLine(p.compatible);
@@ -1071,26 +1109,13 @@ function copyLocationLink(){
   copyText(u.toString());
 }
 
-/* ✅ FIX: currentSheet no existe; usar modo actual */
-function pickShareImageForView(){
-  let list = Array.isArray(products) ? products.slice() : [];
-  list = list.filter(p => soloOfertasMode ? p._isOffer : !p._isOffer);
-
-  if(norm(currentCategory)!==""){
-    const catN = norm(currentCategory);
-    list = list.filter(p => norm(p.categoria) === catN);
+function scrollToHash(){
+  const raw = (window.location.hash || "").replace("#","").trim();
+  if(!raw) return;
+  const el = document.getElementById(raw);
+  if(el){
+    el.scrollIntoView({behavior:"smooth", block:"start"});
   }
-  if(norm(currentSub)!==""){
-    const subN = norm(currentSub);
-    list = list.filter(p => norm(p.subcategoria) === subN);
-  }
-  if(onlyInStock){
-    list = list.filter(p => Number(p.stock||0) > 0);
-  }
-
-  const prefer = list.find(p => Number(p.stock||0) > 0 && String(p.imagen||"").trim());
-  const any = list.find(p => String(p.imagen||"").trim());
-  return absUrl((prefer||any)?.imagen || "og.png");
 }
 
 async function shareOrCopy(url, opts={}){
@@ -1100,8 +1125,8 @@ async function shareOrCopy(url, opts={}){
   const lines = [];
   if(title) lines.push(title);
   if(extraText) lines.push(extraText);
-  lines.push(url);
   if(imageUrl) lines.push("📷 " + imageUrl);
+  lines.push(url);
   const text = lines.join("\n");
   try{
     if(navigator.share){
@@ -1128,6 +1153,25 @@ function bindDoubleTap(el,fn){
     e.preventDefault();
     fn();
   });
+}
+function pickShareImageForView(){
+  // Prefer an image from the current filtered view so the preview se vea con foto
+  let list = Array.isArray(products) ? products.slice() : [];
+  if(!!soloOfertasMode){
+    list = list.filter(p => !!p._isOffer);
+  }
+  if(norm(currentCategory)!==""){
+    const catN = norm(currentCategory);
+    list = list.filter(p => norm(p.categoria) === catN);
+  }
+  if(norm(currentSub)!==""){
+    const subN = norm(currentSub);
+    list = list.filter(p => norm(p.subcategoria) === subN);
+  }
+  // Prefer disponibles primero
+  const prefer = list.find(p => norm(p.estado)!=="agotado" && norm(p.imagen)!=="");
+  const any = list.find(p => norm(p.imagen)!=="");
+  return absUrl((prefer||any)?.imagen || "og.png");
 }
 
 function copyCurrentView(){
@@ -1156,7 +1200,6 @@ function loadFromUrlOrState(){
   const params=new URLSearchParams(window.location.search);
   const goto = params.get("goto");
   if(goto && !window.location.hash) window.location.hash = goto;
-
   const pid=params.get("pid");
   pendingPid=pid?pid:"";
   if(pendingPid){
@@ -1190,6 +1233,7 @@ function loadFromUrlOrState(){
     return;
   }
 
+  /* primer arranque */
   currentCategory="gamer";
   soloOfertasMode=false;
 }
@@ -1259,6 +1303,14 @@ async function fetchTab(sheetName){
       obj.subcategoria=(obj.subcategoria??"").toString().trim();
       obj.nombre=(obj.nombre??"").toString().trim();
       obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
+
+      // ✅ campos para auto-descripción (pueden ir vacíos)
+      obj.ideal_para=(obj.ideal_para??"").toString().trim();
+      obj.beneficio=(obj.beneficio??"").toString().trim();
+      obj.compatible=(obj.compatible??"").toString().trim();
+      obj.incluye=(obj.incluye??"").toString().trim();
+      obj.nota=(obj.nota??"").toString().trim();
+
       obj.estado=norm(obj.estado||"activo");
       obj.stock=Number(obj.stock||0);
       obj.precio=Number(obj.precio||0);
@@ -1535,26 +1587,6 @@ function priceForQty(p,qty){
   return {unitPrice:unit,tier,promos};
 }
 
-/* ✅ NUEVO: rangos para que 4 pares active “3 a 5” (y no “3”) */
-function buildTierRanges(p){
-  const promos = extractPromos(p);
-  const starts = [1, ...promos.map(x=>Number(x.cant||0)).filter(n=>n>1)];
-  const uniq = [...new Set(starts)].sort((a,b)=>a-b);
-
-  return uniq.map((start, i)=>{
-    const next = uniq[i+1];
-    const end = (next && next>start) ? (next-1) : Infinity;
-    const { unitPrice } = priceForQty(p, start);
-
-    let label = "";
-    if(end === Infinity) label = `${start}+`;
-    else if(start === end) label = `${start}`;
-    else label = `${start} a ${end}`;
-
-    return { start, end, unitPrice, label };
-  });
-}
-
 /* ================== RENDER ================== */
 function setHomeSectionsVisible(show){
   const t = document.getElementById("testimonialsSection");
@@ -1656,7 +1688,7 @@ function render(){
   if(onlyInStock) list=list.filter(p=>Number(p.stock||0)>0);
 
   if(q){
-    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q));
+    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q) || norm(p.ideal_para).includes(q) || norm(p.beneficio).includes(q));
   }
 
   /* Disponibles primero */
@@ -1698,6 +1730,7 @@ function render(){
     if(p.tiktok) videoBadge=`<a href="${p.tiktok}" target="_blank" rel="noopener noreferrer" class="video-badge tiktok"><i class="fa-brands fa-tiktok"></i> VER VIDEO</a>`;
     else if(p.youtube) videoBadge=`<a href="${p.youtube}" target="_blank" rel="noopener noreferrer" class="video-badge youtube"><i class="fa-brands fa-youtube"></i> VER VIDEO</a>`;
 
+    /* ✅ GALERÍA (nuevo): soporta columnas "instagram" y "facebook". Compatibilidad: "galeria" como IG si aplica. */
     const igLink = cleanUrl(p.instagram || p.ig || (p.galeria && isInstagramLink(p.galeria) ? p.galeria : ""));
     const fbLink = cleanUrl(p.facebook || p.fb || p.marketplace || (p.galeria && isFacebookLink(p.galeria) ? p.galeria : ""));
     let galleryHTML="";
@@ -1712,8 +1745,17 @@ function render(){
         </div>`;
     }
 
-    let rawDesc=(p.descripcion||"");
-    let descText=rawDesc.replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,"\n$1").trim();
+    // ✅ Descripción: si está vacía, se arma sola (4 líneas) y se respetan saltos de línea
+    let rawDesc = (p.descripcion || "").toString().trim();
+    if(!rawDesc){
+      rawDesc = buildAutoDesc(p);
+    }
+    let descText = rawDesc
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+      .replace(/([►•\-★])/g,"\n$1")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
 
     const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
@@ -1810,7 +1852,6 @@ function toggleOffersFromHome(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ✅ ESCALAS CORREGIDAS: 4 pares activa “3 a 5”, no “3” */
 function initPromoWidget(card,p){
   const box=card.querySelector(".promo-box");
   if(!box) return;
@@ -1818,6 +1859,7 @@ function initPromoWidget(card,p){
   let qty=Number(box.dataset.qty||1);
   const stock=Number(p.stock||0);
   const unidad=p.unidad||"unidad";
+  const promos=extractPromos(p);
 
   const toggleBtn = box.querySelector(".promo-toggle");
   if(toggleBtn){
@@ -1827,28 +1869,31 @@ function initPromoWidget(card,p){
     };
   }
 
-  const ranges = buildTierRanges(p);
+  // ✅ Escalas: mostrar SOLO 1 + las promos reales (evita "4" fantasma)
+  const tierSet=new Set([1]);
+  promos.forEach(x=>tierSet.add(x.cant));
+  const tiers=[...tierSet].sort((a,b)=>a-b);
+
   const tierGrid=box.querySelector(".tier-grid");
   tierGrid.innerHTML="";
 
-  ranges.forEach(r=>{
+  tiers.forEach(cant=>{
+    const {unitPrice}=priceForQty(p,cant);
     const t=document.createElement("div");
     t.className="tier";
-    t.dataset.start=r.start;
-    t.dataset.end=(r.end===Infinity ? "inf" : String(r.end));
-    t.dataset.label=r.label;
+    t.dataset.cant=cant;
 
-    t.innerHTML=`<span>${escapeHtml(r.label)}</span> <span style="opacity:.8;">Lps.${money(r.unitPrice)}</span>`;
+    // ✅ Mostrar como rangos: 2+, 3+, 6+, 11+, 12+
+    const label = (cant === 1) ? "1" : `${cant}+`;
 
-    const disabled = (stock>0 && r.start>stock);
+    t.innerHTML=`<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
+    const disabled=stock>0 && cant>stock;
     if(disabled) t.classList.add("disabled");
-
     t.onclick=()=>{
       if(disabled){toast(`Solo hay ${stock} disponibles`);return;}
-      qty=r.start; // al tocar un rango, salta al inicio del rango
+      qty=cant;
       updatePromoUI();
     };
-
     tierGrid.appendChild(t);
   });
 
@@ -1864,44 +1909,33 @@ function initPromoWidget(card,p){
     qty=qty+1;updatePromoUI();
   };
 
-  function activeRangeForQty(q){
-    for(const r of ranges){
-      const end = (r.end===Infinity) ? Number.POSITIVE_INFINITY : r.end;
-      if(q>=r.start && q<=end) return r;
-    }
-    return ranges[0] || {start:1,end:Infinity,unitPrice:Number(p.precio||0),label:"1"};
-  }
-
   function updatePromoUI(){
     if(stock>0 && qty>stock){
       qty=stock;
       toast(`Solo hay ${stock} disponibles`);
     }
-
-    const r = activeRangeForQty(qty);
-    const unitPrice = Number(r.unitPrice||0);
-    const total = unitPrice*qty;
-
-    const unitLabel=pluralize(unidad,qty).toUpperCase();
-    const escalaTxt = (r.start>1) ? ` • Escala: ${r.label}` : "";
+    const {unitPrice,tier}=priceForQty(p,qty);
+    const total=unitPrice*qty;
 
     box.querySelector(".promoTotal").textContent=`Lps. ${money(total)}`;
-    box.querySelector(".promoLine").textContent=`${qty} ${unitLabel} x Lps. ${money(unitPrice)} c/u${escalaTxt}`;
+    const unitLabel=pluralize(unidad,qty).toUpperCase();
+    box.querySelector(".promoLine").textContent=`${qty} ${unitLabel} x Lps. ${money(unitPrice)} c/u`;
     box.querySelector(".qtyVal").textContent=qty;
     box.querySelector(".qtyUnit").textContent=unitLabel;
 
     box.querySelectorAll(".tier").forEach(el=>{
       el.classList.remove("active");
-      if(el.classList.contains("disabled")) return;
-      const start = Number(el.dataset.start||0);
-      if(start===r.start) el.classList.add("active");
+      const c=Number(el.dataset.cant||0);
+      const isDisabled=el.classList.contains("disabled");
+      if(isDisabled) return;
+      if(c===tier.cant) el.classList.add("active"); // ✅ se marca el rango usado (ej: 3+)
     });
 
     minus.classList.toggle("disabled",qty<=1);
     plus.classList.toggle("disabled",stock>0 && qty>=stock);
 
     const unitStr=pluralize(unidad,qty);
-    const tierLabel = (r.start>1) ? `Promo ${r.label}` : "Precio normal";
+    const tierLabel=tier.cant>1?`Promo ${tier.cant}+`:`Precio normal`;
     const msg=`Hola SDC, quiero *${qty} ${unitStr}* de:\n*${p.nombre}*\n\n${tierLabel}\nPrecio unitario: Lps. ${money(unitPrice)}\nTotal: Lps. ${money(total)}\nStock disponible: ${stock}\n\nQuedo atento(a). Gracias.`;
     const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
 
