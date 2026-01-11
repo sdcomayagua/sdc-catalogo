@@ -801,7 +801,7 @@ const CONFIG_SHEET_NAME="_config";
 const TESTIMONIOS_SHEET="testimonios";
 const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 
-const BUILD_VERSION="20260110";
+const BUILD_VERSION="20260111";
 window.addEventListener("error",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 window.addEventListener("unhandledrejection",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 /* ================== STATE ================== */
@@ -1046,7 +1046,7 @@ function guessFields(p){
       bene:"Mejora tu experiencia",
       comp:"Consultar compatibilidad",
       inc:"Producto principal",
-      nota:"Escríbenos para asesoría"
+      nota:"Asesoría rápida por WhatsApp"
     }
   };
 
@@ -1084,11 +1084,15 @@ function guessFields(p){
     cable:"⚡ Carga rápida y segura",
     cobertor:"🛡️ Protege tu equipo",
     stream:"🎙️ Mejora tu setup",
-    generic:"📩 Escríbeme y te asesoro"
+    generic:"📲 Pedidos por WhatsApp (respuesta rápida)"
   };
 
-  const cta = code
-    ? `Escríbeme "${code}" y te confirmo compatibilidad`
+  const needsCompat = ["cooler","gamepad","cable","cobertor"].includes(type);
+
+  // ✅ No mostramos códigos/modelos en la descripción (se ve más limpio).
+  // Si requiere compatibilidad, lo decimos de forma general.
+  const cta = needsCompat
+    ? "📲 Confirma compatibilidad por WhatsApp"
     : (ctaByType[type] || ctaByType.generic);
 
   return { ideal:t.ideal, bene:t.bene, comp:t.comp, inc:t.inc, nota:t.nota, cta };
@@ -1123,7 +1127,15 @@ function buildAutoDesc(p){
   const comp  = f.comp  || "Consultar compatibilidad";
   const inc   = f.inc   || "Producto principal";
   const nota  = f.nota  || "";
-  const cta   = f.cta   || "📩 Escríbeme y te asesoro";
+  let cta   = f.cta   || "📲 Pedidos por WhatsApp (respuesta rápida)";
+
+  // ✅ Limpieza: evita frases tipo: Escríbeme "X" y te confirmo compatibilidad
+  if(/escr[ií]beme\s*["“”][^"“”]+["“”].*compatibilidad/i.test(cta)){
+    cta = "📲 Confirma compatibilidad por WhatsApp";
+  }
+  if(/^\s*(?:📩\s*)?escr[ií]beme/i.test(cta)){
+    cta = cta.replace(/^\s*(?:📩\s*)?escr[ií]beme/i, "📲 Pedidos por WhatsApp");
+  }
 
   const line4 = nota ? `- 📦 Incluye: ${inc} (${nota})` : `- 📦 Incluye: ${inc}`;
   const line5 = `- ✨ ${cta}`;
