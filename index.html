@@ -633,6 +633,9 @@
       -webkit-tap-highlight-color: transparent;
     }
     .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+    /* HIDE_IMG_BADGES */
+    .img-badges, .img-badge, .stock-badge{display:none!important;}
 </style>
 </head>
 
@@ -798,7 +801,7 @@ const CONFIG_SHEET_NAME="_config";
 const TESTIMONIOS_SHEET="testimonios";
 const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 
-const BUILD_VERSION="20260110";
+const BUILD_VERSION="20260111";
 window.addEventListener("error",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 window.addEventListener("unhandledrejection",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 /* ================== STATE ================== */
@@ -946,185 +949,163 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 function cleanOneLine(s){
-  return (s??"").toString().trim().replace(/\s+/g," ");
+  return (s??"").toString()
+    .replace(/[“”]/g,'"')
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/^"+|"+$/g,"")
+    .replace(/^\*+|\*+$/g,"");
 }
 
-/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía */
-function buildAutoDesc(p){
-  // Auto-descripción inteligente (5 líneas) basada en:
-  // - Título / categoría / subcategoría / id
-  // - URL o nombre del archivo de la imagen/galería (heurística)
-  // - Campos opcionales: ideal_para, beneficio, compatible, incluye, nota (si los llenas en Sheets)
+/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía
+   - Usa tus columnas: ideal_para, beneficio, compatible, incluye, nota
+   - Si alguna está vacía, se completa automáticamente según el nombre/categoría
+*/
+function guessFields(p){
+  const title = (p && p.nombre) ? String(p.nombre) : "";
+  const t = norm(title);
+  const catRaw = (p && p.categoria) ? String(p.categoria) : "";
+  const subRaw = (p && p.subcategoria) ? String(p.subcategoria) : "";
+  const cat = norm(catRaw);
+  const sub = norm(subRaw);
+  const img = norm(((p && p.imagen) ? String(p.imagen) : "") + " " + ((p && p.galeria) ? String(p.galeria) : ""));
 
-  const txt = norm([p.nombre,p.categoria,p.subcategoria,p.id,p.imagen,p.galeria].filter(Boolean).join(" "));
-  const cat = norm(p.categoria||"");
-  const sub = norm(p.subcategoria||"");
+  const has = (kw) => t.includes(kw) || img.includes(kw);
 
-  const has = (w)=>txt.includes(w);
-  const hasAny = (arr)=>arr.some(has);
-
-  const isDedales = has("dedal") || sub.includes("dedal");
-  const isCooler  = hasAny(["enfriador","cooler","radiador","ventilador","fan"]) || sub.includes("cooler");
-  const isGatillos= has("gatillo") || sub.includes("gatillo");
-  const isGamepad = hasAny(["gamepad","joystick","control"]) || sub.includes("gamepad");
-  const isBluetooth = hasAny(["bluetooth","wireless","inalambr"]) || /\bbt\b/.test(txt);
-  const hasSupport = hasAny(["soporte","holder","stand"]);
-  const hasCoolerWord = hasAny(["cooler","enfriador","radiador","ventilador","fan"]);
-
-  const triggers = (()=>{ const m = txt.match(/\b(\d+)\s*gatill/); return m ? Number(m[1]) : 0; })();
-  const dedos = (()=>{ const m = txt.match(/\b(\d+)\s*dedos?\b/); return m ? Number(m[1]) : 0; })();
-
-  const model = (()=>{ 
-    const m = (p.nombre||"").match(/\b([A-Z]{1,4}-?\d{2,5}|Q-CL\d|F\d)\b/i);
-    return m ? String(m[1]).toUpperCase() : "";
-  })();
-
-  const screenRange = (()=> {
-    const raw = String(p.compatible||"");
-    const m = raw.match(/(\d+(?:\.\d+)?)\s*["”]\s*[-–]\s*(\d+(?:\.\d+)?)\s*["”]/) 
-          || txt.match(/(\d+(?:\.\d+)?)\s*["”]\s*[-–]\s*(\d+(?:\.\d+)?)\s*["”]/);
-    return m ? `${m[1]}”- ${m[2]}”` : "";
-  })();
-
-  const clean = (s)=>cleanOneLine(String(s||""));
-  const trimLen = (s,max=85)=>{ s=String(s||"").trim(); return (s.length>max)? (s.slice(0,max-1)+"…") : s; };
-
-  // Campos desde Sheets (si existen)
-  let ideal = clean(p.ideal_para);
-  let bene  = clean(p.beneficio);
-  let comp  = clean(p.compatible);
-  let inc   = clean(p.incluye);
-  let note  = clean(p.nota);
-
-  // Heurística (por título/foto)
-  const g = {ideal:"",bene:"",comp:"",inc:"",note:""};
-
-  if(isDedales){
-    g.ideal = "Free Fire / CODM / PUBG";
-    g.bene  = "Desliz suave y mejor precisión";
-    g.comp  = "Pantallas táctiles (celular)";
-    g.inc   = "1 par de dedales";
-    g.note  = "🔥 Sube tu aim y juega más cómodo";
-  }else if(isCooler && !isGamepad){
-    g.ideal = "Sesiones largas sin calentamiento";
-    g.bene  = "Ayuda a bajar temperatura y evitar lag";
-    g.comp  = screenRange ? `Celulares ${screenRange} (aprox.)` : "Celulares 4.7”–7” (aprox.)";
-    g.inc   = has("cable") ? "Cooler + cable (según modelo)" : "Cooler (según modelo)";
-    g.note  = "❄️ Mantén el rendimiento al máximo";
-  }else if(isGatillos && !isGamepad){
-    g.ideal = "Shooter móvil / Battle Royale";
-    g.bene  = (triggers>=4 || dedos>=4) ? "Más control con disparo rápido" : "Mejor agarre y precisión";
-    g.comp  = "Android / iPhone (pantalla táctil)";
-    g.inc   = triggers ? `${triggers} gatillos (par)` : "Gatillos (par)";
-    g.note  = (dedos? `🎮✨ Juega a ${dedos} dedos con más comodidad` : "🎮✨ Más control en cada disparo");
-  }else if(isGamepad){
-    // Ideal
-    if(isBluetooth) g.ideal = "Juegos en celular y PC";
-    else if(hasCoolerWord) g.ideal = "Free Fire / CODM / PUBG (sesiones largas)";
-    else if(triggers>=4 || dedos>=4) g.ideal = "Shooter móvil (4–6 dedos)";
-    else if(triggers===2) g.ideal = "Shooter móvil (2 dedos extra)";
-    else g.ideal = "Gaming en celular";
-
-    // Beneficio
-    if(hasCoolerWord) g.bene = "Reduce el calentamiento y mejora el rendimiento";
-    else if(triggers>=4) g.bene = "Más control con 4 gatillos y mejor reacción";
-    else if(triggers===2) g.bene = "Mejor agarre y más precisión al disparar";
-    else if(isBluetooth) g.bene = "Conexión estable y respuesta rápida";
-    else g.bene = "Control más cómodo y mejor respuesta";
-
-    // Compatible
-    g.comp = isBluetooth ? "Android / iOS / PC (Bluetooth)" : "Android / iPhone (pantalla táctil)";
-
-    // Incluye
-    const parts=[];
-    // Si el título menciona gamepad y joystick, mostramos ambos.
-    if(has("gamepad")) parts.push("Gamepad");
-    if(has("joystick") && !parts.includes("Joystick")) parts.push("Joystick");
-    if(!parts.length && has("control")) parts.push("Control");
-    if(triggers) parts.push(`${triggers} gatillos`);
-    if(hasSupport) parts.push("Soporte");
-    if(hasCoolerWord) parts.push("Cooler + cable");
-    if(model) parts.push(`Modelo ${model}`);
-    g.inc = parts.length ? parts.join(" + ") : "Accesorios (según modelo)";
-
-    // Hook
-    if(isBluetooth) g.note = "✨ Conéctalo y juega al instante";
-    else if(hasCoolerWord) g.note = "❄️ Ideal para partidas largas";
-    else if(triggers>=4 || dedos>=4) g.note = "🔥 Domina el control a 4+ dedos";
-    else g.note = "🚀 Mejora tu juego desde hoy";
-  }else{
-    // Fallback suave por categoría
-    if(cat.includes("pc")){
-      g.ideal="PC / Laptop"; g.bene="Mejora tu experiencia y rendimiento"; g.comp="Windows / Mac (según modelo)"; g.inc="Accesorios (según producto)"; g.note="✅ Listo para usar";
-    }else if(cat.includes("movil")){
-      g.ideal="Uso diario"; g.bene="Práctico y resistente"; g.comp="Celulares (según modelo)"; g.inc="Accesorios (según producto)"; g.note="📲 Fácil de usar";
-    }else if(cat.includes("stream")){
-      g.ideal="Streaming / Creación"; g.bene="Mejor calidad y comodidad"; g.comp="PC / Celular (según modelo)"; g.inc="Accesorios (según producto)"; g.note="🎥✨ Eleva tu setup";
-    }else if(cat.includes("power")){
-      g.ideal="Carga y energía"; g.bene="Más autonomía y seguridad"; g.comp="Universal (según modelo)"; g.inc="Accesorios (según producto)"; g.note="⚡ Siempre conectado";
-    }else{
-      g.ideal="Uso general"; g.bene="Práctico y funcional"; g.comp=""; g.inc=""; g.note="✅ Disponible";
-    }
-  }
-
-  // Completar faltantes con heurística
-  if(!ideal) ideal = g.ideal;
-  if(!bene)  bene  = g.bene;
-  if(!comp)  comp  = g.comp;
-  if(!inc){
-    inc = g.inc;
-  }else{
-    const incN = norm(inc);
-    const gN = norm(g.inc||"");
-    const shouldAdd = (isGamepad || isGatillos) && gN &&
-      !incN.includes("gatill") && !incN.includes("cooler") && !incN.includes("enfriad") &&
-      !incN.includes("soport") && !incN.includes("bluetooth");
-    if(shouldAdd){
-      inc = trimLen(`${g.inc} + ${inc}`, 95);
-    }
-  }
-  if(!note)  note  = g.note;
-
-  // Evitar frases que no te gustan
-  const badNote = norm(note).includes("escribeme") || norm(note).includes("escríbeme") || norm(note).includes("confirm") && norm(note).includes("compat");
-  if(badNote) note = g.note || note;
-
-  const buildLine = (emoji,label,value)=>{
-    value = trimLen(value, 95);
-    if(!value) return "";
-    if(label) return `- ${emoji} ${label}: ${value}`;
-    return `- ${emoji} ${value}`;
+  const games = () => {
+    if (has("free fire") || has("ff")) return "Free Fire";
+    if (has("codm") || has("call of duty")) return "CODM";
+    if (has("pubg")) return "PUBG";
+    return "Free Fire / CODM / PUBG";
   };
 
+  const triggers = (() => {
+    const m = title.match(/(\d+)\s*(gatillos|gattillos|triggers|dedos)/i);
+    if (m) return Math.max(1, parseInt(m[1], 10) || 0);
+    if (has("2 gatillos") || has("2 gatillo")) return 2;
+    if (has("4 gatillos") || has("4 gatillo")) return 4;
+    if (has("6 dedos")) return 6;
+    return 0;
+  })();
+
+  const hasCooler = has("cooler") || has("enfri") || has("radiador");
+  const hasSupport = has("soport") || has("holder") || has("stand");
+  const hasBt = has("bluetooth") || has(" bt") || has("inalambr") || has("wireless");
+
+  const isDedal = has("dedal");
+  const isCooler = has("enfriador") || has("radiador") || sub === "coolers" || cat === "coolers";
+  const isGatillo = has("gatillo");
+  const isGamepad = has("gamepad") || has("joystick") || has("control");
+
+  // defaults (general)
+  let ideal = (catRaw || "Uso diario");
+  let bene  = "Práctico y funcional";
+  let comp  = "Verifica el modelo";
+  let inc   = "Producto (según disponibilidad)";
+  let nota  = "📲 Consulta disponibilidad por WhatsApp";
+  let cta   = "";
+
+  if (isCooler){
+    ideal = games();
+    bene  = "Reduce el calentamiento en partidas largas";
+    comp  = "Celulares 4.7\"–7\" (aprox.)";
+    inc   = "Cooler + cable (según modelo)";
+    nota  = "❄️ Más estabilidad en tus partidas";
+    return {ideal, bene, comp, inc, nota, cta};
+  }
+
+  if (isDedal){
+    ideal = games();
+    bene  = "Mejor agarre y más precisión";
+    comp  = "Pantallas táctiles (Android / iPhone)";
+    inc   = "1 par de dedales (2 piezas)";
+    nota  = "💧 Anti-sudor: juega seco y cómodo";
+    return {ideal, bene, comp, inc, nota, cta};
+  }
+
+  // Gatillos / Gamepads
+  if (isGatillo || isGamepad){
+    ideal = isGamepad ? "Gaming en celular" : games();
+
+    if (triggers >= 4) bene = `Control total con ${triggers} gatillos`;
+    else if (triggers === 2) bene = "Control cómodo con 2 gatillos";
+    else if (triggers === 6) bene = "Juega a 6 dedos con mejor control";
+    else if (isGatillo) bene = "Respuesta rápida en cada disparo";
+    else bene = "Mejora tu control y tu aim";
+
+    comp = hasBt ? "Android / iPhone (Bluetooth)" : "Pantallas táctiles (Android / iPhone)";
+
+    const incParts = [];
+    if (triggers) incParts.push(`${triggers} gatillos`);
+    else if (isGatillo) incParts.push("Gatillos");
+    if (hasSupport) incParts.push("Soporte");
+    if (hasCooler) incParts.push("Cooler");
+    if (hasBt && !incParts.some(x=>x.toLowerCase().includes("bluetooth"))) incParts.push("Joystick Bluetooth");
+    if (!incParts.length) incParts.push("Accesorios");
+
+    inc = incParts.join(" + ") + " (según modelo)";
+
+    // nota distinta por características
+    if (hasCooler) nota = "🔥 Menos calor = mejor rendimiento";
+    else if (hasBt) nota = "🎮 Conexión inalámbrica cómoda";
+    else if (triggers >= 4) nota = "🎯 Ideal para shooters móviles";
+    else if (hasSupport) nota = "📌 Soporte ajustable para mejor postura";
+    else nota = "⚡ Sube tu aim y juega más cómodo";
+
+    return {ideal, bene, comp, inc, nota, cta};
+  }
+
+  return {ideal, bene, comp, inc, nota, cta};
+}
+
+function getSmartFields(p){
+  const custom = {
+    ideal: cleanOneLine(p.ideal_para || p.ideal || ""),
+    bene:  cleanOneLine(p.beneficio || ""),
+    comp:  cleanOneLine(p.compatible || ""),
+    inc:   cleanOneLine(p.incluye || ""),
+    nota:  cleanOneLine(p.nota || ""),
+    cta:   cleanOneLine(p.cta || p.llamativo || p.call_to_action || "")
+  };
+  const g = guessFields(p);
+
+  return {
+    ideal: custom.ideal || g.ideal,
+    bene:  custom.bene  || g.bene,
+    comp:  custom.comp  || g.comp,
+    inc:   custom.inc   || g.inc,
+    nota:  custom.nota  || g.nota,
+    cta:   custom.cta   || g.cta
+  };
+}
+
+function buildAutoDesc(p){
+  const g = getSmartFields(p);
+  // EXACTO: 5 líneas, siempre
   const lines = [
-    buildLine("🎯","Ideal", ideal),
-    buildLine("⚡","Beneficio", bene),
-    buildLine("📱","Compatible", comp),
-    buildLine("📦","Incluye", inc),
-    buildLine("✨","", note),
-  ].filter(Boolean);
-
-  return lines.slice(0,5).join("\n");
-}
-
-function looksLikeWhatsappTemplate(desc){
-  const t = (desc ?? "").toString().toLowerCase();
-  return (
-    (t.includes("hola") && t.includes("estoy interesado")) ||
-    (t.includes("precio") && t.includes("lps")) ||
-    (t.includes("soluciones digitales") && t.includes("producto"))
-  );
+    `- 🎯 Ideal: ${g.ideal}`,
+    `- ⚡ Beneficio: ${g.bene}`,
+    `- 📱 Compatible: ${g.comp}`,
+    `- 📦 Incluye: ${g.inc}`,
+    `- ✨ ${g.nota}`
+  ];
+  return lines.map(s => String(s || "").trim()).join("\n");
 }
 
 
+/* ✅ Galería: detección rápida (compatibilidad con columna "galeria") */
+function isInstagramLink(url){
+  return /instagram\.com|instagr\.am/i.test((url||"").toString());
+}
+function isFacebookLink(url){
+  return /facebook\.com|fb\.me|fb\.watch/i.test((url||"").toString());
+}
+function cleanUrl(url){
+  return (url??"").toString().trim();
+}
 function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
-  // Badges grandes desactivados (se veían muy grandes y tapaban la foto).
-  // Dejamos SOLO un badge pequeño de stock bajo, que no tapa la imagen.
-  const stock = Number(p.stock||0);
-  const stockBadge = (!isAgotado && stock>0 && stock<=3)
-    ? `<div class="stock-badge${isPromoCard?" promo":""}">Quedan ${stock}</div>`
-    : "";
-  return stockBadge;
+  // Badges desactivados (eran muy grandes). Mantén la foto limpia.
+  return "";
 }
 
 /* fetch con timeout */
@@ -1524,7 +1505,7 @@ async function loadAll(){
       }
     }
 
-    const _ld=document.getElementById("loader"); if(_ld) _ld.style.display="none";
+    document.getElementById("loader").style.display="none";
     initCategoryBar();
     updateSubs();
     render();
@@ -1539,9 +1520,9 @@ async function loadAll(){
     }
   }catch(e){
     console.error("❌ Error en loadAll:", e);
-    const _ld=document.getElementById("loader"); if(_ld) _ld.style.display="none";
+    document.getElementById("loader").style.display="none";
     initCategoryBar(true);
-    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).\n\nDetalle: " + (e?.message || "Error desconocido"));
+    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
     toast("⚠️ Error cargando catálogo");
   }finally{
     const loader=document.getElementById("loader");
@@ -1688,23 +1669,38 @@ function setActiveSub(btn){
 
 /* ================== PROMOS ================== */
 function extractPromos(p){
+  // Promo 1..5 solamente (según tu escala)
   const promos=[];
   for(const k in p){
     const m=k.match(/^promo(\d+)_cant$/i);
-    if(m){
-      const idx=m[1];
-      const cant=Number(p[k]||0);
-      const precio=Number(p[`promo${idx}_precio`]||0);
-      if(cant>0 && precio>0) promos.push({cant,precio});
-    }
+    if(!m) continue;
+    const idxNum = parseInt(m[1],10);
+    if(!idxNum || idxNum>5) continue;
+    const cant = Number(p[k]||0);
+    const precio = Number(p[`promo${idxNum}_precio`]||0);
+    if(cant>0 && precio>0) promos.push({idx:idxNum,cant,precio});
   }
   promos.sort((a,b)=>a.cant-b.cant);
-  const map=new Map();
+
+  const out=[];
   promos.forEach(x=>{
-    if(!map.has(x.cant)) map.set(x.cant,x.precio);
-    else map.set(x.cant,Math.min(map.get(x.cant),x.precio));
+    if(!out.some(y=>y.cant===x.cant)) out.push(x);
   });
-  return [...map.entries()].map(([cant,precio])=>({cant,precio})).sort((a,b)=>a.cant-b.cant);
+
+  // fallback (por si promos vienen vacíos en Sheets) para Dedales:
+  if(!out.length){
+    const t = norm(String(p.nombre||""));
+    if(t.includes("dedal")){
+      return [
+        {idx:1,cant:2,precio:38},
+        {idx:2,cant:3,precio:35},
+        {idx:3,cant:6,precio:33},
+        {idx:4,cant:11,precio:31},
+        {idx:5,cant:12,precio:30}
+      ];
+    }
+  }
+  return out;
 }
 function priceForQty(p,qty){
   const base=Number(p.precio||0);
@@ -1818,7 +1814,19 @@ function render(){
   if(onlyInStock) list=list.filter(p=>Number(p.stock||0)>0);
 
   if(q){
-    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q) || norm(p.ideal_para).includes(q) || norm(p.beneficio).includes(q));
+    list=list.filter(p=>{
+      const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {ideal:'',bene:'',comp:'',inc:''};
+      const autoDesc = (p.descripcion||"").trim() ? p.descripcion : (typeof buildAutoDesc === 'function' ? buildAutoDesc(p) : "");
+      return (
+        norm(p.nombre).includes(q) ||
+        norm(autoDesc).includes(q) ||
+        norm(p.subcategoria).includes(q) ||
+        norm(f.ideal).includes(q) ||
+        norm(f.bene).includes(q) ||
+        norm(f.comp).includes(q) ||
+        norm(f.inc).includes(q)
+      );
+    });
   }
 
   /* Disponibles primero */
@@ -1875,24 +1883,22 @@ function render(){
         </div>`;
     }
 
-    // ✅ Descripción: automática solo si viene vacía
+    // ✅ Descripción: si está vacía, se arma sola (4 líneas) y se respetan saltos de línea
     let rawDesc = (p.descripcion || "").toString().trim();
     if(!rawDesc){
       rawDesc = buildAutoDesc(p);
     }
     let descText = rawDesc
-      .replace(/
-/g, "
-")
-      .replace(/
-/g, "
-")
-      .replace(/•/g, "-")
-      .replace(/
-{3,}/g, "
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n");
 
-")
-      .trim();
+    // Si la descripción viene en una sola línea con viñetas, la "partimos" para que se vea en líneas.
+    // Si ya trae saltos (como el auto-desc), la dejamos tal cual.
+    if(!descText.includes("\n")){
+      descText = descText.replace(/([►•\-★])/g, "\n$1");
+    }
+
+    descText = descText.replace(/\n{3,}/g, "\n\n").trim();
 
     const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
@@ -1943,7 +1949,7 @@ function render(){
       btnText="PEDIR";
     }
 
-    const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
+    const badgesHTML = "";
 
     card.innerHTML=`
       <div class="card-img-container ${hasRibbon?'has-ribbon':''}">
@@ -1990,115 +1996,119 @@ function toggleOffersFromHome(){
 }
 
 function initPromoWidget(card,p){
-  const box=card.querySelector(".promo-box");
+  const promos = extractPromos(p);
+  if(!promos.length) return;
+
+  const box = card.querySelector(".promo-box");
   if(!box) return;
 
-  let qty=Number(box.dataset.qty||1);
-  const stock=Number(p.stock||0);
-  const unidad=p.unidad||"unidad";
-  const promos=extractPromos(p);
+  const pTag = box.querySelector(".promoTotal");
+  const uLine= box.querySelector(".promoLine");
+  const qtyVal=box.querySelector(".qtyVal");
+  const qtyUnit=box.querySelector(".qtyUnit");
+  const btn  = box.querySelector(".promoBtn");
+  const grid = box.querySelector(".tier-grid");
+  const toggle = box.querySelector(".promo-toggle");
+  const scales = box.querySelector(".scales");
 
-  const toggleBtn = box.querySelector(".promo-toggle");
-  if(toggleBtn){
-    toggleBtn.onclick=()=>{
-      const compact = box.classList.toggle("compact");
-      toggleBtn.textContent = compact ? "Ver escalas" : "Ocultar escalas";
-    };
-  }
+  const stock = Number(p.stock||0);
+  const unidad = String((p.unidad || (promos.length ? "pares" : "unidad"))).trim().toLowerCase();
+  const unitStr = (unidad==="pares"||unidad==="par") ? "pares" : "unidades";
 
-  // ✅ Escalas: mostrar SOLO 1 + las promos reales (evita "4" fantasma)
-  const tierSet=new Set([1]);
-  promos.forEach(x=>tierSet.add(x.cant));
-  const tiers=[...tierSet].sort((a,b)=>a-b);
+  const thresholds=[1].concat(promos.map(x=>x.cant)).filter(Boolean)
+    .filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
 
-  const tierGrid=box.querySelector(".tier-grid");
-  tierGrid.innerHTML="";
-
-  tiers.forEach((cant,i)=>{
-    const {unitPrice}=priceForQty(p,cant);
-    const t=document.createElement("div");
-    t.className="tier";
-    t.dataset.cant=cant;
-
-    // ✅ Mostrar rangos (evita confusión cuando eliges 4 y la escala dice 3)
-    const next = tiers[i+1] || null;
-    let label = "1";
-    if(cant !== 1){
-      if(next){
-        label = (next === cant + 1) ? String(cant) : `${cant}-${next-1}`;
-      }else{
-        label = `${cant}+`;
-      }
-    }
-
-    t.innerHTML=`<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
-    const disabled=stock>0 && cant>stock;
-    if(disabled) t.classList.add("disabled");
-    t.onclick=()=>{
-      if(disabled){toast(`Solo hay ${stock} disponibles`);return;}
-      qty=cant;
-      updatePromoUI();
-    };
-    tierGrid.appendChild(t);
+  const ranges = thresholds.map((min,i)=>{
+    const next = thresholds[i+1];
+    const max = next ? (next-1) : Infinity;
+    const label = (max===Infinity) ? `${min}+` : (max>min ? `${min}–${max}` : `${min}`);
+    const {unitPrice}=priceForQty(p,min);
+    return {min,max,label,unitPrice};
   });
 
-  const minus=box.querySelector(".minus");
-  const plus=box.querySelector(".plus");
-
-  minus.onclick=()=>{qty=Math.max(1,qty-1);updatePromoUI();};
-  plus.onclick=()=>{
-    if(stock>0 && qty>=stock){
-      toast(`Solo hay ${stock} disponibles`);
-      qty=stock;updatePromoUI();return;
-    }
-    qty=qty+1;updatePromoUI();
+  const appliedRange=(q)=>{
+    let r=ranges[0];
+    for(const x of ranges){ if(q>=x.min) r=x; }
+    return r;
   };
 
-  function updatePromoUI(){
-    if(stock>0 && qty>stock){
-      qty=stock;
-      toast(`Solo hay ${stock} disponibles`);
-    }
-    const {unitPrice,tier}=priceForQty(p,qty);
-    const total=unitPrice*qty;
+  let qty = 1;
 
-    box.querySelector(".promoTotal").textContent=`Lps. ${money(total)}`;
-    const unitLabel=pluralize(unidad,qty).toUpperCase();
-    box.querySelector(".promoLine").textContent=`${qty} ${unitLabel} x Lps. ${money(unitPrice)} c/u`;
-    box.querySelector(".qtyVal").textContent=qty;
-    box.querySelector(".qtyUnit").textContent=unitLabel;
+  const setOpen=(open)=>{
+    if(!scales || !toggle) return;
+    box.classList.toggle("compact", !open);
+    toggle.textContent = open ? "Ocultar escalas" : "Ver escalas";
+  };
 
-    box.querySelectorAll(".tier").forEach(el=>{
-      el.classList.remove("active");
-      const c=Number(el.dataset.cant||0);
-      const isDisabled=el.classList.contains("disabled");
-      if(isDisabled) return;
-      if(c===tier.cant) el.classList.add("active"); // ✅ se marca el rango usado (ej: 3+)
-    });
-
-    minus.classList.toggle("disabled",qty<=1);
-    plus.classList.toggle("disabled",stock>0 && qty>=stock);
-
-    const unitStr=pluralize(unidad,qty);
-    const idxTier = tiers.indexOf(tier.cant);
-    const nextTier = (idxTier>=0) ? (tiers[idxTier+1] || null) : null;
-    let tierLabel = "Precio normal";
-    if(tier.cant>1){
-      if(nextTier){
-        tierLabel = (nextTier===tier.cant+1) ? `Promo ${tier.cant}` : `Promo ${tier.cant}-${nextTier-1}`;
-      }else{
-        tierLabel = `Promo ${tier.cant}+`;
-      }
-    }
-    const msg=`Hola SDC, quiero *${qty} ${unitStr}* de:\n*${p.nombre}*\n\n${tierLabel}\nPrecio unitario: Lps. ${money(unitPrice)}\nTotal: Lps. ${money(total)}\nStock disponible: ${stock}\n\nQuedo atento(a). Gracias.`;
-    const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
-
-    const btn=box.querySelector(".promoBtn");
-    btn.href=link;
-    btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitStr.toUpperCase()} 🚀`;
+  if(toggle && scales){
+    const isMobile = window.matchMedia("(max-width: 720px)").matches;
+    setOpen(!isMobile);
+    toggle.onclick=()=>setOpen(box.classList.contains("compact"));
   }
 
-  updatePromoUI();
+  const renderGrid=()=>{
+    if(!grid) return;
+    grid.innerHTML="";
+    ranges.forEach(r=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.className="tier";
+      const disabled = stock>0 && r.min>stock;
+      if(disabled) b.classList.add("disabled");
+      b.innerHTML = `<div class="tier-top">${escapeHtml(r.label)} ${unitStr}</div><div class="tier-price">Lps. ${money(r.unitPrice)}</div>`;
+      b.onclick=()=>{
+        if(disabled){toast(`Solo hay ${stock} disponibles`);return;}
+        qty = r.min;
+        update();
+      };
+      grid.appendChild(b);
+    });
+  };
+
+  const update=()=>{
+    if(stock>0) qty = Math.min(qty, stock);
+    qty = Math.max(1, qty);
+
+    const {unitPrice,total} = priceForQty(p,qty);
+    const ar = appliedRange(qty);
+
+    if(qtyVal) qtyVal.textContent = qty;
+    if(qtyUnit) qtyUnit.textContent = unitStr.toUpperCase();
+
+    if(pTag) pTag.textContent = `Lps. ${money(total)}`;
+    if(uLine) uLine.textContent = `${qty} ${unitStr} x Lps. ${money(unitPrice)} c/u  •  Escala: ${ar.label}`;
+
+    if(grid){
+      [...grid.children].forEach((el,i)=>{
+        const r=ranges[i];
+        if(!r) return;
+        el.classList.toggle("active", qty>=r.min && qty<=r.max);
+      });
+    }
+
+    if(btn){
+      btn.textContent = `PEDIR ${qty} ${unitStr.toUpperCase()} 🚀`;
+      const msg = [
+        "Hola Soluciones Digitales.",
+        "",
+        "Estoy interesado en el producto:",
+        `*${p.nombre}*`,
+        "",
+        `Cantidad: ${qty} ${unitStr}`,
+        `Precio unitario: Lps. ${money(unitPrice)}`,
+        `Total: Lps. ${money(total)}`
+      ].join("\n");
+      btn.href = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
+    }
+  };
+
+  const minus=box.querySelector(".minus");
+  const plus =box.querySelector(".plus");
+  minus && (minus.onclick=()=>{qty=qty-1;update();});
+  plus  && (plus.onclick=()=>{qty=qty+1;update();});
+
+  renderGrid();
+  update();
 }
 
 /* ================== TESTIMONIOS ================== */
