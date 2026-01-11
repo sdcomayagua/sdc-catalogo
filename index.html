@@ -1071,7 +1071,18 @@ function buildAutoDesc(p){
   if(!ideal) ideal = g.ideal;
   if(!bene)  bene  = g.bene;
   if(!comp)  comp  = g.comp;
-  if(!inc)   inc   = g.inc;
+  if(!inc){
+    inc = g.inc;
+  }else{
+    const incN = norm(inc);
+    const gN = norm(g.inc||"");
+    const shouldAdd = (isGamepad || isGatillos) && gN &&
+      !incN.includes("gatill") && !incN.includes("cooler") && !incN.includes("enfriad") &&
+      !incN.includes("soport") && !incN.includes("bluetooth");
+    if(shouldAdd){
+      inc = trimLen(`${g.inc} + ${inc}`, 95);
+    }
+  }
   if(!note)  note  = g.note;
 
   // Evitar frases que no te gustan
@@ -1095,6 +1106,16 @@ function buildAutoDesc(p){
 
   return lines.slice(0,5).join("\n");
 }
+
+function looksLikeWhatsappTemplate(desc){
+  const t = (desc ?? "").toString().toLowerCase();
+  return (
+    (t.includes("hola") && t.includes("estoy interesado")) ||
+    (t.includes("precio") && t.includes("lps")) ||
+    (t.includes("soluciones digitales") && t.includes("producto"))
+  );
+}
+
 
 function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
   // Badges grandes desactivados (se veían muy grandes y tapaban la foto).
@@ -1503,7 +1524,7 @@ async function loadAll(){
       }
     }
 
-    document.getElementById("loader").style.display="none";
+    const _ld=document.getElementById("loader"); if(_ld) _ld.style.display="none";
     initCategoryBar();
     updateSubs();
     render();
@@ -1518,9 +1539,9 @@ async function loadAll(){
     }
   }catch(e){
     console.error("❌ Error en loadAll:", e);
-    document.getElementById("loader").style.display="none";
+    const _ld=document.getElementById("loader"); if(_ld) _ld.style.display="none";
     initCategoryBar(true);
-    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
+    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).\n\nDetalle: " + (e?.message || "Error desconocido"));
     toast("⚠️ Error cargando catálogo");
   }finally{
     const loader=document.getElementById("loader");
@@ -1854,16 +1875,23 @@ function render(){
         </div>`;
     }
 
-    // ✅ Descripción: si está vacía, se arma sola (4 líneas) y se respetan saltos de línea
+    // ✅ Descripción: automática solo si viene vacía
     let rawDesc = (p.descripcion || "").toString().trim();
     if(!rawDesc){
       rawDesc = buildAutoDesc(p);
     }
     let descText = rawDesc
-      .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n")
-      .replace(/([►•\-★])/g,"\n$1")
-      .replace(/\n{3,}/g, "\n\n")
+      .replace(/
+/g, "
+")
+      .replace(/
+/g, "
+")
+      .replace(/•/g, "-")
+      .replace(/
+{3,}/g, "
+
+")
       .trim();
 
     const safeName=escapeHtml(p.nombre);
