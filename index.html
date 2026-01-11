@@ -633,6 +633,9 @@
       -webkit-tap-highlight-color: transparent;
     }
     .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+    /* HIDE_IMG_BADGES */
+    .img-badges, .img-badge, .stock-badge{display:none!important;}
 </style>
 </head>
 
@@ -946,7 +949,12 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 function cleanOneLine(s){
-  return (s??"").toString().trim().replace(/\s+/g," ");
+  return (s??"").toString()
+    .replace(/[“”]/g,'"')
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/^"+|"+$/g,"")
+    .replace(/^\*+|\*+$/g,"");
 }
 
 /* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía
@@ -954,131 +962,136 @@ function cleanOneLine(s){
    - Si alguna está vacía, se completa automáticamente según el nombre/categoría
 */
 function guessFields(p){
-  const name = norm([p?.nombre, p?.subcategoria, p?.categoria].filter(Boolean).join(" "));
-  const cat  = norm(p?.categoria || "");
-  const sub  = norm(p?.subcategoria || "");
-  const has  = (re)=>re.test(name);
+  const nameRaw = (p?.nombre ?? "").toString();
+  const imgRaw  = (p?.imagen ?? "").toString();
+  const hintText = norm([p?.id, nameRaw, p?.subcategoria, p?.categoria, imgRaw].join(" "));
+  const has = (re) => re.test(hintText);
+
+  // Extra: intenta sacar un “código/modelo” del título (ej: Q-CL9, F6, LH-9078)
+  const code = (() => {
+    const m = nameRaw.match(/([A-Z]{1,4}-?[A-Z0-9]{1,8}\d{0,4}(?:-[A-Z0-9]{1,8})?)/);
+    if(!m) return "";
+    return (m[1]||"").toUpperCase().replace(/\s+/g,"");
+  })();
 
   let type="generic";
-  if(has(/dedal/)) type="dedales";
-  else if(has(/gatill|trigger|f6|saraf|shoot/)) type="gatillos";
-  else if(has(/cooler|enfri|radiador|ventil|fan/)) type="cooler";
-  else if(has(/gamepad|joystick|control|lehuai|ipega|mocute|gamesir/)) type="gamepad";
-  else if(has(/audif|headset|earbud|earphone|bluetooth\s*head/)) type="audio";
-  else if(has(/micro|micr[oó]fono/)) type="microfono";
-  else if(has(/teclado|mouse|mause|mousepad|alfombr|pad gamer/)) type="perifericos";
-  else if(has(/powerbank|bater[ií]a|cargador|cable|tipo\s*c|type\s*c|usb|hub|adaptador/)) type="power";
-  else if(has(/funda|cobert|cover|protector|mica|glass|templad/)) type="cobertores";
-  else if(cat.includes("pc")) type="pc";
-  else if(cat.includes("movil") || cat.includes("móvil") || sub.includes("movil")) type="movil";
-  else if(cat.includes("stream")) type="streaming";
+  if(has(/dedal|finger|thimble|v\d/)) type="dedales";
+  else if(has(/cooler|enfriador|radiador|fan|ventilador|q-?cl\d|cl\d/)) type="cooler";
+  else if(has(/gatillo|trigger|f\d|saraf|fire\s?button/)) type="gatillos";
+  else if(has(/gamepad|joystick|control|bluetooth|lehuai|lh-?9078|9078/)) type="gamepad";
+  else if(has(/power|bateria|bater(i|í)a|powerbank|cargador|carga/)) type="power";
+  else if(has(/cable|usb|type[\s-]?c|typec|lightning/)) type="cable";
+  else if(has(/cobert|funda|case|protector|cover/)) type="cobertor";
+  else if(has(/stream|mic|microfono|micrófono|audif|headset|capturadora|rgb/)) type="stream";
 
-  switch(type){
-    case "dedales":
-      return {
-        ideal: "Free Fire / CODM / PUBG (2 a 6 dedos)",
-        bene:  "Mejor agarre, menos sudor y más precisión",
-        comp:  "Pantallas táctiles (Android y iPhone)",
-        inc:   "1 par (2 unidades)",
-        nota:  "Precio por par"
+  const base = {
+    dedales: {
+      ideal:"Free Fire / CODM / PUBG",
+      bene:"Mejor agarre y más precisión",
+      comp:"Pantallas táctiles (celular)",
+      inc:"1 par de dedales gamer",
+      nota:"Recomendado para sesiones largas"
+    },
+    cooler: {
+      ideal:"Gaming en celular",
+      bene:"Ayuda a reducir el calentamiento",
+      comp:"Celulares (consultar tamaño)",
+      inc:"Cooler + cable (según modelo)",
+      nota:"Mejor rendimiento en partidas"
+    },
+    gatillos: {
+      ideal:"Shooter móvil",
+      bene:"Mejora tu control en 4–6 dedos",
+      comp:"Android / iPhone (según modelo)",
+      inc:"Par de gatillos + accesorios (según modelo)",
+      nota:"Respuesta rápida"
+    },
+    gamepad: {
+      ideal:"Juegos en celular / PC",
+      bene:"Control más cómodo y preciso",
+      comp:"Android / iOS / PC (según modelo)",
+      inc:"Gamepad + soporte/cable (si aplica)",
+      nota:"Listo para jugar"
+    },
+    power: {
+      ideal:"Uso diario y viajes",
+      bene:"Energía extra cuando la necesitas",
+      comp:"Celulares y gadgets (USB/Type‑C)",
+      inc:"Power bank / cargador (según modelo)",
+      nota:"Ideal para salir de apuros"
+    },
+    cable: {
+      ideal:"Carga y datos",
+      bene:"Conexión estable y segura",
+      comp:"Type‑C / Lightning / Micro‑USB (según modelo)",
+      inc:"Cable (longitud según modelo)",
+      nota:"Uso diario"
+    },
+    cobertor: {
+      ideal:"Protección del dispositivo",
+      bene:"Reduce golpes y rayones",
+      comp:"Modelo específico (consultar)",
+      inc:"Funda/cobertor",
+      nota:"Ajuste según modelo"
+    },
+    stream: {
+      ideal:"Streaming y llamadas",
+      bene:"Mejora tu audio o tu setup",
+      comp:"PC / consola / celular (según producto)",
+      inc:"Accesorio de streaming (según modelo)",
+      nota:"Calidad para tu contenido"
+    },
+    generic: {
+      ideal:"Uso diario",
+      bene:"Mejora tu experiencia",
+      comp:"Consultar compatibilidad",
+      inc:"Producto principal",
+      nota:"Escríbenos para asesoría"
+    }
+  };
+
+  let t = base[type] || base.generic;
+
+  // Ajustes por “pistas” del título/URL (sin inventar specs raras)
+  if(type==="cooler"){
+    if(has(/q-?cl9/)){
+      t = {
+        ...t,
+        ideal:"Free Fire / CODM / PUBG",
+        comp:"Celulares 4.7''–7'' (aprox.)",
+        inc:"Cooler radiador (Q‑CL9) + cable (según modelo)",
+        nota:"Ideal para sesiones largas"
       };
-    case "gatillos":
-      return {
-        ideal: "Free Fire / CODM (4–6 dedos)",
-        bene:  "Disparo rápido tipo click, mejor reacción",
-        comp:  "Android / iPhone (pantalla táctil)",
-        inc:   "1 par de gatillos (2 unidades)",
-        nota:  "No necesita app"
-      };
-    case "cooler":
-      return {
-        ideal: "Juegos largos sin calentamiento",
-        bene:  "Baja temperatura y mejora el rendimiento",
-        comp:  "Celulares 4.7”–7” (aprox.)",
-        inc:   "Cooler + cable (según modelo)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "gamepad":
-      return {
-        ideal: "Carreras, shooters, emuladores y más",
-        bene:  "Control cómodo y mejor precisión",
-        comp:  "Android / iOS / PC (según modelo)",
-        inc:   "Control + soporte (según paquete)",
-        nota:  "Puede requerir configuración"
-      };
-    case "audio":
-      return {
-        ideal: "Gaming, música y llamadas",
-        bene:  "Audio claro y mejor inmersión",
-        comp:  "Bluetooth / Jack / USB (según modelo)",
-        inc:   "Audífonos + accesorios (según caja)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "microfono":
-      return {
-        ideal: "Streams, clases y videollamadas",
-        bene:  "Voz más clara y profesional",
-        comp:  "PC / Android / iPhone (según modelo)",
-        inc:   "Micrófono + cable/soporte (según paquete)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "perifericos":
-      return {
-        ideal: "Setup gamer / oficina",
-        bene:  "Más comodidad y precisión",
-        comp:  "USB (Windows / Mac según modelo)",
-        inc:   "Accesorio principal (según foto)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "power":
-      return {
-        ideal: "Uso diario, viajes y emergencias",
-        bene:  "Carga estable y segura",
-        comp:  "USB / Tipo-C (según modelo)",
-        inc:   "Accesorio principal (según foto)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "cobertores":
-      return {
-        ideal: "Protección del dispositivo",
-        bene:  "Evita golpes, rayones y polvo",
-        comp:  "Modelo específico (ver nombre)",
-        inc:   "Funda / protector (según producto)",
-        nota:  "Confirmar modelo por WhatsApp"
-      };
-    case "streaming":
-      return {
-        ideal: "Creadores, streamers y grabación",
-        bene:  "Mejor audio/iluminación/estabilidad",
-        comp:  "PC / Android / iPhone (según modelo)",
-        inc:   "Accesorio principal (según foto)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "pc":
-      return {
-        ideal: "PC y setup gamer",
-        bene:  "Mejora tu experiencia y comodidad",
-        comp:  "USB / Windows (según modelo)",
-        inc:   "Accesorio principal (según foto)",
-        nota:  "Consultar compatibilidad"
-      };
-    case "movil":
-      return {
-        ideal: "Uso diario y gaming móvil",
-        bene:  "Mejora comodidad y rendimiento",
-        comp:  "Android / iPhone (según modelo)",
-        inc:   "Accesorio principal (según foto)",
-        nota:  "Consultar compatibilidad"
-      };
-    default:
-      return {
-        ideal: "Uso diario y gaming",
-        bene:  "Mejora tu experiencia",
-        comp:  "Consultar compatibilidad",
-        inc:   "Producto principal (según foto)",
-        nota:  "Envíos a toda Honduras"
-      };
+    }
   }
+  if(type==="gatillos"){
+    if(has(/\bf6\b/)){
+      t = { ...t, ideal:"Free Fire / CODM", nota:"Enfoque: juego a 6 dedos" };
+    }
+  }
+  if(type==="gamepad"){
+    if(has(/9078/)){
+      t = { ...t, nota:"Compatible según juego (consultar)" };
+    }
+  }
+
+  const ctaByType = {
+    dedales:"🔥 Sube tu aim y juega más cómodo",
+    cooler:"❄️ Menos calentamiento = mejor rendimiento",
+    gatillos:"🎮 Más control en cada disparo",
+    gamepad:"🕹️ Control inalámbrico listo para jugar",
+    power:"🔋 Energía extra para tu día",
+    cable:"⚡ Carga rápida y segura",
+    cobertor:"🛡️ Protege tu equipo",
+    stream:"🎙️ Mejora tu setup",
+    generic:"📩 Escríbeme y te asesoro"
+  };
+
+  const cta = code
+    ? `Escríbeme "${code}" y te confirmo compatibilidad`
+    : (ctaByType[type] || ctaByType.generic);
+
+  return { ideal:t.ideal, bene:t.bene, comp:t.comp, inc:t.inc, nota:t.nota, cta };
 }
 
 function getSmartFields(p){
@@ -1087,7 +1100,8 @@ function getSmartFields(p){
     bene:  cleanOneLine(p.beneficio || ""),
     comp:  cleanOneLine(p.compatible || ""),
     inc:   cleanOneLine(p.incluye || ""),
-    nota:  cleanOneLine(p.nota || "")
+    nota:  cleanOneLine(p.nota || ""),
+    cta:   cleanOneLine(p.cta || p.llamativo || p.call_to_action || "")
   };
   const g = guessFields(p);
 
@@ -1096,7 +1110,8 @@ function getSmartFields(p){
     bene:  custom.bene  || g.bene,
     comp:  custom.comp  || g.comp,
     inc:   custom.inc   || g.inc,
-    nota:  custom.nota  || g.nota
+    nota:  custom.nota  || g.nota,
+    cta:   custom.cta   || g.cta
   };
 }
 
@@ -1106,16 +1121,20 @@ function buildAutoDesc(p){
   const ideal = f.ideal || "Uso diario y gaming";
   const bene  = f.bene  || "Mejora tu experiencia";
   const comp  = f.comp  || "Consultar compatibilidad";
-  const inc   = f.inc   || "Producto principal (según foto)";
+  const inc   = f.inc   || "Producto principal";
   const nota  = f.nota  || "";
+  const cta   = f.cta   || "📩 Escríbeme y te asesoro";
 
   const line4 = nota ? `- 📦 Incluye: ${inc} (${nota})` : `- 📦 Incluye: ${inc}`;
+  const line5 = `- ✨ ${cta}`;
 
+  // ✅ EXACTO: 5 líneas siempre
   return [
     `- 🎯 Ideal: ${ideal}`,
     `- ⚡ Beneficio: ${bene}`,
     `- 📱 Compatible: ${comp}`,
-    line4
+    line4,
+    line5
   ].join("\n");
 }
 
@@ -1975,7 +1994,7 @@ function render(){
       btnText="PEDIR";
     }
 
-    const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
+    const badgesHTML = "";
 
     card.innerHTML=`
       <div class="card-img-container ${hasRibbon?'has-ribbon':''}">
