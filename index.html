@@ -949,25 +949,176 @@ function cleanOneLine(s){
   return (s??"").toString().trim().replace(/\s+/g," ");
 }
 
-/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía */
-function buildAutoDesc(p){
-  const lines = [];
+/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía
+   - Usa tus columnas: ideal_para, beneficio, compatible, incluye, nota
+   - Si alguna está vacía, se completa automáticamente según el nombre/categoría
+*/
+function guessFields(p){
+  const name = norm([p?.nombre, p?.subcategoria, p?.categoria].filter(Boolean).join(" "));
+  const cat  = norm(p?.categoria || "");
+  const sub  = norm(p?.subcategoria || "");
+  const has  = (re)=>re.test(name);
 
-  const ideal = cleanOneLine(p.ideal_para || p.ideal || "");
-  const bene  = cleanOneLine(p.beneficio || "");
-  const comp  = cleanOneLine(p.compatible || "");
-  const inc   = cleanOneLine(p.incluye || "");
+  let type="generic";
+  if(has(/dedal/)) type="dedales";
+  else if(has(/gatill|trigger|f6|saraf|shoot/)) type="gatillos";
+  else if(has(/cooler|enfri|radiador|ventil|fan/)) type="cooler";
+  else if(has(/gamepad|joystick|control|lehuai|ipega|mocute|gamesir/)) type="gamepad";
+  else if(has(/audif|headset|earbud|earphone|bluetooth\s*head/)) type="audio";
+  else if(has(/micro|micr[oó]fono/)) type="microfono";
+  else if(has(/teclado|mouse|mause|mousepad|alfombr|pad gamer/)) type="perifericos";
+  else if(has(/powerbank|bater[ií]a|cargador|cable|tipo\s*c|type\s*c|usb|hub|adaptador/)) type="power";
+  else if(has(/funda|cobert|cover|protector|mica|glass|templad/)) type="cobertores";
+  else if(cat.includes("pc")) type="pc";
+  else if(cat.includes("movil") || cat.includes("móvil") || sub.includes("movil")) type="movil";
+  else if(cat.includes("stream")) type="streaming";
 
-  if(ideal) lines.push(`✅ Ideal: ${ideal}`);
-  if(bene)  lines.push(`⚡ Beneficio: ${bene}`);
-  if(comp)  lines.push(`📱 Compatible: ${comp}`);
-  if(inc)   lines.push(`📦 Incluye: ${inc}`);
-
-  const nota = cleanOneLine(p.nota || "");
-  if(lines.length < 4 && nota) lines.push(`🧾 Nota: ${nota}`);
-
-  return lines.slice(0,4).join("\n");
+  switch(type){
+    case "dedales":
+      return {
+        ideal: "Free Fire / CODM / PUBG (2 a 6 dedos)",
+        bene:  "Mejor agarre, menos sudor y más precisión",
+        comp:  "Pantallas táctiles (Android y iPhone)",
+        inc:   "1 par (2 unidades)",
+        nota:  "Precio por par"
+      };
+    case "gatillos":
+      return {
+        ideal: "Free Fire / CODM (4–6 dedos)",
+        bene:  "Disparo rápido tipo click, mejor reacción",
+        comp:  "Android / iPhone (pantalla táctil)",
+        inc:   "1 par de gatillos (2 unidades)",
+        nota:  "No necesita app"
+      };
+    case "cooler":
+      return {
+        ideal: "Juegos largos sin calentamiento",
+        bene:  "Baja temperatura y mejora el rendimiento",
+        comp:  "Celulares 4.7”–7” (aprox.)",
+        inc:   "Cooler + cable (según modelo)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "gamepad":
+      return {
+        ideal: "Carreras, shooters, emuladores y más",
+        bene:  "Control cómodo y mejor precisión",
+        comp:  "Android / iOS / PC (según modelo)",
+        inc:   "Control + soporte (según paquete)",
+        nota:  "Puede requerir configuración"
+      };
+    case "audio":
+      return {
+        ideal: "Gaming, música y llamadas",
+        bene:  "Audio claro y mejor inmersión",
+        comp:  "Bluetooth / Jack / USB (según modelo)",
+        inc:   "Audífonos + accesorios (según caja)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "microfono":
+      return {
+        ideal: "Streams, clases y videollamadas",
+        bene:  "Voz más clara y profesional",
+        comp:  "PC / Android / iPhone (según modelo)",
+        inc:   "Micrófono + cable/soporte (según paquete)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "perifericos":
+      return {
+        ideal: "Setup gamer / oficina",
+        bene:  "Más comodidad y precisión",
+        comp:  "USB (Windows / Mac según modelo)",
+        inc:   "Accesorio principal (según foto)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "power":
+      return {
+        ideal: "Uso diario, viajes y emergencias",
+        bene:  "Carga estable y segura",
+        comp:  "USB / Tipo-C (según modelo)",
+        inc:   "Accesorio principal (según foto)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "cobertores":
+      return {
+        ideal: "Protección del dispositivo",
+        bene:  "Evita golpes, rayones y polvo",
+        comp:  "Modelo específico (ver nombre)",
+        inc:   "Funda / protector (según producto)",
+        nota:  "Confirmar modelo por WhatsApp"
+      };
+    case "streaming":
+      return {
+        ideal: "Creadores, streamers y grabación",
+        bene:  "Mejor audio/iluminación/estabilidad",
+        comp:  "PC / Android / iPhone (según modelo)",
+        inc:   "Accesorio principal (según foto)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "pc":
+      return {
+        ideal: "PC y setup gamer",
+        bene:  "Mejora tu experiencia y comodidad",
+        comp:  "USB / Windows (según modelo)",
+        inc:   "Accesorio principal (según foto)",
+        nota:  "Consultar compatibilidad"
+      };
+    case "movil":
+      return {
+        ideal: "Uso diario y gaming móvil",
+        bene:  "Mejora comodidad y rendimiento",
+        comp:  "Android / iPhone (según modelo)",
+        inc:   "Accesorio principal (según foto)",
+        nota:  "Consultar compatibilidad"
+      };
+    default:
+      return {
+        ideal: "Uso diario y gaming",
+        bene:  "Mejora tu experiencia",
+        comp:  "Consultar compatibilidad",
+        inc:   "Producto principal (según foto)",
+        nota:  "Envíos a toda Honduras"
+      };
+  }
 }
+
+function getSmartFields(p){
+  const custom = {
+    ideal: cleanOneLine(p.ideal_para || p.ideal || ""),
+    bene:  cleanOneLine(p.beneficio || ""),
+    comp:  cleanOneLine(p.compatible || ""),
+    inc:   cleanOneLine(p.incluye || ""),
+    nota:  cleanOneLine(p.nota || "")
+  };
+  const g = guessFields(p);
+
+  return {
+    ideal: custom.ideal || g.ideal,
+    bene:  custom.bene  || g.bene,
+    comp:  custom.comp  || g.comp,
+    inc:   custom.inc   || g.inc,
+    nota:  custom.nota  || g.nota
+  };
+}
+
+function buildAutoDesc(p){
+  const f = getSmartFields(p);
+
+  const ideal = f.ideal || "Uso diario y gaming";
+  const bene  = f.bene  || "Mejora tu experiencia";
+  const comp  = f.comp  || "Consultar compatibilidad";
+  const inc   = f.inc   || "Producto principal (según foto)";
+  const nota  = f.nota  || "";
+
+  const line4 = nota ? `- 📦 Incluye: ${inc} (${nota})` : `- 📦 Incluye: ${inc}`;
+
+  return [
+    `- 🎯 Ideal: ${ideal}`,
+    `- ⚡ Beneficio: ${bene}`,
+    `- 📱 Compatible: ${comp}`,
+    line4
+  ].join("\n");
+}
+
 
 /* ✅ Galería: detección rápida (compatibilidad con columna "galeria") */
 function isInstagramLink(url){
@@ -981,8 +1132,9 @@ function cleanUrl(url){
 }
 function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
   const parts=[];
-  const comp = cleanOneLine(p.compatible);
-  const inc  = cleanOneLine(p.incluye);
+  const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {comp:'',inc:''};
+  const comp = cleanOneLine(p.compatible) || cleanOneLine(f.comp);
+  const inc  = cleanOneLine(p.incluye)   || cleanOneLine(f.inc);
 
   if(comp) parts.push(`<div class="img-badge compat">✅ ${escapeHtml(comp)}</div>`);
   if(inc)  parts.push(`<div class="img-badge incluye">📦 ${escapeHtml("Incluye: " + inc)}</div>`);
@@ -1688,7 +1840,19 @@ function render(){
   if(onlyInStock) list=list.filter(p=>Number(p.stock||0)>0);
 
   if(q){
-    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q) || norm(p.ideal_para).includes(q) || norm(p.beneficio).includes(q));
+    list=list.filter(p=>{
+      const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {ideal:'',bene:'',comp:'',inc:''};
+      const autoDesc = (p.descripcion||"").trim() ? p.descripcion : (typeof buildAutoDesc === 'function' ? buildAutoDesc(p) : "");
+      return (
+        norm(p.nombre).includes(q) ||
+        norm(autoDesc).includes(q) ||
+        norm(p.subcategoria).includes(q) ||
+        norm(f.ideal).includes(q) ||
+        norm(f.bene).includes(q) ||
+        norm(f.comp).includes(q) ||
+        norm(f.inc).includes(q)
+      );
+    });
   }
 
   /* Disponibles primero */
@@ -1752,10 +1916,15 @@ function render(){
     }
     let descText = rawDesc
       .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n")
-      .replace(/([►•\-★])/g,"\n$1")
-      .replace(/\n{3,}/g, "\n\n")
-      .trim();
+      .replace(/\r/g, "\n");
+
+    // Si la descripción viene en una sola línea con viñetas, la "partimos" para que se vea en líneas.
+    // Si ya trae saltos (como el auto-desc), la dejamos tal cual.
+    if(!descText.includes("\n")){
+      descText = descText.replace(/([►•\-★])/g, "\n$1");
+    }
+
+    descText = descText.replace(/\n{3,}/g, "\n\n").trim();
 
     const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
@@ -1923,12 +2092,13 @@ function initPromoWidget(card,p){
     box.querySelector(".qtyVal").textContent=qty;
     box.querySelector(".qtyUnit").textContent=unitLabel;
 
+    const activeCant = tiers.includes(qty) ? qty : tier.cant;
     box.querySelectorAll(".tier").forEach(el=>{
       el.classList.remove("active");
       const c=Number(el.dataset.cant||0);
       const isDisabled=el.classList.contains("disabled");
       if(isDisabled) return;
-      if(c===tier.cant) el.classList.add("active"); // ✅ se marca el rango usado (ej: 3+)
+      if(c===activeCant) el.classList.add("active");
     });
 
     minus.classList.toggle("disabled",qty<=1);
