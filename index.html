@@ -605,10 +605,131 @@
       line-height:1.45;
     }
 
-    @media (prefers-reduced-motion: reduce){
-      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    
+    /* ================== ENTREGA / ENVÍO (Modal) ================== */
+    .ship-panel{
+      width:min(720px, 100%);
+      background:var(--card-bg);
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:0 18px 44px rgba(0,0,0,.28);
+      overflow:hidden;
+    }
+    .ship-top{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 12px 0;
+    }
+    .ship-title{
+      font-weight:900; text-transform:uppercase; letter-spacing:.6px;
+      color:var(--text); font-size:12px; opacity:.9;
+      padding-left:6px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .ship-close{
+      width:40px;height:40px;border-radius:999px;border:1px solid var(--border);
+      background:transparent;color:var(--text);cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .ship-body{ padding:12px 12px 14px; display:flex; flex-direction:column; gap:12px; }
+    .ship-summary{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      border-radius:16px;
+      padding:12px;
+      display:flex; flex-direction:column; gap:6px;
+    }
+    [data-theme="light"] .ship-summary{ background:#f8fafc; border-color:#e2e8f0; }
+    .ship-s-name{ font-weight:900; text-transform:uppercase; letter-spacing:.4px; font-size:12px; }
+    .ship-s-row{ display:flex; justify-content:space-between; gap:10px; font-size:12px; color:var(--text-muted); font-weight:800; }
+    .ship-s-row strong{ color:var(--text); font-weight:900; }
+
+    .ship-step{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      background:rgba(255,255,255,.03);
+    }
+    [data-theme="light"] .ship-step{ background:#ffffff; border-color:#e2e8f0; box-shadow:0 6px 14px rgba(15,23,42,.06); }
+    .ship-q{
+      font-weight:900; text-transform:uppercase; letter-spacing:.5px;
+      color:var(--text); font-size:12px; margin-bottom:10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .ship-toggle{ display:flex; gap:10px; }
+    .ship-toggle button{
+      flex:1; padding:12px; border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-weight:900; text-transform:uppercase; letter-spacing:.3px;
+      cursor:pointer; transition:.15s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .ship-toggle button.active{
+      background:rgba(56,189,248,.14);
+      border-color:rgba(56,189,248,.45);
+      color:var(--primary);
+      box-shadow:0 10px 22px rgba(0,0,0,.12);
+      transform:translateY(-1px);
+    }
+    [data-theme="light"] .ship-toggle button.active{ color:#0ea5e9; border-color:rgba(14,165,233,.35); background:rgba(14,165,233,.10); }
+
+    .ship-options{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+    .ship-opt{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      padding:12px;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      transition:.15s;
+    }
+    [data-theme="light"] .ship-opt{ background:#f8fafc; border-color:#e2e8f0; }
+    .ship-opt:hover{ transform:translateY(-1px); box-shadow:0 12px 26px rgba(0,0,0,.10); border-color:rgba(56,189,248,.35); }
+    .ship-opt.active{
+      border-color:rgba(56,189,248,.55);
+      box-shadow:0 0 0 2px rgba(56,189,248,.18) inset, 0 12px 26px rgba(0,0,0,.12);
+      background:rgba(56,189,248,.10);
+    }
+    [data-theme="light"] .ship-opt.active{ background:rgba(14,165,233,.10); }
+    .ship-opt-left{ display:flex; flex-direction:column; gap:4px; }
+    .ship-opt-left b{ font-weight:900; text-transform:uppercase; letter-spacing:.3px; font-size:12px; color:var(--text); }
+    .ship-opt-left small{ color:var(--text-muted); font-weight:800; font-size:11px; line-height:1.35; }
+    .ship-opt-right{ font-weight:900; color:var(--accent); white-space:nowrap; }
+    .ship-total{
+      border:1px dashed rgba(148,163,184,.45);
+      border-radius:16px;
+      padding:12px;
+      color:var(--text-muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .ship-total strong{ color:var(--text); font-weight:900; }
+    .ship-send{
+      width:100%;
+      text-decoration:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:13px 12px;
+      border-radius:14px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      box-shadow:0 14px 30px rgba(0,0,0,.18);
+    }
+    .ship-send.disabled{
+      opacity:.55;
+      pointer-events:none;
+      filter:grayscale(35%);
     }
 
+@media (prefers-reduced-motion: reduce){
+      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
+  
     /* Anchor for deep-links (e.g. #ubicacion) */
     .anchor{ position: relative; top: -90px; height: 0; }
 
@@ -633,9 +754,6 @@
       -webkit-tap-highlight-color: transparent;
     }
     .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
-
-    /* HIDE_IMG_BADGES */
-    .img-badges, .img-badge, .stock-badge{display:none!important;}
 </style>
 </head>
 
@@ -676,7 +794,47 @@
       </div>
       <div class="search-hint">Tip: el catálogo se filtra en tiempo real. Presiona <b>Enter</b> para cerrar.</div>
     </div>
+  
+  <!-- Entrega / Envío (modal) -->
+  <div class="overlay" id="shipOverlay" aria-hidden="true">
+    <div class="ship-panel" role="dialog" aria-modal="true" aria-label="Entrega y envío">
+      <div class="ship-top">
+        <div class="ship-title"><i class="fa-solid fa-truck-fast"></i> Entrega y pago</div>
+        <button class="ship-close" id="shipClose" type="button" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="ship-body">
+        <div class="ship-summary" id="shipSummary">
+          <!-- se llena por JS -->
+        </div>
+
+        <div class="ship-step">
+          <div class="ship-q"><i class="fa-solid fa-location-dot"></i> ¿Estás en Comayagua?</div>
+          <div class="ship-toggle">
+            <button type="button" id="shipYes"><i class="fa-solid fa-check"></i> Sí</button>
+            <button type="button" id="shipNo"><i class="fa-solid fa-xmark"></i> No</button>
+          </div>
+
+          <div class="ship-options" id="shipOptions"></div>
+        </div>
+
+        <div class="ship-total" id="shipTotal">Selecciona tu zona y una opción de entrega para calcular el total.</div>
+
+        <a href="#" class="btn-ws ship-send disabled" id="shipSend" target="_blank" rel="noopener noreferrer">
+          <i class="fa-brands fa-whatsapp"></i> Enviar pedido
+        </a>
+
+        <div style="text-align:center; font-size:11px; color:var(--text-muted); font-weight:800; line-height:1.45;">
+          Tip: al escribirte, el cliente solo completa su <b>dirección</b> y listo ✅
+        </div>
+      </div>
+    </div>
   </div>
+
+
+</div>
 
   <main class="page">
     <div class="hero-section">
@@ -794,16 +952,112 @@
 
 <script>
 /* ================== CONFIG ================== */
-const SHEET_ID="1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE";
+const SHEET_ID="6LgdMV7meHFa3KzIhNW9Xz3JE";
 const MY_PHONE="50432429490";
 
 const CONFIG_SHEET_NAME="_config";
 const TESTIMONIOS_SHEET="testimonios";
 const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 
+/* ================== ENVÍOS (Editable desde Google Sheets) ==================
+   Crea una pestaña en tu Google Sheets llamada: _envios
+   Columnas recomendadas (encabezados):
+   - key        (ej: pickup, com_centro, com_alejada, com_fuera, hn_pre, hn_contra)
+   - group      (comayagua | fuera)
+   - label      (texto del botón)
+   - price      (número: costo de envío)
+   - pay        (opcional: "al recibir" | "adelantado" | "contra entrega")
+   - note       (opcional: texto corto debajo)
+   - estado     (opcional: activo / inactivo)
+*/
+const SHIPPING_SHEET="_envios";
+
+const DEFAULT_SHIPPING_OPTIONS = [
+  { key:"pickup",     group:"comayagua", label:"Recoger en tienda",                 price:0,   pay:"en tienda",      note:"Sin costo de envío" },
+  { key:"com_centro", group:"comayagua", label:"Domicilio zona céntrica",          price:25,  pay:"al recibir",     note:"Comayagua (centro)" },
+  { key:"com_alejada",group:"comayagua", label:"Domicilio zona alejada",           price:60,  pay:"al recibir",     note:"Colonias / zonas alejadas" },
+  { key:"com_fuera",  group:"comayagua", label:"Entrega alrededores / fuera",      price:95,  pay:"al recibir",     note:"Fuera de Comayagua (cercano)" },
+
+  { key:"hn_pre",     group:"fuera",     label:"Envío nacional (pago adelantado)", price:110, pay:"adelantado",     note:"Otros municipios/departamentos" },
+  { key:"hn_contra",  group:"fuera",     label:"Contra entrega (pago al recibir)", price:170, pay:"contra entrega", note:"Pago al recibir (cargo mayor)" },
+];
+
+let shippingOptions = DEFAULT_SHIPPING_OPTIONS.slice();
+let shippingLoaded = false;
+
+function parseShippingOptions(rows){
+  const opts=[];
+  (rows||[]).forEach(r=>{
+    const key = (r.key ?? r.codigo ?? r.id ?? "").toString().trim();
+    const group = norm(r.group ?? r.zona ?? r.region ?? "");
+    const label = (r.label ?? r.nombre ?? r.titulo ?? "").toString().trim();
+    const price = Number(r.price ?? r.costo ?? r.envio ?? r.precio ?? 0);
+    const pay = (r.pay ?? r.pago ?? "").toString().trim();
+    const note = (r.note ?? r.nota ?? r.descripcion ?? "").toString().trim();
+    const estado = norm(r.estado ?? "activo");
+    if(!key || !group || !label) return;
+    if(estado==="inactivo" || estado==="0") return;
+    // Solo 2 grupos: comayagua / fuera
+    const g = (group.includes("com") ? "comayagua" : (group.includes("fuera") || group.includes("nacional") ? "fuera" : group));
+    if(g!=="comayagua" && g!=="fuera") return;
+    opts.push({ key, group:g, label, price: Number.isFinite(price)?price:0, pay, note });
+  });
+
+  // Si hay duplicados por key, nos quedamos con el último
+  const map=new Map();
+  opts.forEach(o=>map.set(o.key, o));
+  const list=[...map.values()];
+
+  // Orden sugerido (si existen keys)
+  const order=["pickup","com_centro","com_alejada","com_fuera","hn_pre","hn_contra"];
+  list.sort((a,b)=>{
+    const ia=order.indexOf(a.key), ib=order.indexOf(b.key);
+    if(ia!==-1 || ib!==-1){
+      return (ia===-1?999:ia) - (ib===-1?999:ib);
+    }
+    if(a.group!==b.group) return a.group.localeCompare(b.group);
+    return a.label.localeCompare(b.label,"es");
+  });
+
+  return list;
+}
+
+async function loadShippingOptions(){
+  try{
+    const t = await fetchText(gvizUrlBySheet(SHIPPING_SHEET), 9000);
+    const {rows}=parseGviz(t);
+    const parsed=parseShippingOptions(rows);
+    if(parsed && parsed.length){
+      shippingOptions = parsed;
+      shippingLoaded = true;
+      console.log("✅ Envíos cargados desde Sheets:", shippingOptions.length);
+    }
+  }catch(e){
+    console.warn("Envios: no se pudo leer _envios, usando valores por defecto.", e);
+  }
+}
+
+
 const BUILD_VERSION="20260111";
-window.addEventListener("error",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
-window.addEventListener("unhandledrejection",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
+
+/* ✅ Protecciones para evitar quedarse en "CARGANDO..." */
+let __loadedOk=false;
+function hideLoading(){
+  const loader=document.getElementById("loader");
+  if(loader) loader.style.display="none";
+}
+function showFatal(msg){
+  hideLoading();
+  try{ renderFatal(msg); }catch(e){ console.error(msg, e); }
+}
+
+window.addEventListener("error", ()=>{
+  showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");
+});
+window.addEventListener("unhandledrejection", ()=>{
+  showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");
+});
+
 /* ================== STATE ================== */
 let products=[];
 let currentCategory="";
@@ -822,12 +1076,7 @@ const STATE_KEY="sdc_state_v2";
 function norm(s){
   return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
-function absUrl(u){
-  // ✅ no bajar a lower-case para no romper URLs
-  u=(u??"").toString().trim();
-  if(!u) return "";
-  try{return new URL(u, location.origin+location.pathname).href;}catch(e){return u;}
-}
+function absUrl(u){u=norm(u);if(!u)return "";try{return new URL(u, location.origin+location.pathname).href;}catch(e){return u;}}
 
 function isDefaultSheetName(name){
   const n = norm(name);
@@ -872,7 +1121,7 @@ function mergeProducts(a,b){
   if(out._sheet === "ofertas" && b._sheet !== "ofertas") out._sheet = b._sheet;
 
   // Rellenar campos vacíos (sin sobreescribir)
-  const fill = ["descripcion","whatsapp","instagram","facebook","galeria","tiktok","video","link","url","ideal_para","beneficio","compatible","incluye","nota"];
+  const fill = ["descripcion","whatsapp","instagram","facebook","galeria","tiktok","video","link","url"];
   for(const f of fill){
     if(!String(out[f] ?? "").trim() && String(b[f] ?? "").trim()) out[f] = b[f];
   }
@@ -949,205 +1198,30 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 function cleanOneLine(s){
-  return (s??"").toString()
-    .replace(/[“”]/g,'"')
-    .replace(/\s+/g," ")
-    .trim()
-    .replace(/^"+|"+$/g,"")
-    .replace(/^\*+|\*+$/g,"");
+  return (s??"").toString().trim().replace(/\s+/g," ");
 }
 
-/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía
-   - Usa tus columnas: ideal_para, beneficio, compatible, incluye, nota
-   - Si alguna está vacía, se completa automáticamente según el nombre/categoría
-*/
-function guessFields(p){
-  const nameRaw = (p?.nombre ?? "").toString();
-  const imgRaw  = (p?.imagen ?? "").toString();
-  const hintText = norm([p?.id, nameRaw, p?.subcategoria, p?.categoria, imgRaw].join(" "));
-  const has = (re) => re.test(hintText);
 
-  // Extra: intenta sacar un “código/modelo” del título (ej: Q-CL9, F6, LH-9078)
-  const code = (() => {
-    const m = nameRaw.match(/([A-Z]{1,4}-?[A-Z0-9]{1,8}\d{0,4}(?:-[A-Z0-9]{1,8})?)/);
-    if(!m) return "";
-    return (m[1]||"").toUpperCase().replace(/\s+/g,"");
-  })();
-
-  let type="generic";
-  if(has(/dedal|finger|thimble|v\d/)) type="dedales";
-  else if(has(/cooler|enfriador|radiador|fan|ventilador|q-?cl\d|cl\d/)) type="cooler";
-  else if(has(/gatillo|trigger|f\d|saraf|fire\s?button/)) type="gatillos";
-  else if(has(/gamepad|joystick|control|bluetooth|lehuai|lh-?9078|9078/)) type="gamepad";
-  else if(has(/power|bateria|bater(i|í)a|powerbank|cargador|carga/)) type="power";
-  else if(has(/cable|usb|type[\s-]?c|typec|lightning/)) type="cable";
-  else if(has(/cobert|funda|case|protector|cover/)) type="cobertor";
-  else if(has(/stream|mic|microfono|micrófono|audif|headset|capturadora|rgb/)) type="stream";
-
-  const base = {
-    dedales: {
-      ideal:"Free Fire / CODM / PUBG",
-      bene:"Mejor agarre y más precisión",
-      comp:"Pantallas táctiles (celular)",
-      inc:"1 par de dedales gamer",
-      nota:"Recomendado para sesiones largas"
-    },
-    cooler: {
-      ideal:"Gaming en celular",
-      bene:"Ayuda a reducir el calentamiento",
-      comp:"Celulares (consultar tamaño)",
-      inc:"Cooler + cable (según modelo)",
-      nota:"Mejor rendimiento en partidas"
-    },
-    gatillos: {
-      ideal:"Shooter móvil",
-      bene:"Mejora tu control en 4–6 dedos",
-      comp:"Android / iPhone (según modelo)",
-      inc:"Par de gatillos + accesorios (según modelo)",
-      nota:"Respuesta rápida"
-    },
-    gamepad: {
-      ideal:"Juegos en celular / PC",
-      bene:"Control más cómodo y preciso",
-      comp:"Android / iOS / PC (según modelo)",
-      inc:"Gamepad + soporte/cable (si aplica)",
-      nota:"Listo para jugar"
-    },
-    power: {
-      ideal:"Uso diario y viajes",
-      bene:"Energía extra cuando la necesitas",
-      comp:"Celulares y gadgets (USB/Type‑C)",
-      inc:"Power bank / cargador (según modelo)",
-      nota:"Ideal para salir de apuros"
-    },
-    cable: {
-      ideal:"Carga y datos",
-      bene:"Conexión estable y segura",
-      comp:"Type‑C / Lightning / Micro‑USB (según modelo)",
-      inc:"Cable (longitud según modelo)",
-      nota:"Uso diario"
-    },
-    cobertor: {
-      ideal:"Protección del dispositivo",
-      bene:"Reduce golpes y rayones",
-      comp:"Modelo específico (consultar)",
-      inc:"Funda/cobertor",
-      nota:"Ajuste según modelo"
-    },
-    stream: {
-      ideal:"Streaming y llamadas",
-      bene:"Mejora tu audio o tu setup",
-      comp:"PC / consola / celular (según producto)",
-      inc:"Accesorio de streaming (según modelo)",
-      nota:"Calidad para tu contenido"
-    },
-    generic: {
-      ideal:"Uso diario",
-      bene:"Mejora tu experiencia",
-      comp:"Consultar compatibilidad",
-      inc:"Producto principal",
-      nota:"Asesoría rápida por WhatsApp"
-    }
-  };
-
-  let t = base[type] || base.generic;
-
-  // Ajustes por “pistas” del título/URL (sin inventar specs raras)
-  if(type==="cooler"){
-    if(has(/q-?cl9/)){
-      t = {
-        ...t,
-        ideal:"Free Fire / CODM / PUBG",
-        comp:"Celulares 4.7''–7'' (aprox.)",
-        inc:"Cooler radiador (Q‑CL9) + cable (según modelo)",
-        nota:"Ideal para sesiones largas"
-      };
-    }
-  }
-  if(type==="gatillos"){
-    if(has(/\bf6\b/)){
-      t = { ...t, ideal:"Free Fire / CODM", nota:"Enfoque: juego a 6 dedos" };
-    }
-  }
-  if(type==="gamepad"){
-    if(has(/9078/)){
-      t = { ...t, nota:"Compatible según juego (consultar)" };
-    }
-  }
-
-  const ctaByType = {
-    dedales:"🔥 Sube tu aim y juega más cómodo",
-    cooler:"❄️ Menos calentamiento = mejor rendimiento",
-    gatillos:"🎮 Más control en cada disparo",
-    gamepad:"🕹️ Control inalámbrico listo para jugar",
-    power:"🔋 Energía extra para tu día",
-    cable:"⚡ Carga rápida y segura",
-    cobertor:"🛡️ Protege tu equipo",
-    stream:"🎙️ Mejora tu setup",
-    generic:"📲 Pedidos por WhatsApp (respuesta rápida)"
-  };
-
-  const needsCompat = ["cooler","gamepad","cable","cobertor"].includes(type);
-
-  // ✅ No mostramos códigos/modelos en la descripción (se ve más limpio).
-  // Si requiere compatibilidad, lo decimos de forma general.
-  const cta = needsCompat
-    ? "📲 Confirma compatibilidad por WhatsApp"
-    : (ctaByType[type] || ctaByType.generic);
-
-  return { ideal:t.ideal, bene:t.bene, comp:t.comp, inc:t.inc, nota:t.nota, cta };
+/* ✅ DEDALES: precios por cantidad (sin "escalas") */
+function isDedalesProduct(p){
+  const h = norm([p?.nombre, p?.subcategoria, p?.categoria].join(" "));
+  return /dedal/.test(h);
 }
-
-function getSmartFields(p){
-  const custom = {
-    ideal: cleanOneLine(p.ideal_para || p.ideal || ""),
-    bene:  cleanOneLine(p.beneficio || ""),
-    comp:  cleanOneLine(p.compatible || ""),
-    inc:   cleanOneLine(p.incluye || ""),
-    nota:  cleanOneLine(p.nota || ""),
-    cta:   cleanOneLine(p.cta || p.llamativo || p.call_to_action || "")
-  };
-  const g = guessFields(p);
-
-  return {
-    ideal: custom.ideal || g.ideal,
-    bene:  custom.bene  || g.bene,
-    comp:  custom.comp  || g.comp,
-    inc:   custom.inc   || g.inc,
-    nota:  custom.nota  || g.nota,
-    cta:   custom.cta   || g.cta
-  };
+function dedalesUnitPrice(qty){
+  qty = Number(qty||1);
+  if(qty >= 10) return 30;     // 10+ pares
+  if(qty >= 6)  return 33;     // 6–9 pares
+  if(qty >= 3)  return 35;     // 3–5 pares
+  if(qty === 2) return 38;     // 2 pares
+  return 40;                   // 1 par
 }
-
-function buildAutoDesc(p){
-  const f = getSmartFields(p);
-
-  const ideal = f.ideal || "Uso diario y gaming";
-  const bene  = f.bene  || "Mejora tu experiencia";
-  const comp  = f.comp  || "Consultar compatibilidad";
-  const inc   = f.inc   || "Producto principal";
-  const nota  = f.nota  || "";
-  let cta   = f.cta   || "📲 Pedidos por WhatsApp (respuesta rápida)";
-
-  // ✅ Limpieza: evita frases tipo: Escríbeme "X" y te confirmo compatibilidad
-  if(/escr[ií]beme\s*["“”][^"“”]+["“”].*compatibilidad/i.test(cta)){
-    cta = "📲 Confirma compatibilidad por WhatsApp";
-  }
-  if(/^\s*(?:📩\s*)?escr[ií]beme/i.test(cta)){
-    cta = cta.replace(/^\s*(?:📩\s*)?escr[ií]beme/i, "📲 Pedidos por WhatsApp");
-  }
-
-  const line4 = nota ? `- 📦 Incluye: ${inc} (${nota})` : `- 📦 Incluye: ${inc}`;
-  const line5 = `- ✨ ${cta}`;
-
-  // ✅ EXACTO: 5 líneas siempre
-  return [
-    `- 🎯 Ideal: ${ideal}`,
-    `- ⚡ Beneficio: ${bene}`,
-    `- 📱 Compatible: ${comp}`,
-    line4,
-    line5
-  ].join("\n");
+function dedalesTierLabel(qty){
+  qty = Number(qty||1);
+  if(qty >= 10) return "10+";
+  if(qty >= 6)  return "6–9";
+  if(qty >= 3)  return "3–5";
+  if(qty === 2) return "2";
+  return "1";
 }
 
 
@@ -1163,9 +1237,8 @@ function cleanUrl(url){
 }
 function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
   const parts=[];
-  const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {comp:'',inc:''};
-  const comp = cleanOneLine(p.compatible) || cleanOneLine(f.comp);
-  const inc  = cleanOneLine(p.incluye)   || cleanOneLine(f.inc);
+  const comp = cleanOneLine(p.compatible);
+  const inc  = cleanOneLine(p.incluye);
 
   if(comp) parts.push(`<div class="img-badge compat">✅ ${escapeHtml(comp)}</div>`);
   if(inc)  parts.push(`<div class="img-badge incluye">📦 ${escapeHtml("Incluye: " + inc)}</div>`);
@@ -1244,6 +1317,203 @@ document.getElementById("searchInput").addEventListener("keydown",(e)=>{
   if(e.key==="Enter"){ e.preventDefault(); closeSearch(); }
 });
 
+
+/* ================== ENVÍO MODAL ================== */
+const shipOverlay = document.getElementById("shipOverlay");
+const shipClose = document.getElementById("shipClose");
+const shipYes = document.getElementById("shipYes");
+const shipNo = document.getElementById("shipNo");
+const shipOptionsEl = document.getElementById("shipOptions");
+const shipTotalEl = document.getElementById("shipTotal");
+const shipSend = document.getElementById("shipSend");
+const shipSummaryEl = document.getElementById("shipSummary");
+
+let shipCtx = null;
+let shipZone = null;        // true = Comayagua, false = Fuera
+let shipSelectedKey = "";
+
+function resetShipUI(){
+  shipZone = null;
+  shipSelectedKey = "";
+  shipYes.classList.remove("active");
+  shipNo.classList.remove("active");
+  shipOptionsEl.innerHTML = "";
+  shipTotalEl.innerHTML = "Selecciona tu zona y una opción de entrega para calcular el total.";
+  shipSend.classList.add("disabled");
+  shipSend.href = "#";
+}
+
+function openShipModal(ctx){
+  shipCtx = ctx;
+  resetShipUI();
+
+  // Summary
+  const qty = Number(ctx.qty||1);
+  const unitPrice = Number(ctx.unitPrice||0);
+  const subtotal = Number(ctx.productTotal||0);
+
+  shipSummaryEl.innerHTML = `
+    <div class="ship-s-name">${escapeHtml(ctx.name||"Producto")}</div>
+    <div class="ship-s-row"><span>Cantidad</span><strong>${qty}</strong></div>
+    <div class="ship-s-row"><span>Precio unitario</span><strong>Lps. ${money(unitPrice)}</strong></div>
+    <div class="ship-s-row"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
+  `;
+
+  shipOverlay.classList.add("show");
+  shipOverlay.setAttribute("aria-hidden","false");
+  // focus suave
+  setTimeout(()=>shipYes?.focus(), 60);
+}
+
+function closeShipModal(){
+  shipOverlay.classList.remove("show");
+  shipOverlay.setAttribute("aria-hidden","true");
+}
+
+shipClose.onclick = closeShipModal;
+shipOverlay.addEventListener("click", (e)=>{ if(e.target === shipOverlay) closeShipModal(); });
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape" && shipOverlay.classList.contains("show")) closeShipModal(); });
+
+function setZone(isComayagua){
+  shipZone = !!isComayagua;
+  shipSelectedKey = "";
+  shipYes.classList.toggle("active", shipZone===true);
+  shipNo.classList.toggle("active", shipZone===false);
+  renderShipOptions();
+  updateShipTotal();
+}
+
+shipYes.onclick = ()=>setZone(true);
+shipNo.onclick  = ()=>setZone(false);
+
+function renderShipOptions(){
+  shipOptionsEl.innerHTML = "";
+  if(shipZone === null){
+    shipOptionsEl.innerHTML = `<div style="font-size:12px;color:var(--text-muted);font-weight:800;">Primero elige <b>Sí</b> o <b>No</b>.</div>`;
+    return;
+  }
+
+  const group = shipZone ? "comayagua" : "fuera";
+  const list = (shippingOptions||[]).filter(o => o.group === group);
+
+  if(!list.length){
+    shipOptionsEl.innerHTML = `<div style="font-size:12px;color:var(--text-muted);font-weight:800;">No hay opciones configuradas.</div>`;
+    return;
+  }
+
+  list.forEach(opt=>{
+    const btn=document.createElement("div");
+    btn.className = "ship-opt" + (opt.key===shipSelectedKey ? " active" : "");
+    const pay = (opt.pay||"").trim();
+    const note = (opt.note||"").trim();
+    const payText = pay ? `• ${escapeHtml(pay)}` : "";
+    const noteText = note ? escapeHtml(note) : (pay ? `Pago: ${escapeHtml(pay)}` : "");
+    btn.innerHTML = `
+      <div class="ship-opt-left">
+        <b>${escapeHtml(opt.label)}</b>
+        <small>${noteText}</small>
+      </div>
+      <div class="ship-opt-right">+ Lps. ${money(opt.price||0)}</div>
+    `;
+    btn.onclick=()=>{
+      shipSelectedKey = opt.key;
+      // marcar activo
+      shipOptionsEl.querySelectorAll(".ship-opt").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      updateShipTotal();
+    };
+    shipOptionsEl.appendChild(btn);
+  });
+}
+
+function findShipOption(){
+  if(!shipSelectedKey) return null;
+  const opt = (shippingOptions||[]).find(o=>o.key===shipSelectedKey);
+  return opt || null;
+}
+
+function buildWhatsAppMessage(ctx,opt){
+  const qty = Number(ctx.qty||1);
+  const unitPrice = Number(ctx.unitPrice||0);
+  const subtotal = Number(ctx.productTotal||0);
+  const ship = Number(opt.price||0);
+  const total = subtotal + ship;
+
+  const zoneText = shipZone ? "Comayagua ✅" : "Fuera de Comayagua ✅";
+  const pay = (opt.pay||"").trim();
+
+  const lines = [];
+  lines.push("Hola SDC, quiero comprar:");
+  lines.push(`- Producto: *${ctx.name||"Producto"}*`);
+  lines.push(`- Cantidad: ${qty}`);
+  lines.push(`- Precio unitario: Lps. ${money(unitPrice)}`);
+  lines.push(`- Subtotal producto: Lps. ${money(subtotal)}`);
+  lines.push("");
+  lines.push("Entrega:");
+  lines.push(`- Zona: ${zoneText}`);
+  lines.push(`- Método: ${opt.label}`);
+  lines.push(`- Envío: Lps. ${money(ship)}`);
+  if(pay) lines.push(`- Pago: ${pay}`);
+  lines.push("");
+  lines.push(`TOTAL A PAGAR: Lps. ${money(total)}`);
+  lines.push("");
+  lines.push("Dirección / referencia: ____________________");
+  if(ctx.link) lines.push(`Link: ${ctx.link}`);
+
+  return lines.join("\n");
+}
+
+function updateShipTotal(){
+  const opt = findShipOption();
+  if(!shipCtx || shipZone===null || !opt){
+    shipTotalEl.innerHTML = "Selecciona una opción de entrega para calcular el total.";
+    shipSend.classList.add("disabled");
+    shipSend.href="#";
+    return;
+  }
+  const subtotal = Number(shipCtx.productTotal||0);
+  const ship = Number(opt.price||0);
+  const total = subtotal + ship;
+
+  shipTotalEl.innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:10px;"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
+    <div style="display:flex;justify-content:space-between;gap:10px;"><span>Envío</span><strong>+ Lps. ${money(ship)}</strong></div>
+    <div style="height:8px"></div>
+    <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;">
+      <span style="font-weight:900;color:var(--text);text-transform:uppercase;letter-spacing:.3px;">Total</span>
+      <strong style="font-size:16px;color:var(--accent);">Lps. ${money(total)}</strong>
+    </div>
+  `;
+
+  const msg = buildWhatsAppMessage(shipCtx,opt);
+  shipSend.href = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
+  shipSend.classList.remove("disabled");
+  shipSend.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Enviar pedido • Total Lps. ${money(total)}`;
+}
+
+/* Interceptar botones de compra (normal y promos) */
+document.getElementById("productGrid").addEventListener("click",(e)=>{
+  const a = e.target.closest("a.btn-ws");
+  if(!a) return;
+
+  // Si es "consultar" (agotado), dejamos el WhatsApp directo
+  if(a.classList.contains("btn-agotado")) return;
+
+  // Solo interceptamos los que marcamos como compra
+  if(a.dataset.buy !== "1") return;
+
+  e.preventDefault();
+
+  const name = a.dataset.name || a.getAttribute("data-name") || "Producto";
+  const qty = Number(a.dataset.qty || 1);
+  const unitPrice = Number(a.dataset.unitPrice || a.dataset.price || 0);
+  const productTotal = Number(a.dataset.productTotal || (unitPrice * qty));
+  const pid = (a.dataset.pid || "").toString().trim();
+  const link = pid ? buildProductLink(pid) : buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
+
+  openShipModal({ pid, name, qty, unitPrice, productTotal, link });
+});
+
 /* ================== SHARE / COPY ================== */
 function buildViewLink({cat="",sub="",offer=false}={}){
   const url=new URL(window.location);
@@ -1253,7 +1523,7 @@ function buildViewLink({cat="",sub="",offer=false}={}){
   if(offer) url.searchParams.set("offer","1"); else url.searchParams.delete("offer");
   if(onlyInStock) url.searchParams.set("stock","1"); else url.searchParams.delete("stock");
   url.searchParams.set("v",BUILD_VERSION);
-  return url.toString();
+return url.toString();
 }
 function buildProductLink(pid){
   const url=new URL(window.location);
@@ -1263,7 +1533,7 @@ function buildProductLink(pid){
   url.searchParams.delete("offer");
   url.searchParams.delete("stock");
   url.searchParams.set("v",BUILD_VERSION);
-  return url.toString();
+return url.toString();
 }
 async function copyText(text){
   try{
@@ -1338,10 +1608,10 @@ function bindDoubleTap(el,fn){
   });
 }
 function pickShareImageForView(){
-  // Prefer an image from the current filtered view so the preview se vea con foto
+  // Prefer an image from the current filtered view so the preview se vea con foto (WhatsApp/Facebook suelen previsualizar la 1ra URL).
   let list = Array.isArray(products) ? products.slice() : [];
-  if(!!soloOfertasMode){
-    list = list.filter(p => !!p._isOffer);
+  if(norm(currentSheet)==="ofertas" || !!soloOfertasMode){
+    list = list.filter(p => norm(p.precio_anterior) !== "");
   }
   if(norm(currentCategory)!==""){
     const catN = norm(currentCategory);
@@ -1366,6 +1636,7 @@ function copyCurrentView(){
   const title = parts.length ? ("SDC • " + parts.join(" • ")) : "Soluciones Digitales Comayagua | Catálogo";
   shareOrCopy(link, { title, imageUrl: img });
 }
+
 
 /* ================== URL ================== */
 function updateUrl(){
@@ -1486,14 +1757,6 @@ async function fetchTab(sheetName){
       obj.subcategoria=(obj.subcategoria??"").toString().trim();
       obj.nombre=(obj.nombre??"").toString().trim();
       obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
-
-      // ✅ campos para auto-descripción (pueden ir vacíos)
-      obj.ideal_para=(obj.ideal_para??"").toString().trim();
-      obj.beneficio=(obj.beneficio??"").toString().trim();
-      obj.compatible=(obj.compatible??"").toString().trim();
-      obj.incluye=(obj.incluye??"").toString().trim();
-      obj.nota=(obj.nota??"").toString().trim();
-
       obj.estado=norm(obj.estado||"activo");
       obj.stock=Number(obj.stock||0);
       obj.precio=Number(obj.precio||0);
@@ -1546,6 +1809,11 @@ function matchesStockFilter(p){
 }
 
 async function loadAll(){
+  const stallTimer=setTimeout(()=>{
+    if(!__loadedOk){
+      showFatal("⚠️ Está tardando en cargar. Revisa tu conexión y actualiza la página.");
+    }
+  }, 20000);
   loadFromUrlOrState();
 
   try{
@@ -1597,6 +1865,7 @@ async function loadAll(){
     renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
     toast("⚠️ Error cargando catálogo");
   }finally{
+    clearTimeout(stallTimer);
     const loader=document.getElementById("loader");
     if(loader) loader.style.display="none";
   }
@@ -1615,6 +1884,7 @@ function startHome(){
   updateSubs();
   render();
   saveState();
+  __loadedOk=true;
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -1871,19 +2141,7 @@ function render(){
   if(onlyInStock) list=list.filter(p=>Number(p.stock||0)>0);
 
   if(q){
-    list=list.filter(p=>{
-      const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {ideal:'',bene:'',comp:'',inc:''};
-      const autoDesc = (p.descripcion||"").trim() ? p.descripcion : (typeof buildAutoDesc === 'function' ? buildAutoDesc(p) : "");
-      return (
-        norm(p.nombre).includes(q) ||
-        norm(autoDesc).includes(q) ||
-        norm(p.subcategoria).includes(q) ||
-        norm(f.ideal).includes(q) ||
-        norm(f.bene).includes(q) ||
-        norm(f.comp).includes(q) ||
-        norm(f.inc).includes(q)
-      );
-    });
+    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q));
   }
 
   /* Disponibles primero */
@@ -1911,7 +2169,10 @@ function render(){
     const isAgotado=Number(p.stock||0)<=0;
     const promos=extractPromos(p);
 
-    const isPromoCard = p._isOffer && promos.length && !isAgotado;
+    const isDedales = isDedalesProduct(p);
+    const useDedalesBox = (!isAgotado && isDedales);
+
+    const isPromoCard = (!useDedalesBox) && p._isOffer && promos.length && !isAgotado;
     const hasRibbon = isAgotado || isPromoCard;
 
     const card=document.createElement("div");
@@ -1940,22 +2201,8 @@ function render(){
         </div>`;
     }
 
-    // ✅ Descripción: si está vacía, se arma sola (4 líneas) y se respetan saltos de línea
-    let rawDesc = (p.descripcion || "").toString().trim();
-    if(!rawDesc){
-      rawDesc = buildAutoDesc(p);
-    }
-    let descText = rawDesc
-      .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n");
-
-    // Si la descripción viene en una sola línea con viñetas, la "partimos" para que se vea en líneas.
-    // Si ya trae saltos (como el auto-desc), la dejamos tal cual.
-    if(!descText.includes("\n")){
-      descText = descText.replace(/([►•\-★])/g, "\n$1");
-    }
-
-    descText = descText.replace(/\n{3,}/g, "\n\n").trim();
+    let rawDesc=(p.descripcion||"");
+    let descText=rawDesc.replace(/(\r\n|\n|\r)/gm," ").replace(/([►•\-★])/g,"\n$1").trim();
 
     const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
@@ -1976,7 +2223,38 @@ function render(){
     const normalLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(normalMsg)}`;
 
     let promoHTML="";
+    let dedalesHTML="";
     let btnText=isAgotado?"CONSULTAR":"PEDIR AHORA 🚀";
+
+    if(useDedalesBox){
+      btnText="PEDIR 🚀";
+      const defaultQty=1;
+      dedalesHTML=`
+        <div class="promo-box compact dedales-box" data-pid="${p.id}" data-qty="${defaultQty}">
+          <div class="promo-top">
+            <div class="promo-total">Total: <b class="promoTotal">Lps. 0.00</b></div>
+            <div class="promo-line promoLine">—</div>
+          </div>
+
+          <div class="qty-row">
+            <button class="qtyBtn minus" aria-label="menos">−</button>
+            <div class="qtyMid">
+              <div class="qtyVal">1</div>
+              <div class="qtyUnit">PARES</div>
+            </div>
+            <button class="qtyBtn plus" aria-label="más">+</button>
+          </div>
+
+          <div class="hint" style="margin-top:6px;">
+            Precios por par: 1=40 • 2=38 • 3–5=35 • 6–9=33 • 10+=30
+          </div>
+
+          <a class="btn-ws promoBtn" data-buy="1" target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i> PEDIR 🚀
+          </a>
+        </div>
+      `;
+    }
 
     if(isPromoCard){
       let defaultQty=1;
@@ -2001,12 +2279,12 @@ function render(){
           <div class="tier-grid"></div>
           <div class="hint">El total y WhatsApp se actualizan solos ✅</div>
 
-          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-ws promoBtn"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-ws promoBtn" data-buy="1"><i class="fa-brands fa-whatsapp"></i> PEDIR</a>
         </div>`;
       btnText="PEDIR";
     }
 
-    const badgesHTML = "";
+    const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
 
     card.innerHTML=`
       <div class="card-img-container ${hasRibbon?'has-ribbon':''}">
@@ -2020,8 +2298,8 @@ function render(){
         <h3>${safeName}</h3>
         <div class="desc">${safeDesc}</div>
         ${galleryHTML}
-        ${isPromoCard?promoHTML:priceHTML}
-        ${!isPromoCard?`<a href="${normalLink}" target="_blank" rel="noopener noreferrer" class="btn-ws ${isAgotado?'btn-agotado':''}">
+        ${useDedalesBox?dedalesHTML:(isPromoCard?promoHTML:priceHTML)}
+        ${!(isPromoCard||useDedalesBox)?`<a href="${normalLink}" target="_blank" rel="noopener noreferrer" class="btn-ws ${isAgotado?\'btn-agotado\':\'\'}" data-buy="1" data-pid="${escapeHtml(p.id||"")}" data-name="${escapeHtml(p.nombre||"")}" data-qty="1" data-unit-price="${Number(p.precio||0)}" data-product-total="${Number(p.precio||0)}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>`:``}
       </div>
@@ -2035,6 +2313,7 @@ function render(){
     }
 
     if(isPromoCard) initPromoWidget(card,p);
+    if(useDedalesBox) initDedalesWidget(card,p);
   });
 }
 
@@ -2069,8 +2348,7 @@ function initPromoWidget(card,p){
     };
   }
 
-  // ✅ Escalas: mostrar SOLO 1 + las promos reales (evita "4" fantasma)
-  const tierSet=new Set([1]);
+  const tierSet=new Set([1,2,3,4]);
   promos.forEach(x=>tierSet.add(x.cant));
   const tiers=[...tierSet].sort((a,b)=>a-b);
 
@@ -2082,10 +2360,7 @@ function initPromoWidget(card,p){
     const t=document.createElement("div");
     t.className="tier";
     t.dataset.cant=cant;
-
-    // ✅ Mostrar como rangos: 2+, 3+, 6+, 11+, 12+
-    const label = (cant === 1) ? "1" : `${cant}+`;
-
+    const label=cant>=5?`${cant}+`:`${cant}`;
     t.innerHTML=`<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
     const disabled=stock>0 && cant>stock;
     if(disabled) t.classList.add("disabled");
@@ -2123,13 +2398,12 @@ function initPromoWidget(card,p){
     box.querySelector(".qtyVal").textContent=qty;
     box.querySelector(".qtyUnit").textContent=unitLabel;
 
-    const activeCant = tiers.includes(qty) ? qty : tier.cant;
     box.querySelectorAll(".tier").forEach(el=>{
       el.classList.remove("active");
       const c=Number(el.dataset.cant||0);
       const isDisabled=el.classList.contains("disabled");
       if(isDisabled) return;
-      if(c===activeCant) el.classList.add("active");
+      if(c===tier.cant) el.classList.add("active");
     });
 
     minus.classList.toggle("disabled",qty<=1);
@@ -2142,11 +2416,91 @@ function initPromoWidget(card,p){
 
     const btn=box.querySelector(".promoBtn");
     btn.href=link;
+    // Datos para calcular envío
+    btn.dataset.buy = "1";
+    btn.dataset.pid = (p.id||"").toString();
+    btn.dataset.name = (p.nombre||"").toString();
+    btn.dataset.qty = String(qty);
+    btn.dataset.unitPrice = String(unitPrice);
+    btn.dataset.productTotal = String(total);
+
     btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitStr.toUpperCase()} 🚀`;
   }
 
   updatePromoUI();
 }
+
+function initDedalesWidget(card,p){
+  const box=card.querySelector(".promo-box.dedales-box");
+  if(!box) return;
+
+  const stock=Number(p.stock||0);
+  let qty=Number(box.dataset.qty||1);
+
+  const minus=box.querySelector(".minus");
+  const plus =box.querySelector(".plus");
+
+  function update(){
+    if(stock>0 && qty>stock) qty=stock;
+    if(qty<1) qty=1;
+
+    const unitPrice=dedalesUnitPrice(qty);
+    const total=unitPrice*qty;
+
+    const unitLabel=pluralize("par", qty).toUpperCase();
+
+    const totalEl=box.querySelector(".promoTotal");
+    const lineEl =box.querySelector(".promoLine");
+    const qv=box.querySelector(".qtyVal");
+    const qu=box.querySelector(".qtyUnit");
+    if(totalEl) totalEl.textContent=`Lps. ${money(total)}`;
+    if(lineEl)  lineEl.textContent=`${qty} ${unitLabel} x Lps. ${money(unitPrice)} c/u`;
+    if(qv) qv.textContent=qty;
+    if(qu) qu.textContent=unitLabel;
+
+    if(minus) minus.classList.toggle("disabled", qty<=1);
+    if(plus)  plus.classList.toggle("disabled", stock>0 && qty>=stock);
+
+    const tier=dedalesTierLabel(qty);
+    const msg=
+`Hola, quiero *${qty} ${pluralize("par", qty)}* de:
+*${p.nombre}*
+
+Escala: ${tier}
+Precio por par: Lps. ${money(unitPrice)}
+Total: Lps. ${money(total)}
+Stock: ${stock}
+
+¿Me confirma disponibilidad? Gracias.`;
+
+    const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
+    const btn=box.querySelector(".promoBtn");
+    if(btn){
+      btn.href=link;
+      btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
+    }
+  }
+
+  if(minus){
+    minus.addEventListener("click", ()=>{
+      qty=Math.max(1, qty-1);
+      update();
+    });
+  }
+  if(plus){
+    plus.addEventListener("click", ()=>{
+      if(stock>0 && qty>=stock){
+        toast(`Solo hay ${stock} disponibles`);
+        return;
+      }
+      qty=qty+1;
+      update();
+    });
+  }
+
+  update();
+}
+
 
 /* ================== TESTIMONIOS ================== */
 async function loadTestimonials(){
@@ -2200,6 +2554,7 @@ function renderTestimonials(list){
     track.appendChild(card);
   });
   section.dataset.loaded="1";
+  // solo se mostrará si estás en INICIO (render controla visibilidad)
   section.style.display="none";
 }
 
@@ -2256,6 +2611,8 @@ function focusProductById(pid){
 }
 
 /* ================== START ================== */
+loadShippingOptions();
+
 loadAll();
 </script>
 </body>
