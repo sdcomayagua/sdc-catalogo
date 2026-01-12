@@ -819,24 +819,6 @@ const STATE_KEY="sdc_state_v2";
 function norm(s){
   return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
-
-function toNum(v){
-  if(v===null || v===undefined) return 0;
-  if(typeof v==="number") return (Number.isFinite(v)?v:0);
-  const s = String(v).trim();
-  if(!s) return 0;
-  // Keep digits, dot and comma, then normalize comma to dot when needed
-  let cleaned = s.replace(/[^0-9.,-]/g,"");
-  // If it has both comma and dot, remove thousand separators (commas)
-  if(cleaned.includes(",") && cleaned.includes(".")){
-    cleaned = cleaned.replace(/,/g,"");
-  } else if(cleaned.includes(",") && !cleaned.includes(".")){
-    // treat comma as decimal separator
-    cleaned = cleaned.replace(/,/g,".");
-  }
-  const n = Number(cleaned);
-  return Number.isFinite(n)?n:0;
-}
 function absUrl(u){
   // ✅ no bajar a lower-case para no romper URLs
   u=(u??"").toString().trim();
@@ -932,7 +914,7 @@ function dedupeProducts(list){
 }
 
 function money(n){
-  const x=toNum(n);
+  const x=Number(n||0);
   return x.toLocaleString("es-HN",{maximumFractionDigits:0});
 }
 function toast(msg){
@@ -1407,109 +1389,111 @@ function parseGviz(text){
 /* Lee _config (si existe). Si no existe, usa fallback */
 async function fetchConfigSheets(){
   try{
-    const t = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
-    const {rows}=parseGviz(t);
+    const raw = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
+    const table = parseGviz(raw);
+    const rows = table.rows || [];
 
-    const names = rows
-      .map(r => r.sheet ?? r.pestana ?? r.tab ?? r.col ?? "")
-      .map(s => (s ?? "").toString().trim())
-      .filter(Boolean)
-      .map(norm)
-      .filter(n => n && n !== CONFIG_SHEET_NAME && n !== TESTIMONIOS_SHEET && !isDefaultSheetName(n));
+    const rawNames = rows
+      .map(r => r.sheet ?? r.tab ?? r.name ?? r.nombre ?? r.hoja ?? r["pestaña"] ?? r["pestana"] ?? "")
+      .map(v => (v ?? "").toString().trim())
+      .filter(Boolean);
 
-    if(!names.length) return DEFAULT_SHEETS.slice();
-
-    const uniq=[];
-    names.forEach(n=>{ if(!uniq.includes(n)) uniq.push(n); });
-    if(uniq.includes("ofertas")){
-      return ["ofertas", ...uniq.filter(x=>x!=="ofertas")].filter(n => !isDefaultSheetName(n));
+    const uniq = [];
+    const seen = new Set();
+    for(const n of rawNames){
+      const k = norm(n);
+      if(!k) continue;
+      if(k === CONFIG_SHEET_NAME || k === TESTIMONIOS_SHEET_NAME) continue;
+      if(seen.has(k)) continue;
+      seen.add(k);
+      uniq.push(n);
     }
-    return uniq.filter(n => !isDefaultSheetName(n));
+
+    if(!uniq.length) return DEFAULT_SHEETS.slice();
+
+    const order = ["ofertas","gamer","pc","movil","streaming","cobertores","power"];
+    const ordered = [];
+    for(const key of order){
+      const found = uniq.find(n => norm(n) === key);
+      if(found) ordered.push(found);
+    }
+    for(const n of uniq){
+      if(!ordered.some(x => norm(x) === norm(n))) ordered.push(n);
+    }
+    return ordered.slice(0, 20);
   }catch(e){
-    console.warn("Config falló, usando fallback",e);
+    console.warn("CONFIG sheets fallback", e);
     return DEFAULT_SHEETS.slice();
   }
 }
+function makeSheetCandidates(sheetName){
+  const base = (sheetName ?? "").toString().trim();
+  if(!base) return [];
+  const caps = base.split(" ").map(w => w ? (w[0].toUpperCase() + w.slice(1).toLowerCase()) : w).join(" ");
+  const candidates = [base, base.toLowerCase(), base.toUpperCase(), caps];
+  const out = [];
+  const seen = new Set();
+  for(const c of candidates){
+    const t = (c ?? "").toString().trim();
+    if(!t) continue;
+    const k = t.toLowerCase();
+    if(seen.has(k)) continue;
+    seen.add(k);
+    out.push(t);
+  }
+  return out;
+}
 
 async function fetchTab(sheetName){
-  try{
-    const sheetNorm = norm(sheetName);
-    const t = await fetchText(gvizUrlBySheet(sheetName));
-    const {rows}=parseGviz(t);
+  const candidates = makeSheetCandidates(sheetName);
+  let lastErr = null;
 
-    return rows.map(o=>{
-      const obj={...o};
-      obj._sheet=sheetNorm;
+  for(const candidate of candidates){
+    try{
+      const raw = await fetchText(gvizUrlBySheet(candidate));
+      const table = parseGviz(raw);
+      const rows = table.rows || [];
 
-      const cellCat = norm(obj.categoria || "");
-      if(sheetNorm !== "ofertas"){
-        obj.categoria = cellCat || sheetNorm;
-      }else{
-        obj.categoria = cellCat || "gamer";
-      }
+      const out = rows.map(r=>{
+        const obj = { ...r };
 
-      obj.subcategoria=(obj.subcategoria??"").toString().trim();
-      obj.nombre=(obj.nombre??"").toString().trim();
-      obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
+        // normalizar campos clave
+        obj.__sheet = norm(sheetName);
+        obj.categoria = (obj.categoria || sheetName).toString().trim();
+        obj.subcategoria = (obj.subcategoria || "").toString().trim();
+        obj.estado = (obj.estado || "").toString().trim().toLowerCase();
+        obj.stock = Number(obj.stock || 0);
+        obj.precio = Number(obj.precio || 0);
+        obj.precio_anterior = Number(obj.precio_anterior || 0);
+        obj.imagen = (obj.imagen || "").toString().trim();
+        obj.galeria = (obj.galeria || "").toString().trim();
+        obj.whatsapp = (obj.whatsapp || "").toString().trim();
+        obj.tiktok = (obj.tiktok || "").toString().trim();
+        obj.youtube = (obj.youtube || "").toString().trim();
+        obj.solo_ofertas = (obj.solo_ofertas || "").toString().trim().toLowerCase();
+        obj.id = (obj.id || obj.ID || obj.Id || "").toString().trim();
+        obj.nombre = (obj.nombre || "").toString().trim();
+        obj.descripcion = (obj.descripcion ?? obj.descipcion ?? "").toString();
 
-      // ✅ campos para auto-descripción (pueden ir vacíos)
-      obj.ideal_para=(obj.ideal_para??"").toString().trim();
-      obj.beneficio=(obj.beneficio??"").toString().trim();
-      obj.compatible=(obj.compatible??"").toString().trim();
-      obj.incluye=(obj.incluye??"").toString().trim();
-      obj.nota=(obj.nota??"").toString().trim();
+        // campos para auto-descripción
+        obj.ideal_para = (obj.ideal_para || "").toString().trim();
+        obj.beneficio = (obj.beneficio || "").toString().trim();
+        obj.compatible = (obj.compatible || "").toString().trim();
+        obj.incluye = (obj.incluye || "").toString().trim();
+        obj.nota = (obj.nota || "").toString().trim();
 
-      obj.estado=norm(obj.estado||"activo");
-      obj.stock = toNum(obj.stock);
-      obj.precio = toNum(obj.precio);
-      obj.precio_anterior = toNum(obj.precio_anterior);
-      obj.unidad=(obj.unidad??"").toString().trim()||"unidad";
-      obj.id=(obj.id??"").toString().trim();
-      obj.solo_ofertas=norm(obj.solo_ofertas||"");
+        return obj;
+      });
 
-      obj._isOffer=(obj._sheet==="ofertas")||["si","sí","1","true","yes"].includes(obj.solo_ofertas);
-
-      if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
-        obj.imagen=obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
-      }
-      return obj;
-    }).filter(p=>{
-      if(!p || !p.nombre) return false;
-      if(p.estado==="inactivo" || p.estado==="0") return false;
-
-      const isSeparator =
-        (p.nombre === p.nombre.toUpperCase()) &&
-        Number(p.precio||0) <= 0 &&
-        Number(p.stock||0) <= 0 &&
-        !p.imagen && !p.galeria &&
-        !p.descripcion &&
-        !p.whatsapp && !p.tiktok && !p.youtube &&
-        !p.id;
-
-      return !isSeparator;
-    });
-  }catch(e){
-    console.warn("Tab falló:",sheetName,e);
-    return [];
+      return out;
+    }catch(e){
+      lastErr = e;
+    }
   }
+
+  console.warn(`No pude cargar la hoja "${sheetName}"`, lastErr);
+  return [];
 }
-
-function computeCategories(){
-  const set=new Set(products.map(p=>norm(p.categoria)).filter(c=>c && !isBadCategoryName(c)));
-  set.delete("ofertas");
-
-  const pref = loadedSheetNames.map(norm).filter(n=>n && !isDefaultSheetName(n) && n!=="ofertas" && n!==CONFIG_SHEET_NAME && n!==TESTIMONIOS_SHEET);
-  const ordered = pref.filter(c=>set.has(c));
-  const rest = [...set].filter(c=>!ordered.includes(c)).sort((a,b)=>a.localeCompare(b,"es"));
-
-  categoriesOrdered = [...ordered, ...rest];
-}
-
-/* ================== LOAD ================== */
-function matchesStockFilter(p){
-  return onlyInStock ? Number(p.stock||0) > 0 : true;
-}
-
 async function loadAll(){
   loadFromUrlOrState();
 
@@ -1706,26 +1690,42 @@ function setActiveSub(btn){
 
 /* ================== PROMOS ================== */
 function extractPromos(p){
-  const promos=[];
-  for(const k in p){
-    const m=k.match(/^promo(\d+)_cant$/i);
+  const promos = [];
+  const keys = Object.keys(p || {});
+  const tmp = {}; // idx -> {cantKey, precioKey}
+
+  for(const k of keys){
+    const sk = k.toLowerCase().replace(/[\s_]/g, "");
+    let m = sk.match(/^promo(\d+)cant$/);
     if(m){
-      const idx=m[1];
-      const cant = toNum(p[k]);
-      const precio = toNum(p[`promo${idx}_precio`]);
-      if(cant>0 && precio>0) promos.push({cant,precio});
+      const idx = Number(m[1]);
+      if(!tmp[idx]) tmp[idx] = {};
+      tmp[idx].cantKey = k;
+      continue;
+    }
+    m = sk.match(/^promo(\d+)precio$/);
+    if(m){
+      const idx = Number(m[1]);
+      if(!tmp[idx]) tmp[idx] = {};
+      tmp[idx].precioKey = k;
+      continue;
     }
   }
-  promos.sort((a,b)=>a.cant-b.cant);
-  const map=new Map();
-  promos.forEach(x=>{
-    if(!map.has(x.cant)) map.set(x.cant,x.precio);
-    else map.set(x.cant,Math.min(map.get(x.cant),x.precio));
-  });
-  return [...map.entries()].map(([cant,precio])=>({cant,precio})).sort((a,b)=>a.cant-b.cant);
+
+  for(const idxStr of Object.keys(tmp)){
+    const idx = Number(idxStr);
+    const { cantKey, precioKey } = tmp[idx] || {};
+    const cant = Number(p[cantKey] || 0);
+    const precio = Number(p[precioKey] || 0);
+    if(cant > 0 && precio > 0) promos.push({ idx, cant, precio });
+  }
+
+  promos.sort((a,b)=>a.cant - b.cant);
+  return promos;
 }
+
 function priceForQty(p,qty){
-  const base = toNum(p.precio);
+  const base=Number(p.precio||0);
   const promos=extractPromos(p);
   let unit=base;
   let tier={cant:1,precio:base};
@@ -1898,21 +1898,11 @@ function render(){
     if(!rawDesc){
       rawDesc = buildAutoDesc(p);
     }
-    let descText = rawDesc
-      .replace(/
-/g, "
-")
-      .replace(/
-/g, "
-")
-      .replace(/•/g, "-")
-      .replace(/
-{3,}/g, "
-
-")
+    let descText = (rawDesc || "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
       .trim();
-
-    const safeName=escapeHtml(p.nombre);
+const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
 
     const showOld=Number(p.precio_anterior||0)>Number(p.precio||0) && !isPromoCard;
