@@ -1372,12 +1372,62 @@ function loadFromUrlOrState(){
 function gvizUrlBySheet(sheetName){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 }
+
+function canonCol(label){
+  const raw = (label ?? "").toString();
+  // base normalization (lowercase + sin acentos)
+  const base = norm(raw);
+  const noSpace = base.replace(/\s+/g,""); // ✅ junta palabras partidas (promo1_ca\nnt -> promo1_cant)
+  // promos: aceptar promoN_cant / promoN_precio aun si venía partido
+  let pm = noSpace.match(/^promo(\d+)_?(cant|precio)$/);
+  if(pm) return `promo${pm[1]}_${pm[2]}`;
+
+  // alias comunes (si el header trae saltos/espacios)
+  const map = {
+    "categoria":"categoria",
+    "subcategoria":"subcategoria",
+    "nombre":"nombre",
+    "descripcion":"descripcion",
+    "descipcion":"descripcion",
+    "precio":"precio",
+    "precioanterior":"precio_anterior",
+    "precio_anterior":"precio_anterior",
+    "stock":"stock",
+    "imagen":"imagen",
+    "galeria":"galeria",
+    "estado":"estado",
+    "whatsapp":"whatsapp",
+    "tiktok":"tiktok",
+    "youtube":"youtube",
+    "instagram":"instagram",
+    "facebook":"facebook",
+    "marketplace":"facebook",
+    "unidad":"unidad",
+    "id":"id",
+    "soloofertas":"solo_ofertas",
+    "solo_ofertas":"solo_ofertas",
+    "idealpara":"ideal_para",
+    "ideal_para":"ideal_para",
+    "beneficio":"beneficio",
+    "compatible":"compatible",
+    "incluye":"incluye",
+    "nota":"nota",
+    "link":"link",
+    "url":"url",
+    "video":"video"
+  };
+  if(map[noSpace]) return map[noSpace];
+
+  // default: reemplaza espacios por "_" (para headers con palabras)
+  return base.replace(/\s+/g,"_");
+}
+
 function parseGviz(text){
   const start=text.indexOf("{");
   const end=text.lastIndexOf("}");
   if(start<0 || end<0) throw new Error("GViz inválido (¿Sheets privado / sin permisos?)");
   const json=JSON.parse(text.slice(start, end+1));
-  const cols=json.table.cols.map(c=>c&&c.label?norm(c.label):"col");
+  const cols=json.table.cols.map(c=>c&&c.label?canonCol(c.label):"col");
   const rows=json.table.rows.map(r=>{
     let obj={};
     (r.c||[]).forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
@@ -1537,7 +1587,7 @@ async function loadAll(){
     saveState();
 
     if(!products.length){
-      toast("⚠️ No se cargó el catálogo. Revisa permisos del Google Sheets.");
+      toast("⚠️ No se cargó el catálogo. Revisa permisos del Google Sheets (y encabezados).");
     }
   }catch(e){
     console.error("❌ Error en loadAll:", e);
