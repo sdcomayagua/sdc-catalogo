@@ -1255,8 +1255,8 @@ async function shareOrCopy(url, opts={}){
   const lines = [];
   if(title) lines.push(title);
   if(extraText) lines.push(extraText);
-  if(imageUrl) lines.push("📷 " + imageUrl);
   lines.push(url);
+  if(imageUrl) lines.push("📷 " + imageUrl);
   const text = lines.join("\n");
   try{
     if(navigator.share){
@@ -1553,6 +1553,11 @@ async function loadAll(){
     const results = await Promise.all(loadedSheetNames.map(n=>fetchTab(n)));
     products = results.flat();
     products = dedupeProducts(products);
+
+    // ✅ Si no cargó nada, mostrar aviso claro (evita pantalla vacía)
+    if(!products.length){
+      throw new Error("No se encontraron productos. Revisa: (1) que tus pestañas existan (_config u hojas), (2) que Google Sheets esté público, y (3) que los encabezados tengan nombres como nombre, precio, stock.");
+    }
 
     window.productById = new Map(products.map(p=>[p.id,p]));
 
