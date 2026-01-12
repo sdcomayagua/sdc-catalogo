@@ -794,7 +794,8 @@
       </div>
       <div class="search-hint">Tip: el catálogo se filtra en tiempo real. Presiona <b>Enter</b> para cerrar.</div>
     </div>
-  
+  </div>
+
   <!-- Entrega / Envío (modal) -->
   <div class="overlay" id="shipOverlay" aria-hidden="true">
     <div class="ship-panel" role="dialog" aria-modal="true" aria-label="Entrega y envío">
@@ -832,9 +833,6 @@
       </div>
     </div>
   </div>
-
-
-</div>
 
   <main class="page">
     <div class="hero-section">
@@ -952,7 +950,7 @@
 
 <script>
 /* ================== CONFIG ================== */
-const SHEET_ID="6LgdMV7meHFa3KzIhNW9Xz3JE";
+const SHEET_ID="1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE";
 const MY_PHONE="50432429490";
 
 const CONFIG_SHEET_NAME="_config";
@@ -973,13 +971,15 @@ const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","p
 const SHIPPING_SHEET="_envios";
 
 const DEFAULT_SHIPPING_OPTIONS = [
-  { key:"pickup",     group:"comayagua", label:"Recoger en tienda",                 price:0,   pay:"en tienda",      note:"Sin costo de envío" },
-  { key:"com_centro", group:"comayagua", label:"Domicilio zona céntrica",          price:25,  pay:"al recibir",     note:"Comayagua (centro)" },
-  { key:"com_alejada",group:"comayagua", label:"Domicilio zona alejada",           price:60,  pay:"al recibir",     note:"Colonias / zonas alejadas" },
-  { key:"com_fuera",  group:"comayagua", label:"Entrega alrededores / fuera",      price:95,  pay:"al recibir",     note:"Fuera de Comayagua (cercano)" },
+  // Grupo Comayagua
+  {group:"comayagua", key:"pickup", label:"Recoger en tienda (L 0)", price:0,   pay:"cualquiera", note:""},
+  {group:"comayagua", key:"centro", label:"Domicilio zona céntrica (L 25)", price:25, pay:"cualquiera", note:""},
+  {group:"comayagua", key:"alejada", label:"Domicilio zona alejada (L 50–80)", price:60, pay:"cualquiera", note:""},
+  {group:"comayagua", key:"fuera", label:"Fuera de Comayagua (L 90–100)", price:95, pay:"cualquiera", note:""},
 
-  { key:"hn_pre",     group:"fuera",     label:"Envío nacional (pago adelantado)", price:110, pay:"adelantado",     note:"Otros municipios/departamentos" },
-  { key:"hn_contra",  group:"fuera",     label:"Contra entrega (pago al recibir)", price:170, pay:"contra entrega", note:"Pago al recibir (cargo mayor)" },
+  // Grupo fuera de Comayagua / a nivel nacional
+  {group:"fuera", key:"adelantado", label:"Envío nacional (pago adelantado) (L 110)", price:110, pay:"adelantado", note:""},
+  {group:"fuera", key:"contraentrega", label:"Envío nacional (contra entrega) (L 170)", price:170, pay:"contra_entrega", note:""}
 ];
 
 let shippingOptions = DEFAULT_SHIPPING_OPTIONS.slice();
@@ -1076,7 +1076,11 @@ const STATE_KEY="sdc_state_v2";
 function norm(s){
   return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
-function absUrl(u){u=norm(u);if(!u)return "";try{return new URL(u, location.origin+location.pathname).href;}catch(e){return u;}}
+function absUrl(u){
+  u=(u??"").toString().trim();
+  if(!u) return "";
+  try{return new URL(u, location.origin+location.pathname).href;}catch(e){return u;}
+}
 
 function isDefaultSheetName(name){
   const n = norm(name);
@@ -1608,22 +1612,12 @@ function bindDoubleTap(el,fn){
   });
 }
 function pickShareImageForView(){
-  // Prefer an image from the current filtered view so the preview se vea con foto (WhatsApp/Facebook suelen previsualizar la 1ra URL).
   let list = Array.isArray(products) ? products.slice() : [];
-  if(norm(currentSheet)==="ofertas" || !!soloOfertasMode){
-    list = list.filter(p => norm(p.precio_anterior) !== "");
-  }
-  if(norm(currentCategory)!==""){
-    const catN = norm(currentCategory);
-    list = list.filter(p => norm(p.categoria) === catN);
-  }
-  if(norm(currentSub)!==""){
-    const subN = norm(currentSub);
-    list = list.filter(p => norm(p.subcategoria) === subN);
-  }
-  // Prefer disponibles primero
-  const prefer = list.find(p => norm(p.estado)!=="agotado" && norm(p.imagen)!=="");
-  const any = list.find(p => norm(p.imagen)!=="");
+  if(!!soloOfertasMode) list = list.filter(p=>!!p._isOffer);
+  if(norm(currentCategory)!=="") list = list.filter(p=>norm(p.categoria)===norm(currentCategory));
+  if(norm(currentSub)!=="")      list = list.filter(p=>norm(p.subcategoria)===norm(currentSub));
+  const prefer = list.find(p=>Number(p.stock||0)>0 && norm(p.imagen)!=="");
+  const any    = list.find(p=>norm(p.imagen)!=="");
   return absUrl((prefer||any)?.imagen || "og.png");
 }
 
@@ -2032,6 +2026,7 @@ function extractPromos(p){
 function priceForQty(p,qty){
   const base=Number(p.precio||0);
   const promos=extractPromos(p);
+  const hideScales = ["1","true","si","sí","yes"].includes(String(p.sin_escalas||p.ocultar_escalas||"").trim().toLowerCase());
   let unit=base;
   let tier={cant:1,precio:base};
   promos.forEach(pr=>{
@@ -2348,7 +2343,7 @@ function initPromoWidget(card,p){
     };
   }
 
-  const tierSet=new Set([1,2,3,4]);
+  const tierSet=new Set([1]);
   promos.forEach(x=>tierSet.add(x.cant));
   const tiers=[...tierSet].sort((a,b)=>a-b);
 
