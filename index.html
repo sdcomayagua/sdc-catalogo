@@ -2271,12 +2271,11 @@ function render(){
             <button class="qtyBtn plus" aria-label="más">+</button>
           </div>
 
-          <div class="hint" style="margin-top:6px;">
-            Precios por par: 1=40 • 2=38 • 3–5=35 • 6–9=33 • 10+=30
-          </div>
+          <button class="promo-toggle dedales-toggle" type="button" aria-expanded="false">Ver escalas ▾</button>
+          <div class="promo-table dedales-table" style="display:none; margin-top:8px;"></div>
 
           <a class="btn-ws promoBtn" data-buy="1" target="_blank" rel="noopener">
-            <i class="fa-brands fa-whatsapp"></i> PEDIR 🚀
+            <i class="fa-brands fa-whatsapp"></i> PEDIR 1 PAR 🚀
           </a>
         </div>
       `;
@@ -2401,6 +2400,33 @@ function initPromoWidget(card,p){
   const minus=box.querySelector(".minus");
   const plus=box.querySelector(".plus");
 
+
+  // Escalas (Dedales) con el mismo estilo que el botón "VER ESCALAS" de otros productos
+  const scalesToggle = box.querySelector(".dedales-toggle");
+  const scalesTable  = box.querySelector(".dedales-table");
+  if(scalesTable){
+    const tiers = [
+      {label:"1 PAR",   qty:1},
+      {label:"2 PARES", qty:2},
+      {label:"3–5 PARES", qty:3},
+      {label:"6–9 PARES", qty:6},
+      {label:"10+ PARES", qty:10},
+    ];
+    scalesTable.innerHTML = tiers.map(t=>{
+      const up = dedalesUnitPrice(t.qty);
+      return `<div class="promo-row"><span>${t.label}</span><b>Lps. ${money(up)} c/u</b></div>`;
+    }).join("");
+  }
+  if(scalesToggle && scalesTable){
+    let open = false;
+    scalesToggle.textContent = "Ver escalas ▾";
+    scalesToggle.addEventListener("click", ()=>{
+      open = !open;
+      scalesTable.style.display = open ? "block" : "none";
+      scalesToggle.textContent = open ? "Ocultar escalas ▴" : "Ver escalas ▾";
+      scalesToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
   minus.onclick=()=>{qty=Math.max(1,qty-1);updatePromoUI();};
   plus.onclick=()=>{
     if(stock>0 && qty>=stock){
@@ -2500,10 +2526,18 @@ Stock: ${stock}
 ¿Me confirma disponibilidad? Gracias.`;
 
     const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
-    const btn=box.querySelector(".promoBtn");
+    const btn = box.querySelector(".promoBtn") || box.querySelector(".btn-ws") || card.querySelector(".promoBtn");
     if(btn){
-      btn.href=link;
-      btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
+      btn.href = link;
+      // Datos para mantener consistencia con otros botones (no cambia Sheets)
+      btn.dataset.buy = "1";
+      btn.dataset.pid = (p.id||"").toString();
+      btn.dataset.name = (p.nombre||"").toString();
+      btn.dataset.qty = String(qty);
+      btn.dataset.unitPrice = String(unitPrice);
+      btn.dataset.productTotal = String(total);
+
+      btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
     }
   }
 
