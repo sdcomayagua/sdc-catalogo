@@ -633,6 +633,9 @@
       -webkit-tap-highlight-color: transparent;
     }
     .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+    /* HIDE_IMG_BADGES */
+    .img-badges, .img-badge, .stock-badge{display:none!important;}
 </style>
 </head>
 
@@ -798,7 +801,7 @@ const CONFIG_SHEET_NAME="_config";
 const TESTIMONIOS_SHEET="testimonios";
 const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 
-const BUILD_VERSION="20260110";
+const BUILD_VERSION="20260111";
 window.addEventListener("error",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 window.addEventListener("unhandledrejection",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 /* ================== STATE ================== */
@@ -946,185 +949,235 @@ function pluralize(unidad,qty){
   return qty===1?"unidad":"unidades";
 }
 function cleanOneLine(s){
-  return (s??"").toString().trim().replace(/\s+/g," ");
+  return (s??"").toString()
+    .replace(/[“”]/g,'"')
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/^"+|"+$/g,"")
+    .replace(/^\*+|\*+$/g,"");
 }
 
-/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía */
-function buildAutoDesc(p){
-  // Auto-descripción inteligente (5 líneas) basada en:
-  // - Título / categoría / subcategoría / id
-  // - URL o nombre del archivo de la imagen/galería (heurística)
-  // - Campos opcionales: ideal_para, beneficio, compatible, incluye, nota (si los llenas en Sheets)
+/* ✅ Auto-descripción (4 líneas) si "descripcion" está vacía
+   - Usa tus columnas: ideal_para, beneficio, compatible, incluye, nota
+   - Si alguna está vacía, se completa automáticamente según el nombre/categoría
+*/
+function guessFields(p){
+  const nameRaw = (p?.nombre ?? "").toString();
+  const imgRaw  = (p?.imagen ?? "").toString();
+  const hintText = norm([p?.id, nameRaw, p?.subcategoria, p?.categoria, imgRaw].join(" "));
+  const has = (re) => re.test(hintText);
 
-  const txt = norm([p.nombre,p.categoria,p.subcategoria,p.id,p.imagen,p.galeria].filter(Boolean).join(" "));
-  const cat = norm(p.categoria||"");
-  const sub = norm(p.subcategoria||"");
-
-  const has = (w)=>txt.includes(w);
-  const hasAny = (arr)=>arr.some(has);
-
-  const isDedales = has("dedal") || sub.includes("dedal");
-  const isCooler  = hasAny(["enfriador","cooler","radiador","ventilador","fan"]) || sub.includes("cooler");
-  const isGatillos= has("gatillo") || sub.includes("gatillo");
-  const isGamepad = hasAny(["gamepad","joystick","control"]) || sub.includes("gamepad");
-  const isBluetooth = hasAny(["bluetooth","wireless","inalambr"]) || /\bbt\b/.test(txt);
-  const hasSupport = hasAny(["soporte","holder","stand"]);
-  const hasCoolerWord = hasAny(["cooler","enfriador","radiador","ventilador","fan"]);
-
-  const triggers = (()=>{ const m = txt.match(/\b(\d+)\s*gatill/); return m ? Number(m[1]) : 0; })();
-  const dedos = (()=>{ const m = txt.match(/\b(\d+)\s*dedos?\b/); return m ? Number(m[1]) : 0; })();
-
-  const model = (()=>{ 
-    const m = (p.nombre||"").match(/\b([A-Z]{1,4}-?\d{2,5}|Q-CL\d|F\d)\b/i);
-    return m ? String(m[1]).toUpperCase() : "";
+  // Extra: intenta sacar un “código/modelo” del título (ej: Q-CL9, F6, LH-9078)
+  const code = (() => {
+    const m = nameRaw.match(/([A-Z]{1,4}-?[A-Z0-9]{1,8}\d{0,4}(?:-[A-Z0-9]{1,8})?)/);
+    if(!m) return "";
+    return (m[1]||"").toUpperCase().replace(/\s+/g,"");
   })();
 
-  const screenRange = (()=> {
-    const raw = String(p.compatible||"");
-    const m = raw.match(/(\d+(?:\.\d+)?)\s*["”]\s*[-–]\s*(\d+(?:\.\d+)?)\s*["”]/) 
-          || txt.match(/(\d+(?:\.\d+)?)\s*["”]\s*[-–]\s*(\d+(?:\.\d+)?)\s*["”]/);
-    return m ? `${m[1]}”- ${m[2]}”` : "";
-  })();
+  let type="generic";
+  if(has(/dedal|finger|thimble|v\d/)) type="dedales";
+  else if(has(/cooler|enfriador|radiador|fan|ventilador|q-?cl\d|cl\d/)) type="cooler";
+  else if(has(/gatillo|trigger|f\d|saraf|fire\s?button/)) type="gatillos";
+  else if(has(/gamepad|joystick|control|bluetooth|lehuai|lh-?9078|9078/)) type="gamepad";
+  else if(has(/power|bateria|bater(i|í)a|powerbank|cargador|carga/)) type="power";
+  else if(has(/cable|usb|type[\s-]?c|typec|lightning/)) type="cable";
+  else if(has(/cobert|funda|case|protector|cover/)) type="cobertor";
+  else if(has(/stream|mic|microfono|micrófono|audif|headset|capturadora|rgb/)) type="stream";
 
-  const clean = (s)=>cleanOneLine(String(s||""));
-  const trimLen = (s,max=85)=>{ s=String(s||"").trim(); return (s.length>max)? (s.slice(0,max-1)+"…") : s; };
-
-  // Campos desde Sheets (si existen)
-  let ideal = clean(p.ideal_para);
-  let bene  = clean(p.beneficio);
-  let comp  = clean(p.compatible);
-  let inc   = clean(p.incluye);
-  let note  = clean(p.nota);
-
-  // Heurística (por título/foto)
-  const g = {ideal:"",bene:"",comp:"",inc:"",note:""};
-
-  if(isDedales){
-    g.ideal = "Free Fire / CODM / PUBG";
-    g.bene  = "Desliz suave y mejor precisión";
-    g.comp  = "Pantallas táctiles (celular)";
-    g.inc   = "1 par de dedales";
-    g.note  = "🔥 Sube tu aim y juega más cómodo";
-  }else if(isCooler && !isGamepad){
-    g.ideal = "Sesiones largas sin calentamiento";
-    g.bene  = "Ayuda a bajar temperatura y evitar lag";
-    g.comp  = screenRange ? `Celulares ${screenRange} (aprox.)` : "Celulares 4.7”–7” (aprox.)";
-    g.inc   = has("cable") ? "Cooler + cable (según modelo)" : "Cooler (según modelo)";
-    g.note  = "❄️ Mantén el rendimiento al máximo";
-  }else if(isGatillos && !isGamepad){
-    g.ideal = "Shooter móvil / Battle Royale";
-    g.bene  = (triggers>=4 || dedos>=4) ? "Más control con disparo rápido" : "Mejor agarre y precisión";
-    g.comp  = "Android / iPhone (pantalla táctil)";
-    g.inc   = triggers ? `${triggers} gatillos (par)` : "Gatillos (par)";
-    g.note  = (dedos? `🎮✨ Juega a ${dedos} dedos con más comodidad` : "🎮✨ Más control en cada disparo");
-  }else if(isGamepad){
-    // Ideal
-    if(isBluetooth) g.ideal = "Juegos en celular y PC";
-    else if(hasCoolerWord) g.ideal = "Free Fire / CODM / PUBG (sesiones largas)";
-    else if(triggers>=4 || dedos>=4) g.ideal = "Shooter móvil (4–6 dedos)";
-    else if(triggers===2) g.ideal = "Shooter móvil (2 dedos extra)";
-    else g.ideal = "Gaming en celular";
-
-    // Beneficio
-    if(hasCoolerWord) g.bene = "Reduce el calentamiento y mejora el rendimiento";
-    else if(triggers>=4) g.bene = "Más control con 4 gatillos y mejor reacción";
-    else if(triggers===2) g.bene = "Mejor agarre y más precisión al disparar";
-    else if(isBluetooth) g.bene = "Conexión estable y respuesta rápida";
-    else g.bene = "Control más cómodo y mejor respuesta";
-
-    // Compatible
-    g.comp = isBluetooth ? "Android / iOS / PC (Bluetooth)" : "Android / iPhone (pantalla táctil)";
-
-    // Incluye
-    const parts=[];
-    // Si el título menciona gamepad y joystick, mostramos ambos.
-    if(has("gamepad")) parts.push("Gamepad");
-    if(has("joystick") && !parts.includes("Joystick")) parts.push("Joystick");
-    if(!parts.length && has("control")) parts.push("Control");
-    if(triggers) parts.push(`${triggers} gatillos`);
-    if(hasSupport) parts.push("Soporte");
-    if(hasCoolerWord) parts.push("Cooler + cable");
-    if(model) parts.push(`Modelo ${model}`);
-    g.inc = parts.length ? parts.join(" + ") : "Accesorios (según modelo)";
-
-    // Hook
-    if(isBluetooth) g.note = "✨ Conéctalo y juega al instante";
-    else if(hasCoolerWord) g.note = "❄️ Ideal para partidas largas";
-    else if(triggers>=4 || dedos>=4) g.note = "🔥 Domina el control a 4+ dedos";
-    else g.note = "🚀 Mejora tu juego desde hoy";
-  }else{
-    // Fallback suave por categoría
-    if(cat.includes("pc")){
-      g.ideal="PC / Laptop"; g.bene="Mejora tu experiencia y rendimiento"; g.comp="Windows / Mac (según modelo)"; g.inc="Accesorios (según producto)"; g.note="✅ Listo para usar";
-    }else if(cat.includes("movil")){
-      g.ideal="Uso diario"; g.bene="Práctico y resistente"; g.comp="Celulares (según modelo)"; g.inc="Accesorios (según producto)"; g.note="📲 Fácil de usar";
-    }else if(cat.includes("stream")){
-      g.ideal="Streaming / Creación"; g.bene="Mejor calidad y comodidad"; g.comp="PC / Celular (según modelo)"; g.inc="Accesorios (según producto)"; g.note="🎥✨ Eleva tu setup";
-    }else if(cat.includes("power")){
-      g.ideal="Carga y energía"; g.bene="Más autonomía y seguridad"; g.comp="Universal (según modelo)"; g.inc="Accesorios (según producto)"; g.note="⚡ Siempre conectado";
-    }else{
-      g.ideal="Uso general"; g.bene="Práctico y funcional"; g.comp=""; g.inc=""; g.note="✅ Disponible";
+  const base = {
+    dedales: {
+      ideal:"Free Fire / CODM / PUBG",
+      bene:"Mejor agarre y más precisión",
+      comp:"Pantallas táctiles (celular)",
+      inc:"1 par de dedales gamer",
+      nota:"Recomendado para sesiones largas"
+    },
+    cooler: {
+      ideal:"Gaming en celular",
+      bene:"Ayuda a reducir el calentamiento",
+      comp:"Celulares (consultar tamaño)",
+      inc:"Cooler + cable (según modelo)",
+      nota:"Mejor rendimiento en partidas"
+    },
+    gatillos: {
+      ideal:"Shooter móvil",
+      bene:"Mejora tu control en 4–6 dedos",
+      comp:"Android / iPhone (según modelo)",
+      inc:"Par de gatillos + accesorios (según modelo)",
+      nota:"Respuesta rápida"
+    },
+    gamepad: {
+      ideal:"Juegos en celular / PC",
+      bene:"Control más cómodo y preciso",
+      comp:"Android / iOS / PC (según modelo)",
+      inc:"Gamepad + soporte/cable (si aplica)",
+      nota:"Listo para jugar"
+    },
+    power: {
+      ideal:"Uso diario y viajes",
+      bene:"Energía extra cuando la necesitas",
+      comp:"Celulares y gadgets (USB/Type‑C)",
+      inc:"Power bank / cargador (según modelo)",
+      nota:"Ideal para salir de apuros"
+    },
+    cable: {
+      ideal:"Carga y datos",
+      bene:"Conexión estable y segura",
+      comp:"Type‑C / Lightning / Micro‑USB (según modelo)",
+      inc:"Cable (longitud según modelo)",
+      nota:"Uso diario"
+    },
+    cobertor: {
+      ideal:"Protección del dispositivo",
+      bene:"Reduce golpes y rayones",
+      comp:"Modelo específico (consultar)",
+      inc:"Funda/cobertor",
+      nota:"Ajuste según modelo"
+    },
+    stream: {
+      ideal:"Streaming y llamadas",
+      bene:"Mejora tu audio o tu setup",
+      comp:"PC / consola / celular (según producto)",
+      inc:"Accesorio de streaming (según modelo)",
+      nota:"Calidad para tu contenido"
+    },
+    generic: {
+      ideal:"Uso diario",
+      bene:"Mejora tu experiencia",
+      comp:"Consultar compatibilidad",
+      inc:"Producto principal",
+      nota:"Asesoría rápida por WhatsApp"
     }
-  }
-
-  // Completar faltantes con heurística
-  if(!ideal) ideal = g.ideal;
-  if(!bene)  bene  = g.bene;
-  if(!comp)  comp  = g.comp;
-  if(!inc){
-    inc = g.inc;
-  }else{
-    const incN = norm(inc);
-    const gN = norm(g.inc||"");
-    const shouldAdd = (isGamepad || isGatillos) && gN &&
-      !incN.includes("gatill") && !incN.includes("cooler") && !incN.includes("enfriad") &&
-      !incN.includes("soport") && !incN.includes("bluetooth");
-    if(shouldAdd){
-      inc = trimLen(`${g.inc} + ${inc}`, 95);
-    }
-  }
-  if(!note)  note  = g.note;
-
-  // Evitar frases que no te gustan
-  const badNote = norm(note).includes("escribeme") || norm(note).includes("escríbeme") || norm(note).includes("confirm") && norm(note).includes("compat");
-  if(badNote) note = g.note || note;
-
-  const buildLine = (emoji,label,value)=>{
-    value = trimLen(value, 95);
-    if(!value) return "";
-    if(label) return `- ${emoji} ${label}: ${value}`;
-    return `- ${emoji} ${value}`;
   };
 
-  const lines = [
-    buildLine("🎯","Ideal", ideal),
-    buildLine("⚡","Beneficio", bene),
-    buildLine("📱","Compatible", comp),
-    buildLine("📦","Incluye", inc),
-    buildLine("✨","", note),
-  ].filter(Boolean);
+  let t = base[type] || base.generic;
 
-  return lines.slice(0,5).join("\n");
+  // Ajustes por “pistas” del título/URL (sin inventar specs raras)
+  if(type==="cooler"){
+    if(has(/q-?cl9/)){
+      t = {
+        ...t,
+        ideal:"Free Fire / CODM / PUBG",
+        comp:"Celulares 4.7''–7'' (aprox.)",
+        inc:"Cooler radiador (Q‑CL9) + cable (según modelo)",
+        nota:"Ideal para sesiones largas"
+      };
+    }
+  }
+  if(type==="gatillos"){
+    if(has(/\bf6\b/)){
+      t = { ...t, ideal:"Free Fire / CODM", nota:"Enfoque: juego a 6 dedos" };
+    }
+  }
+  if(type==="gamepad"){
+    if(has(/9078/)){
+      t = { ...t, nota:"Compatible según juego (consultar)" };
+    }
+  }
+
+  const ctaByType = {
+    dedales:"🔥 Sube tu aim y juega más cómodo",
+    cooler:"❄️ Menos calentamiento = mejor rendimiento",
+    gatillos:"🎮 Más control en cada disparo",
+    gamepad:"🕹️ Control inalámbrico listo para jugar",
+    power:"🔋 Energía extra para tu día",
+    cable:"⚡ Carga rápida y segura",
+    cobertor:"🛡️ Protege tu equipo",
+    stream:"🎙️ Mejora tu setup",
+    generic:"📲 Pedidos por WhatsApp (respuesta rápida)"
+  };
+
+  const needsCompat = ["cooler","gamepad","cable","cobertor"].includes(type);
+
+  // ✅ No mostramos códigos/modelos en la descripción (se ve más limpio).
+  // Si requiere compatibilidad, lo decimos de forma general.
+  const cta = needsCompat
+    ? "📲 Confirma compatibilidad por WhatsApp"
+    : (ctaByType[type] || ctaByType.generic);
+
+  return { ideal:t.ideal, bene:t.bene, comp:t.comp, inc:t.inc, nota:t.nota, cta };
 }
 
-function looksLikeWhatsappTemplate(desc){
-  const t = (desc ?? "").toString().toLowerCase();
-  return (
-    (t.includes("hola") && t.includes("estoy interesado")) ||
-    (t.includes("precio") && t.includes("lps")) ||
-    (t.includes("soluciones digitales") && t.includes("producto"))
-  );
+function getSmartFields(p){
+  const custom = {
+    ideal: cleanOneLine(p.ideal_para || p.ideal || ""),
+    bene:  cleanOneLine(p.beneficio || ""),
+    comp:  cleanOneLine(p.compatible || ""),
+    inc:   cleanOneLine(p.incluye || ""),
+    nota:  cleanOneLine(p.nota || ""),
+    cta:   cleanOneLine(p.cta || p.llamativo || p.call_to_action || "")
+  };
+  const g = guessFields(p);
+
+  return {
+    ideal: custom.ideal || g.ideal,
+    bene:  custom.bene  || g.bene,
+    comp:  custom.comp  || g.comp,
+    inc:   custom.inc   || g.inc,
+    nota:  custom.nota  || g.nota,
+    cta:   custom.cta   || g.cta
+  };
+}
+
+function buildAutoDesc(p){
+  const f = getSmartFields(p);
+
+  const ideal = f.ideal || "Uso diario y gaming";
+  const bene  = f.bene  || "Mejora tu experiencia";
+  const comp  = f.comp  || "Consultar compatibilidad";
+  const inc   = f.inc   || "Producto principal";
+  const nota  = f.nota  || "";
+  let cta   = f.cta   || "📲 Pedidos por WhatsApp (respuesta rápida)";
+
+  // ✅ Limpieza: evita frases tipo: Escríbeme "X" y te confirmo compatibilidad
+  if(/escr[ií]beme\s*["“”][^"“”]+["“”].*compatibilidad/i.test(cta)){
+    cta = "📲 Confirma compatibilidad por WhatsApp";
+  }
+  if(/^\s*(?:📩\s*)?escr[ií]beme/i.test(cta)){
+    cta = cta.replace(/^\s*(?:📩\s*)?escr[ií]beme/i, "📲 Pedidos por WhatsApp");
+  }
+
+  const line4 = nota ? `- 📦 Incluye: ${inc} (${nota})` : `- 📦 Incluye: ${inc}`;
+  const line5 = `- ✨ ${cta}`;
+
+  // ✅ EXACTO: 5 líneas siempre
+  return [
+    `- 🎯 Ideal: ${ideal}`,
+    `- ⚡ Beneficio: ${bene}`,
+    `- 📱 Compatible: ${comp}`,
+    line4,
+    line5
+  ].join("\n");
 }
 
 
+/* ✅ Galería: detección rápida (compatibilidad con columna "galeria") */
+function isInstagramLink(url){
+  return /instagram\.com|instagr\.am/i.test((url||"").toString());
+}
+function isFacebookLink(url){
+  return /facebook\.com|fb\.me|fb\.watch/i.test((url||"").toString());
+}
+function cleanUrl(url){
+  return (url??"").toString().trim();
+}
 function buildImageBadges(p,{isPromoCard=false,isAgotado=false}={}){
-  // Badges grandes desactivados (se veían muy grandes y tapaban la foto).
-  // Dejamos SOLO un badge pequeño de stock bajo, que no tapa la imagen.
+  const parts=[];
+  const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {comp:'',inc:''};
+  const comp = cleanOneLine(p.compatible) || cleanOneLine(f.comp);
+  const inc  = cleanOneLine(p.incluye)   || cleanOneLine(f.inc);
+
+  if(comp) parts.push(`<div class="img-badge compat">✅ ${escapeHtml(comp)}</div>`);
+  if(inc)  parts.push(`<div class="img-badge incluye">📦 ${escapeHtml("Incluye: " + inc)}</div>`);
+
+  const left = parts.length ? `<div class="img-badges">${parts.join("")}</div>` : "";
+
   const stock = Number(p.stock||0);
   const stockBadge = (!isAgotado && stock>0 && stock<=3)
     ? `<div class="stock-badge${isPromoCard?" promo":""}">Quedan ${stock}</div>`
     : "";
-  return stockBadge;
+
+  return left + stockBadge;
 }
 
 /* fetch con timeout */
@@ -1255,8 +1308,8 @@ async function shareOrCopy(url, opts={}){
   const lines = [];
   if(title) lines.push(title);
   if(extraText) lines.push(extraText);
-  lines.push(url);
   if(imageUrl) lines.push("📷 " + imageUrl);
+  lines.push(url);
   const text = lines.join("\n");
   try{
     if(navigator.share){
@@ -1372,62 +1425,12 @@ function loadFromUrlOrState(){
 function gvizUrlBySheet(sheetName){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
 }
-
-function canonCol(label){
-  const raw = (label ?? "").toString();
-  // base normalization (lowercase + sin acentos)
-  const base = norm(raw);
-  const noSpace = base.replace(/\s+/g,""); // ✅ junta palabras partidas (promo1_ca\nnt -> promo1_cant)
-  // promos: aceptar promoN_cant / promoN_precio aun si venía partido
-  let pm = noSpace.match(/^promo(\d+)_?(cant|precio)$/);
-  if(pm) return `promo${pm[1]}_${pm[2]}`;
-
-  // alias comunes (si el header trae saltos/espacios)
-  const map = {
-    "categoria":"categoria",
-    "subcategoria":"subcategoria",
-    "nombre":"nombre",
-    "descripcion":"descripcion",
-    "descipcion":"descripcion",
-    "precio":"precio",
-    "precioanterior":"precio_anterior",
-    "precio_anterior":"precio_anterior",
-    "stock":"stock",
-    "imagen":"imagen",
-    "galeria":"galeria",
-    "estado":"estado",
-    "whatsapp":"whatsapp",
-    "tiktok":"tiktok",
-    "youtube":"youtube",
-    "instagram":"instagram",
-    "facebook":"facebook",
-    "marketplace":"facebook",
-    "unidad":"unidad",
-    "id":"id",
-    "soloofertas":"solo_ofertas",
-    "solo_ofertas":"solo_ofertas",
-    "idealpara":"ideal_para",
-    "ideal_para":"ideal_para",
-    "beneficio":"beneficio",
-    "compatible":"compatible",
-    "incluye":"incluye",
-    "nota":"nota",
-    "link":"link",
-    "url":"url",
-    "video":"video"
-  };
-  if(map[noSpace]) return map[noSpace];
-
-  // default: reemplaza espacios por "_" (para headers con palabras)
-  return base.replace(/\s+/g,"_");
-}
-
 function parseGviz(text){
   const start=text.indexOf("{");
   const end=text.lastIndexOf("}");
   if(start<0 || end<0) throw new Error("GViz inválido (¿Sheets privado / sin permisos?)");
   const json=JSON.parse(text.slice(start, end+1));
-  const cols=json.table.cols.map(c=>c&&c.label?canonCol(c.label):"col");
+  const cols=json.table.cols.map(c=>c&&c.label?norm(c.label):"col");
   const rows=json.table.rows.map(r=>{
     let obj={};
     (r.c||[]).forEach((c,i)=>obj[cols[i]]=c?(c.v===null?"":c.v):"");
@@ -1439,111 +1442,109 @@ function parseGviz(text){
 /* Lee _config (si existe). Si no existe, usa fallback */
 async function fetchConfigSheets(){
   try{
-    const raw = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
-    const table = parseGviz(raw);
-    const rows = table.rows || [];
+    const t = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
+    const {rows}=parseGviz(t);
 
-    const rawNames = rows
-      .map(r => r.sheet ?? r.tab ?? r.name ?? r.nombre ?? r.hoja ?? r["pestaña"] ?? r["pestana"] ?? "")
-      .map(v => (v ?? "").toString().trim())
-      .filter(Boolean);
+    const names = rows
+      .map(r => r.sheet ?? r.pestana ?? r.tab ?? r.col ?? "")
+      .map(s => (s ?? "").toString().trim())
+      .filter(Boolean)
+      .map(norm)
+      .filter(n => n && n !== CONFIG_SHEET_NAME && n !== TESTIMONIOS_SHEET && !isDefaultSheetName(n));
 
-    const uniq = [];
-    const seen = new Set();
-    for(const n of rawNames){
-      const k = norm(n);
-      if(!k) continue;
-      if(k === CONFIG_SHEET_NAME || k === TESTIMONIOS_SHEET_NAME) continue;
-      if(seen.has(k)) continue;
-      seen.add(k);
-      uniq.push(n);
+    if(!names.length) return DEFAULT_SHEETS.slice();
+
+    const uniq=[];
+    names.forEach(n=>{ if(!uniq.includes(n)) uniq.push(n); });
+    if(uniq.includes("ofertas")){
+      return ["ofertas", ...uniq.filter(x=>x!=="ofertas")].filter(n => !isDefaultSheetName(n));
     }
-
-    if(!uniq.length) return DEFAULT_SHEETS.slice();
-
-    const order = ["ofertas","gamer","pc","movil","streaming","cobertores","power"];
-    const ordered = [];
-    for(const key of order){
-      const found = uniq.find(n => norm(n) === key);
-      if(found) ordered.push(found);
-    }
-    for(const n of uniq){
-      if(!ordered.some(x => norm(x) === norm(n))) ordered.push(n);
-    }
-    return ordered.slice(0, 20);
+    return uniq.filter(n => !isDefaultSheetName(n));
   }catch(e){
-    console.warn("CONFIG sheets fallback", e);
+    console.warn("Config falló, usando fallback",e);
     return DEFAULT_SHEETS.slice();
   }
 }
-function makeSheetCandidates(sheetName){
-  const base = (sheetName ?? "").toString().trim();
-  if(!base) return [];
-  const caps = base.split(" ").map(w => w ? (w[0].toUpperCase() + w.slice(1).toLowerCase()) : w).join(" ");
-  const candidates = [base, base.toLowerCase(), base.toUpperCase(), caps];
-  const out = [];
-  const seen = new Set();
-  for(const c of candidates){
-    const t = (c ?? "").toString().trim();
-    if(!t) continue;
-    const k = t.toLowerCase();
-    if(seen.has(k)) continue;
-    seen.add(k);
-    out.push(t);
-  }
-  return out;
-}
 
 async function fetchTab(sheetName){
-  const candidates = makeSheetCandidates(sheetName);
-  let lastErr = null;
+  try{
+    const sheetNorm = norm(sheetName);
+    const t = await fetchText(gvizUrlBySheet(sheetName));
+    const {rows}=parseGviz(t);
 
-  for(const candidate of candidates){
-    try{
-      const raw = await fetchText(gvizUrlBySheet(candidate));
-      const table = parseGviz(raw);
-      const rows = table.rows || [];
+    return rows.map(o=>{
+      const obj={...o};
+      obj._sheet=sheetNorm;
 
-      const out = rows.map(r=>{
-        const obj = { ...r };
+      const cellCat = norm(obj.categoria || "");
+      if(sheetNorm !== "ofertas"){
+        obj.categoria = cellCat || sheetNorm;
+      }else{
+        obj.categoria = cellCat || "gamer";
+      }
 
-        // normalizar campos clave
-        obj.__sheet = norm(sheetName);
-        obj.categoria = (obj.categoria || sheetName).toString().trim();
-        obj.subcategoria = (obj.subcategoria || "").toString().trim();
-        obj.estado = (obj.estado || "").toString().trim().toLowerCase();
-        obj.stock = Number(obj.stock || 0);
-        obj.precio = Number(obj.precio || 0);
-        obj.precio_anterior = Number(obj.precio_anterior || 0);
-        obj.imagen = (obj.imagen || "").toString().trim();
-        obj.galeria = (obj.galeria || "").toString().trim();
-        obj.whatsapp = (obj.whatsapp || "").toString().trim();
-        obj.tiktok = (obj.tiktok || "").toString().trim();
-        obj.youtube = (obj.youtube || "").toString().trim();
-        obj.solo_ofertas = (obj.solo_ofertas || "").toString().trim().toLowerCase();
-        obj.id = (obj.id || obj.ID || obj.Id || "").toString().trim();
-        obj.nombre = (obj.nombre || "").toString().trim();
-        obj.descripcion = (obj.descripcion ?? obj.descipcion ?? "").toString();
+      obj.subcategoria=(obj.subcategoria??"").toString().trim();
+      obj.nombre=(obj.nombre??"").toString().trim();
+      obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
 
-        // campos para auto-descripción
-        obj.ideal_para = (obj.ideal_para || "").toString().trim();
-        obj.beneficio = (obj.beneficio || "").toString().trim();
-        obj.compatible = (obj.compatible || "").toString().trim();
-        obj.incluye = (obj.incluye || "").toString().trim();
-        obj.nota = (obj.nota || "").toString().trim();
+      // ✅ campos para auto-descripción (pueden ir vacíos)
+      obj.ideal_para=(obj.ideal_para??"").toString().trim();
+      obj.beneficio=(obj.beneficio??"").toString().trim();
+      obj.compatible=(obj.compatible??"").toString().trim();
+      obj.incluye=(obj.incluye??"").toString().trim();
+      obj.nota=(obj.nota??"").toString().trim();
 
-        return obj;
-      });
+      obj.estado=norm(obj.estado||"activo");
+      obj.stock=Number(obj.stock||0);
+      obj.precio=Number(obj.precio||0);
+      obj.precio_anterior=Number(obj.precio_anterior||0);
+      obj.unidad=(obj.unidad??"").toString().trim()||"unidad";
+      obj.id=(obj.id??"").toString().trim();
+      obj.solo_ofertas=norm(obj.solo_ofertas||"");
 
-      return out;
-    }catch(e){
-      lastErr = e;
-    }
+      obj._isOffer=(obj._sheet==="ofertas")||["si","sí","1","true","yes"].includes(obj.solo_ofertas);
+
+      if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
+        obj.imagen=obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
+      }
+      return obj;
+    }).filter(p=>{
+      if(!p || !p.nombre) return false;
+      if(p.estado==="inactivo" || p.estado==="0") return false;
+
+      const isSeparator =
+        (p.nombre === p.nombre.toUpperCase()) &&
+        Number(p.precio||0) <= 0 &&
+        Number(p.stock||0) <= 0 &&
+        !p.imagen && !p.galeria &&
+        !p.descripcion &&
+        !p.whatsapp && !p.tiktok && !p.youtube &&
+        !p.id;
+
+      return !isSeparator;
+    });
+  }catch(e){
+    console.warn("Tab falló:",sheetName,e);
+    return [];
   }
-
-  console.warn(`No pude cargar la hoja "${sheetName}"`, lastErr);
-  return [];
 }
+
+function computeCategories(){
+  const set=new Set(products.map(p=>norm(p.categoria)).filter(c=>c && !isBadCategoryName(c)));
+  set.delete("ofertas");
+
+  const pref = loadedSheetNames.map(norm).filter(n=>n && !isDefaultSheetName(n) && n!=="ofertas" && n!==CONFIG_SHEET_NAME && n!==TESTIMONIOS_SHEET);
+  const ordered = pref.filter(c=>set.has(c));
+  const rest = [...set].filter(c=>!ordered.includes(c)).sort((a,b)=>a.localeCompare(b,"es"));
+
+  categoriesOrdered = [...ordered, ...rest];
+}
+
+/* ================== LOAD ================== */
+function matchesStockFilter(p){
+  return onlyInStock ? Number(p.stock||0) > 0 : true;
+}
+
 async function loadAll(){
   loadFromUrlOrState();
 
@@ -1553,11 +1554,6 @@ async function loadAll(){
     const results = await Promise.all(loadedSheetNames.map(n=>fetchTab(n)));
     products = results.flat();
     products = dedupeProducts(products);
-
-    // ✅ Si no cargó nada, mostrar aviso claro (evita pantalla vacía)
-    if(!products.length){
-      throw new Error("No se encontraron productos. Revisa: (1) que tus pestañas existan (_config u hojas), (2) que Google Sheets esté público, y (3) que los encabezados tengan nombres como nombre, precio, stock.");
-    }
 
     window.productById = new Map(products.map(p=>[p.id,p]));
 
@@ -1581,7 +1577,7 @@ async function loadAll(){
       }
     }
 
-    const _ld=document.getElementById("loader"); if(_ld) _ld.style.display="none";
+    document.getElementById("loader").style.display="none";
     initCategoryBar();
     updateSubs();
     render();
@@ -1592,13 +1588,13 @@ async function loadAll(){
     saveState();
 
     if(!products.length){
-      toast("⚠️ No se cargó el catálogo. Revisa permisos del Google Sheets (y encabezados).");
+      toast("⚠️ No se cargó el catálogo. Revisa permisos del Google Sheets.");
     }
   }catch(e){
     console.error("❌ Error en loadAll:", e);
-    const _ld=document.getElementById("loader"); if(_ld) _ld.style.display="none";
+    document.getElementById("loader").style.display="none";
     initCategoryBar(true);
-    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).\n\nDetalle: " + (e?.message || "Error desconocido"));
+    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
     toast("⚠️ Error cargando catálogo");
   }finally{
     const loader=document.getElementById("loader");
@@ -1745,40 +1741,24 @@ function setActiveSub(btn){
 
 /* ================== PROMOS ================== */
 function extractPromos(p){
-  const promos = [];
-  const keys = Object.keys(p || {});
-  const tmp = {}; // idx -> {cantKey, precioKey}
-
-  for(const k of keys){
-    const sk = k.toLowerCase().replace(/[\s_]/g, "");
-    let m = sk.match(/^promo(\d+)cant$/);
+  const promos=[];
+  for(const k in p){
+    const m=k.match(/^promo(\d+)_cant$/i);
     if(m){
-      const idx = Number(m[1]);
-      if(!tmp[idx]) tmp[idx] = {};
-      tmp[idx].cantKey = k;
-      continue;
-    }
-    m = sk.match(/^promo(\d+)precio$/);
-    if(m){
-      const idx = Number(m[1]);
-      if(!tmp[idx]) tmp[idx] = {};
-      tmp[idx].precioKey = k;
-      continue;
+      const idx=m[1];
+      const cant=Number(p[k]||0);
+      const precio=Number(p[`promo${idx}_precio`]||0);
+      if(cant>0 && precio>0) promos.push({cant,precio});
     }
   }
-
-  for(const idxStr of Object.keys(tmp)){
-    const idx = Number(idxStr);
-    const { cantKey, precioKey } = tmp[idx] || {};
-    const cant = Number(p[cantKey] || 0);
-    const precio = Number(p[precioKey] || 0);
-    if(cant > 0 && precio > 0) promos.push({ idx, cant, precio });
-  }
-
-  promos.sort((a,b)=>a.cant - b.cant);
-  return promos;
+  promos.sort((a,b)=>a.cant-b.cant);
+  const map=new Map();
+  promos.forEach(x=>{
+    if(!map.has(x.cant)) map.set(x.cant,x.precio);
+    else map.set(x.cant,Math.min(map.get(x.cant),x.precio));
+  });
+  return [...map.entries()].map(([cant,precio])=>({cant,precio})).sort((a,b)=>a.cant-b.cant);
 }
-
 function priceForQty(p,qty){
   const base=Number(p.precio||0);
   const promos=extractPromos(p);
@@ -1891,7 +1871,19 @@ function render(){
   if(onlyInStock) list=list.filter(p=>Number(p.stock||0)>0);
 
   if(q){
-    list=list.filter(p=>norm(p.nombre).includes(q) || norm(p.descripcion).includes(q) || norm(p.subcategoria).includes(q) || norm(p.ideal_para).includes(q) || norm(p.beneficio).includes(q));
+    list=list.filter(p=>{
+      const f = (typeof getSmartFields === 'function') ? getSmartFields(p) : {ideal:'',bene:'',comp:'',inc:''};
+      const autoDesc = (p.descripcion||"").trim() ? p.descripcion : (typeof buildAutoDesc === 'function' ? buildAutoDesc(p) : "");
+      return (
+        norm(p.nombre).includes(q) ||
+        norm(autoDesc).includes(q) ||
+        norm(p.subcategoria).includes(q) ||
+        norm(f.ideal).includes(q) ||
+        norm(f.bene).includes(q) ||
+        norm(f.comp).includes(q) ||
+        norm(f.inc).includes(q)
+      );
+    });
   }
 
   /* Disponibles primero */
@@ -1948,16 +1940,24 @@ function render(){
         </div>`;
     }
 
-    // ✅ Descripción: automática solo si viene vacía
+    // ✅ Descripción: si está vacía, se arma sola (4 líneas) y se respetan saltos de línea
     let rawDesc = (p.descripcion || "").toString().trim();
     if(!rawDesc){
       rawDesc = buildAutoDesc(p);
     }
-    let descText = (rawDesc || "")
+    let descText = rawDesc
       .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n")
-      .trim();
-const safeName=escapeHtml(p.nombre);
+      .replace(/\r/g, "\n");
+
+    // Si la descripción viene en una sola línea con viñetas, la "partimos" para que se vea en líneas.
+    // Si ya trae saltos (como el auto-desc), la dejamos tal cual.
+    if(!descText.includes("\n")){
+      descText = descText.replace(/([►•\-★])/g, "\n$1");
+    }
+
+    descText = descText.replace(/\n{3,}/g, "\n\n").trim();
+
+    const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
 
     const showOld=Number(p.precio_anterior||0)>Number(p.precio||0) && !isPromoCard;
@@ -2006,7 +2006,7 @@ const safeName=escapeHtml(p.nombre);
       btnText="PEDIR";
     }
 
-    const badgesHTML = buildImageBadges(p,{isPromoCard,isAgotado});
+    const badgesHTML = "";
 
     card.innerHTML=`
       <div class="card-img-container ${hasRibbon?'has-ribbon':''}">
@@ -2077,22 +2077,14 @@ function initPromoWidget(card,p){
   const tierGrid=box.querySelector(".tier-grid");
   tierGrid.innerHTML="";
 
-  tiers.forEach((cant,i)=>{
+  tiers.forEach(cant=>{
     const {unitPrice}=priceForQty(p,cant);
     const t=document.createElement("div");
     t.className="tier";
     t.dataset.cant=cant;
 
-    // ✅ Mostrar rangos (evita confusión cuando eliges 4 y la escala dice 3)
-    const next = tiers[i+1] || null;
-    let label = "1";
-    if(cant !== 1){
-      if(next){
-        label = (next === cant + 1) ? String(cant) : `${cant}-${next-1}`;
-      }else{
-        label = `${cant}+`;
-      }
-    }
+    // ✅ Mostrar como rangos: 2+, 3+, 6+, 11+, 12+
+    const label = (cant === 1) ? "1" : `${cant}+`;
 
     t.innerHTML=`<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
     const disabled=stock>0 && cant>stock;
@@ -2131,28 +2123,20 @@ function initPromoWidget(card,p){
     box.querySelector(".qtyVal").textContent=qty;
     box.querySelector(".qtyUnit").textContent=unitLabel;
 
+    const activeCant = tiers.includes(qty) ? qty : tier.cant;
     box.querySelectorAll(".tier").forEach(el=>{
       el.classList.remove("active");
       const c=Number(el.dataset.cant||0);
       const isDisabled=el.classList.contains("disabled");
       if(isDisabled) return;
-      if(c===tier.cant) el.classList.add("active"); // ✅ se marca el rango usado (ej: 3+)
+      if(c===activeCant) el.classList.add("active");
     });
 
     minus.classList.toggle("disabled",qty<=1);
     plus.classList.toggle("disabled",stock>0 && qty>=stock);
 
     const unitStr=pluralize(unidad,qty);
-    const idxTier = tiers.indexOf(tier.cant);
-    const nextTier = (idxTier>=0) ? (tiers[idxTier+1] || null) : null;
-    let tierLabel = "Precio normal";
-    if(tier.cant>1){
-      if(nextTier){
-        tierLabel = (nextTier===tier.cant+1) ? `Promo ${tier.cant}` : `Promo ${tier.cant}-${nextTier-1}`;
-      }else{
-        tierLabel = `Promo ${tier.cant}+`;
-      }
-    }
+    const tierLabel=tier.cant>1?`Promo ${tier.cant}+`:`Precio normal`;
     const msg=`Hola SDC, quiero *${qty} ${unitStr}* de:\n*${p.nombre}*\n\n${tierLabel}\nPrecio unitario: Lps. ${money(unitPrice)}\nTotal: Lps. ${money(total)}\nStock disponible: ${stock}\n\nQuedo atento(a). Gracias.`;
     const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
 
