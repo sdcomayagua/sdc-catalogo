@@ -675,6 +675,48 @@
     [data-theme="light"] .ship-toggle button.active{ color:#0ea5e9; border-color:rgba(14,165,233,.35); background:rgba(14,165,233,.10); }
 
     .ship-options{ display:flex; flex-direction:column; gap:10px; margin-top:10px; }
+    .ship-extra{ margin-top:12px; }
+    .ship-form{ margin-top:10px; }
+    .ship-field{ display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+    .ship-label{
+      font-weight:900;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      color:var(--text);
+    }
+    .ship-input{
+      width:100%;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.02);
+      color:var(--text);
+      border-radius:14px;
+      padding:10px 12px;
+      outline:none;
+      font-weight:800;
+      font-size:13px;
+      transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    [data-theme="light"] .ship-input{ background:#ffffff; border-color:#e2e8f0; }
+    .ship-input:focus{
+      border-color:rgba(255,107,0,.45);
+      box-shadow:0 0 0 4px rgba(255,107,0,.12);
+    }
+    .ship-input:disabled{ opacity:.6; cursor:not-allowed; }
+    .ship-help{ font-size:12px; color:var(--text-muted); font-weight:800; line-height:1.35; }
+
+    .ship-warn{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,107,0,.35);
+      background:rgba(255,107,0,.06);
+      color:var(--text);
+      font-weight:900;
+      font-size:12px;
+      text-align:center;
+    }
+
     .ship-opt{
       width:100%;
       border:1px solid var(--border);
@@ -819,6 +861,39 @@
           </div>
 
           <div class="ship-options" id="shipOptions"></div>
+          <!-- Datos extra de entrega -->
+          <div class="ship-extra" id="shipExtra" style="display:none;">
+            <!-- Si está en Comayagua -->
+            <div class="ship-form" id="shipFormComa" style="display:none;">
+              <div class="ship-field">
+                <label class="ship-label" for="shipAddrComa">Dirección exacta en Comayagua</label>
+                <textarea id="shipAddrComa" class="ship-input" rows="3" placeholder="La dirección exacta de donde quiere que le lleven el producto."></textarea>
+                <div class="ship-help">Ejemplo: barrio/colonia, calle, #casa, referencia (cerca de...).</div>
+              </div>
+            </div>
+
+            <!-- Si NO está en Comayagua -->
+            <div class="ship-form" id="shipFormFuera" style="display:none;">
+              <div class="ship-field">
+                <label class="ship-label" for="shipDept">Elije tu Departamento</label>
+                <select id="shipDept" class="ship-input">
+                  <option value="">Selecciona un departamento…</option>
+                </select>
+              </div>
+              <div class="ship-field">
+                <label class="ship-label" for="shipMuni">Elije tu Municipio</label>
+                <select id="shipMuni" class="ship-input" disabled>
+                  <option value="">Primero elige un departamento…</option>
+                </select>
+              </div>
+              <div class="ship-field">
+                <label class="ship-label" for="shipAddrFuera">Dirección exacta</label>
+                <textarea id="shipAddrFuera" class="ship-input" rows="3" placeholder="Barrio/colonia, calle, #casa, referencia, etc."></textarea>
+                <div class="ship-help">Tip: entre más exacta, más rápido llega ✅</div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <div class="ship-total" id="shipTotal">Selecciona tu zona y una opción de entrega para calcular el total.</div>
@@ -1336,6 +1411,60 @@ const shipOptionsEl = document.getElementById("shipOptions");
 const shipTotalEl = document.getElementById("shipTotal");
 const shipSend = document.getElementById("shipSend");
 const shipSummaryEl = document.getElementById("shipSummary");
+const shipExtra = document.getElementById("shipExtra");
+const shipFormComa = document.getElementById("shipFormComa");
+const shipFormFuera = document.getElementById("shipFormFuera");
+const shipAddrComa = document.getElementById("shipAddrComa");
+const shipDept = document.getElementById("shipDept");
+const shipMuni = document.getElementById("shipMuni");
+const shipAddrFuera = document.getElementById("shipAddrFuera");
+
+
+
+/* ================== HONDURAS: Departamentos y Municipios ================== */
+const HN_MUNICIPIOS = {
+  "Atlántida": ["La Ceiba","El Porvenir","Esparta","Jutiapa","La Masica","San Francisco","Tela","Arizona"],
+  "Choluteca": ["Choluteca","Apacilagua","Concepción de María","Duyure","El Corpus","El Triunfo","Marcovia","Morolica","Namasigüe","Orocuina","Pespire","San Antonio de Flores","San Isidro","San José","San Marcos de Colón","Santa Ana de Yusguare"],
+  "Colón": ["Trujillo","Balfate","Iriona","Limón","Sabá","Santa Fe","Santa Rosa de Aguán","Sonaguera","Tocoa","Bonito Oriental"],
+  "Comayagua": ["Comayagua","Ajuterique","El Rosario","Esquías","Humuya","La Libertad","Lamaní","La Trinidad","Lejamaní","Meámbar","Minas de Oro","Ojos de Agua","San Jerónimo","San José de Comayagua","San José del Potrero","San Luis","San Sebastián","Siguatepeque","Villa de San Antonio","Las Lajas","Taulabé"],
+  "Copán": ["Santa Rosa de Copán","Cabañas","Concepción","Copán Ruinas","Corquín","Cucuyagua","Dolores","Dulce Nombre","El Paraíso","Florida","La Jigua","La Unión","Nueva Arcadia","San Agustín","San Antonio","San Jerónimo","San José","San Juan de Opoa","San Nicolás","San Pedro","Santa Rita","Trinidad de Copán","Veracruz"],
+  "Cortés": ["San Pedro Sula","Choloma","Omoa","Pimienta","Potrerillos","Puerto Cortés","San Antonio de Cortés","San Francisco de Yojoa","San Manuel","Santa Cruz de Yojoa","Villanueva","La Lima"],
+  "El Paraíso": ["Yuscarán","Alauca","Danlí","El Paraíso","Güinope","Jacaleapa","Liure","Morocelí","Oropolí","Potrerillos","San Antonio de Flores","San Lucas","San Matías","Soledad","Teupasenti","Texiguat","Vado Ancho","Yauyupe","Trojes"],
+  "Francisco Morazán": ["Distrito Central","Alubarén","Cedros","Curarén","El Porvenir","Guaimaca","La Libertad","La Venta","Lepaterique","Maraita","Marale","Nueva Armenia","Ojojona","Orica","Reitoca","Sabanagrande","San Antonio de Oriente","San Buenaventura","San Ignacio","San Juan de Flores","San Miguelito","Santa Ana","Santa Lucía","Talanga","Tatumbla","Valle de Ángeles","Villa de San Francisco","Vallecillo"],
+  "Gracias a Dios": ["Puerto Lempira","Brus Laguna","Ahuas","Juan Francisco Bulnes","Ramón Villeda Morales","Wampusirpi"],
+  "Intibucá": ["La Esperanza","Camasca","Colomoncagua","Concepción","Dolores","Intibucá","Jesús de Otoro","Magdalena","Masaguara","San Antonio","San Francisco de Opalaca","San Isidro","San Juan","San Marcos de la Sierra","San Miguel Guancapla","Santa Lucía","Yamaranguila"],
+  "Islas de la Bahía": ["Roatán","Guanaja","José Santos Guardiola","Utila"],
+  "La Paz": ["La Paz","Aguanqueterique","Cabañas","Cane","Chinacla","Guajiquiro","Lauterique","Marcala","Mercedes de Oriente","Opatoro","San Antonio del Norte","San José","San Juan","San Pedro de Tutule","Santa Ana","Santa Elena","Santa María","Santiago de Puringla","Yarula"],
+  "Lempira": ["Gracias","Belén","Candelaria","Cololaca","Erandique","Gualcince","Guarita","La Campa","La Iguala","Las Flores","La Unión","La Virtud","Lepaera","Mapulaca","Piraera","San Andrés","San Francisco","San Juan Guarita","San Manuel Colohete","San Rafael","San Sebastián","Santa Cruz","Talgua","Tambla","Tomalá","Valladolid","Virginia","San Marcos de Caiquín"],
+  "Ocotepeque": ["Ocotepeque","Belén Gualcho","Concepción","Dolores Merendón","Fraternidad","La Encarnación","La Labor","Lucerna","Mercedes","San Fernando","San Francisco del Valle","San Jorge","San Marcos","Santa Fe","Sensenti","Sinuapa"],
+  "Olancho": ["Juticalpa","Campamento","Catacamas","Concordia","Dulce Nombre de Culmí","El Rosario","Esquipulas del Norte","Gualaco","Guarizama","Guata","Jano","La Unión","Mangulile","Manto","Salamá","San Esteban","San Francisco de Becerra","San Francisco de la Paz","Santa María del Real","Silca","Yocón","Patuca"],
+  "Santa Bárbara": ["Santa Bárbara","Arada","Atima","Azacualpa","Ceguaca","Colinas","Concepción del Norte","Concepción del Sur","Chinda","El Níspero","Gualala","Ilama","Las Vegas","Macuelizo","Naranjito","Nueva Frontera","Nuevo Celilac","Petoa","Protección","Quimistán","San Francisco de Ojuera","San José de las Colinas","San Luis","San Marcos","San Nicolás","San Pedro Zacapa","San Vicente Centenario","Santa Rita","Trinidad"],
+  "Valle": ["Nacaome","Alianza","Amapala","Aramecina","Caridad","Goascorán","Langue","San Francisco de Coray","San Lorenzo"],
+  "Yoro": ["Yoro","Arenal","El Negrito","El Progreso","Jocón","Morazán","Olanchito","Santa Rita","Sulaco","Victoria","Yorito"]
+};
+
+const HN_DEPARTAMENTOS = Object.keys(HN_MUNICIPIOS);
+
+function initHondurasSelectors(){
+  if(!shipDept || !shipMuni) return;
+
+  shipDept.innerHTML = `<option value="">Selecciona un departamento…</option>` +
+    HN_DEPARTAMENTOS.map(d=>`<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
+
+  shipDept.onchange = ()=>{
+    const dep = shipDept.value;
+    const munis = HN_MUNICIPIOS[dep] || [];
+    shipMuni.disabled = !dep;
+    shipMuni.innerHTML = dep
+      ? `<option value="">Selecciona un municipio…</option>` + munis.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("")
+      : `<option value="">Primero elige un departamento…</option>`;
+    updateShipTotal();
+  };
+
+  shipMuni.onchange = ()=>updateShipTotal();
+  shipAddrComa && (shipAddrComa.oninput = ()=>updateShipTotal());
+  shipAddrFuera && (shipAddrFuera.oninput = ()=>updateShipTotal());
+}
 
 let shipCtx = null;
 let shipZone = null;        // true = Comayagua, false = Fuera
@@ -1350,6 +1479,18 @@ function resetShipUI(){
   shipTotalEl.innerHTML = "Selecciona tu zona y una opción de entrega para calcular el total.";
   shipSend.classList.add("disabled");
   shipSend.href = "#";
+
+  // Extra fields
+  if(shipExtra) shipExtra.style.display = "none";
+  if(shipFormComa) shipFormComa.style.display = "none";
+  if(shipFormFuera) shipFormFuera.style.display = "none";
+  if(shipAddrComa) shipAddrComa.value = "";
+  if(shipDept) shipDept.value = "";
+  if(shipMuni){
+    shipMuni.innerHTML = `<option value="">Primero elige un departamento…</option>`;
+    shipMuni.disabled = true;
+  }
+  if(shipAddrFuera) shipAddrFuera.value = "";
 }
 
 function openShipModal(ctx){
@@ -1389,16 +1530,88 @@ function setZone(isComayagua){
   shipYes.classList.toggle("active", shipZone===true);
   shipNo.classList.toggle("active", shipZone===false);
   renderShipOptions();
+  updateShipFormVisibility();
   updateShipTotal();
 }
 
 shipYes.onclick = ()=>setZone(true);
 shipNo.onclick  = ()=>setZone(false);
 
+
+function updateShipFormVisibility(){
+  if(!shipExtra) return;
+
+  if(shipZone === null){
+    shipExtra.style.display = "none";
+    if(shipFormComa) shipFormComa.style.display = "none";
+    if(shipFormFuera) shipFormFuera.style.display = "none";
+    return;
+  }
+
+  shipExtra.style.display = "block";
+
+  if(shipZone === true){
+    if(shipFormComa) shipFormComa.style.display = "block";
+    if(shipFormFuera) shipFormFuera.style.display = "none";
+
+    const opt = findShipOption();
+    const needsAddr = !!(opt && opt.key !== "pickup");
+    if(shipAddrComa){
+      shipAddrComa.placeholder = needsAddr
+        ? "La dirección exacta de donde quiere que le lleven el producto."
+        : "Opcional (si vas a recoger en tienda).";
+    }
+  } else {
+    if(shipFormComa) shipFormComa.style.display = "none";
+    if(shipFormFuera) shipFormFuera.style.display = "block";
+    initHondurasSelectors();
+  }
+}
+
+function getShipExtraData(opt){
+  if(shipZone === true){
+    const addr = (shipAddrComa?.value || "").trim();
+    const needsAddr = !!(opt && opt.key !== "pickup");
+    if(needsAddr && !addr){
+      return { ok:false, error:"Escribe la dirección exacta en Comayagua para poder enviar el pedido.", lines:[] };
+    }
+    const lines = [];
+    lines.push("Ubicación:");
+    lines.push("- Ciudad: Comayagua");
+    if(opt && opt.key === "pickup"){
+      lines.push("- Entrega: Recoger en tienda");
+      if(addr) lines.push(`- Dirección (opcional): ${addr}`);
+    } else {
+      lines.push(`- Dirección exacta: ${addr}`);
+    }
+    return { ok:true, error:"", lines };
+  }
+
+  if(shipZone === false){
+    const dep = (shipDept?.value || "").trim();
+    const muni = (shipMuni?.value || "").trim();
+    const addr = (shipAddrFuera?.value || "").trim();
+
+    if(!dep) return { ok:false, error:"Elige tu Departamento para poder enviar el pedido.", lines:[] };
+    if(!muni) return { ok:false, error:"Elige tu Municipio para poder enviar el pedido.", lines:[] };
+    if(!addr) return { ok:false, error:"Escribe la dirección exacta para poder enviar el pedido.", lines:[] };
+
+    const lines = [];
+    lines.push("Ubicación:");
+    lines.push(`- Departamento: ${dep}`);
+    lines.push(`- Municipio: ${muni}`);
+    lines.push(`- Dirección exacta: ${addr}`);
+    return { ok:true, error:"", lines };
+  }
+
+  return { ok:false, error:"Selecciona tu zona (Sí/No).", lines:[] };
+}
+
 function renderShipOptions(){
   shipOptionsEl.innerHTML = "";
   if(shipZone === null){
     shipOptionsEl.innerHTML = `<div style="font-size:12px;color:var(--text-muted);font-weight:800;">Primero elige <b>Sí</b> o <b>No</b>.</div>`;
+    updateShipFormVisibility();
     return;
   }
 
@@ -1429,6 +1642,7 @@ function renderShipOptions(){
       // marcar activo
       shipOptionsEl.querySelectorAll(".ship-opt").forEach(x=>x.classList.remove("active"));
       btn.classList.add("active");
+      updateShipFormVisibility();
       updateShipTotal();
     };
     shipOptionsEl.appendChild(btn);
@@ -1441,7 +1655,8 @@ function findShipOption(){
   return opt || null;
 }
 
-function buildWhatsAppMessage(ctx,opt){
+
+function buildWhatsAppMessage(ctx,opt,extra){
   const qty = Number(ctx.qty||1);
   const unitPrice = Number(ctx.unitPrice||0);
   const subtotal = Number(ctx.productTotal||0);
@@ -1464,13 +1679,21 @@ function buildWhatsAppMessage(ctx,opt){
   lines.push(`- Envío: Lps. ${money(ship)}`);
   if(pay) lines.push(`- Pago: ${pay}`);
   lines.push("");
+
+  if(extra && Array.isArray(extra.lines) && extra.lines.length){
+    extra.lines.forEach(l=>lines.push(l));
+    lines.push("");
+  }
+
   lines.push(`TOTAL A PAGAR: Lps. ${money(total)}`);
   lines.push("");
-  lines.push("Dirección / referencia: ____________________");
   if(ctx.link) lines.push(`Link: ${ctx.link}`);
 
-  return lines.join("\n");
+  return lines.join("
+");
 }
+
+
 
 function updateShipTotal(){
   const opt = findShipOption();
@@ -1478,13 +1701,19 @@ function updateShipTotal(){
     shipTotalEl.innerHTML = "Selecciona una opción de entrega para calcular el total.";
     shipSend.classList.add("disabled");
     shipSend.href="#";
+    shipSend.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Enviar pedido`;
+    updateShipFormVisibility();
     return;
   }
+
   const subtotal = Number(shipCtx.productTotal||0);
   const ship = Number(opt.price||0);
   const total = subtotal + ship;
 
-  shipTotalEl.innerHTML = `
+  // Validar datos extra
+  const extra = getShipExtraData(opt);
+
+  const totalsHTML = `
     <div style="display:flex;justify-content:space-between;gap:10px;"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
     <div style="display:flex;justify-content:space-between;gap:10px;"><span>Envío</span><strong>+ Lps. ${money(ship)}</strong></div>
     <div style="height:8px"></div>
@@ -1494,11 +1723,21 @@ function updateShipTotal(){
     </div>
   `;
 
-  const msg = buildWhatsAppMessage(shipCtx,opt);
+  shipTotalEl.innerHTML = totalsHTML + (extra.ok ? "" : `<div class="ship-warn">${escapeHtml(extra.error||"Completa los datos para enviar.")}</div>`);
+
+  if(!extra.ok){
+    shipSend.classList.add("disabled");
+    shipSend.href="#";
+    shipSend.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Completa tus datos`;
+    return;
+  }
+
+  const msg = buildWhatsAppMessage(shipCtx,opt,extra);
   shipSend.href = `https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
   shipSend.classList.remove("disabled");
   shipSend.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Enviar pedido • Total Lps. ${money(total)}`;
 }
+
 
 /* Interceptar botones de compra (normal y promos) */
 document.getElementById("productGrid").addEventListener("click",(e)=>{
@@ -2252,18 +2491,20 @@ function render(){
           </div>
 
           <div class="qty-row">
-            <button class="qty-btn minus" type="button" aria-label="Disminuir">−</button>
-            <div class="qty-pill"><span class="qtyVal">1</span> <span class="qtyUnit">PAR</span></div>
-            <button class="qty-btn plus" type="button" aria-label="Aumentar">+</button>
+            <button class="qtyBtn minus" aria-label="menos">−</button>
+            <div class="qtyMid">
+              <div class="qtyVal">1</div>
+              <div class="qtyUnit">PARES</div>
+            </div>
+            <button class="qtyBtn plus" aria-label="más">+</button>
           </div>
 
-          <button class="promo-toggle" type="button">Ver escalas ▾</button>
-
-          <div class="tier-grid"></div>
-          <div class="hint">El total y WhatsApp se actualizan solos ✅</div>
+          <div class="hint" style="margin-top:6px;">
+            Precios por par: 1=40 • 2=38 • 3–5=35 • 6–9=33 • 10+=30
+          </div>
 
           <a class="btn-ws promoBtn" data-buy="1" target="_blank" rel="noopener">
-            <i class="fa-brands fa-whatsapp"></i> PEDIR 1 PAR 🚀
+            <i class="fa-brands fa-whatsapp"></i> PEDIR 🚀
           </a>
         </div>
       `;
@@ -2453,52 +2694,6 @@ function initDedalesWidget(card,p){
   const minus=box.querySelector(".minus");
   const plus =box.querySelector(".plus");
 
-
-  // Toggle de escalas (igual estilo que Enfriadores)
-  const toggleBtn = box.querySelector(".promo-toggle");
-  if(toggleBtn){
-    toggleBtn.onclick=()=>{
-      const compact = box.classList.toggle("compact");
-      toggleBtn.textContent = compact ? "Ver escalas ▾" : "Ocultar escalas ▴";
-    };
-    // estado inicial
-    toggleBtn.textContent = box.classList.contains("compact") ? "Ver escalas ▾" : "Ocultar escalas ▴";
-  }
-
-  // Botones de escala (tiers) para Dedales
-  const tierGrid = box.querySelector(".tier-grid");
-  const tiers = [1,2,3,6,10]; // 1, 2, 3–5, 6–9, 10+
-  if(tierGrid){
-    tierGrid.innerHTML = "";
-    tiers.forEach(cant=>{
-      const unitPrice = dedalesUnitPrice(cant);
-      const t = document.createElement("div");
-      t.className = "tier";
-      t.dataset.cant = cant;
-
-      const label = (cant===3) ? "3–5" : (cant===6) ? "6–9" : (cant>=10) ? "10+" : String(cant);
-      t.innerHTML = `<span>${label}</span> <span style="opacity:.8;">Lps.${money(unitPrice)}</span>`;
-
-      const disabled = stock>0 && cant>stock;
-      if(disabled) t.classList.add("disabled");
-
-      t.onclick = ()=>{
-        if(disabled){ toast(`Solo hay ${stock} disponibles`); return; }
-        qty = cant;
-        update();
-      };
-      tierGrid.appendChild(t);
-    });
-  }
-
-  function dedalesTierStart(q){
-    q = Number(q||1);
-    if(q>=10) return 10;
-    if(q>=6)  return 6;
-    if(q>=3)  return 3;
-    if(q===2) return 2;
-    return 1;
-  }
   function update(){
     if(stock>0 && qty>stock) qty=stock;
     if(qty<1) qty=1;
@@ -2521,15 +2716,6 @@ function initDedalesWidget(card,p){
     if(plus)  plus.classList.toggle("disabled", stock>0 && qty>=stock);
 
     const tier=dedalesTierLabel(qty);
-
-    // Marcar tier activo en la grilla
-    const tierCant = dedalesTierStart(qty);
-    box.querySelectorAll(".tier").forEach(el=>{
-      el.classList.remove("active");
-      const c = Number(el.dataset.cant||0);
-      if(el.classList.contains("disabled")) return;
-      if(c===tierCant) el.classList.add("active");
-    });
     const msg=
 `Hola, quiero *${qty} ${pluralize("par", qty)}* de:
 *${p.nombre}*
@@ -2545,18 +2731,9 @@ Stock: ${stock}
     const btn=box.querySelector(".promoBtn");
     if(btn){
       btn.href=link;
-
-      // Datos para mantener consistencia con promos (no toca Sheets)
-      btn.dataset.buy = "1";
-      btn.dataset.pid = (p.id||"").toString();
-      btn.dataset.name = (p.nombre||"").toString();
-      btn.dataset.qty = String(qty);
-      btn.dataset.unitPrice = String(unitPrice);
-      btn.dataset.productTotal = String(total);
-
       btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
     }
-}
+  }
 
   if(minus){
     minus.addEventListener("click", ()=>{
