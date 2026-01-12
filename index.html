@@ -420,16 +420,27 @@
 
     /* ✅ Mejora: Ofertas más compactas (sin tanta altura) */
     .promo-toggle{
-      width:100%;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px dashed rgba(255,107,0,.35);
-      background:rgba(255,255,255,.04);
-      color:var(--text-muted);
+      width:fit-content;
+      max-width:100%;
+      margin:10px auto 0;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,107,0,.25);
+      background:rgba(255,107,0,.06);
+      color:var(--text);
       font-weight:900;
+      font-size:12px;
       text-transform:uppercase;
-      letter-spacing:.4px;
+      letter-spacing:.6px;
       cursor:pointer;
+      transition:transform .08s ease, background .15s ease, border-color .15s ease;
+    }
+    .promo-toggle:hover{
+      background:rgba(255,107,0,.10);
+      border-color:rgba(255,107,0,.35);
+    }
+    .promo-toggle:active{
+      transform:scale(.98);
     }
     .promo-box.compact .tier-grid{display:none}
     .promo-box.compact .hint{display:none}
@@ -2265,7 +2276,7 @@ function render(){
           </div>
 
           <a class="btn-ws promoBtn" data-buy="1" target="_blank" rel="noopener">
-            <i class="fa-brands fa-whatsapp"></i> PEDIR 1 PAR 🚀
+            <i class="fa-brands fa-whatsapp"></i> PEDIR 🚀
           </a>
         </div>
       `;
@@ -2359,7 +2370,7 @@ function initPromoWidget(card,p){
   if(toggleBtn){
     toggleBtn.onclick=()=>{
       const compact = box.classList.toggle("compact");
-      toggleBtn.textContent = compact ? "Ver escalas" : "Ocultar escalas";
+      toggleBtn.textContent = compact ? "Ver escalas ▾" : "Ocultar escalas ▴";
     };
   }
 
@@ -2489,18 +2500,10 @@ Stock: ${stock}
 ¿Me confirma disponibilidad? Gracias.`;
 
     const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
-    const btn = box.querySelector(".promoBtn") || box.querySelector(".btn-ws") || card.querySelector(".promoBtn");
+    const btn=box.querySelector(".promoBtn");
     if(btn){
-      btn.href = link;
-      // Datos para calcular envío (igual que en promo)
-      btn.dataset.buy = "1";
-      btn.dataset.pid = (p.id||"").toString();
-      btn.dataset.name = (p.nombre||"").toString();
-      btn.dataset.qty = String(qty);
-      btn.dataset.unitPrice = String(unitPrice);
-      btn.dataset.productTotal = String(total);
-
-      btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
+      btn.href=link;
+      btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
     }
   }
 
