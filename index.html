@@ -1689,8 +1689,7 @@ function buildWhatsAppMessage(ctx,opt,extra){
   lines.push("");
   if(ctx.link) lines.push(`Link: ${ctx.link}`);
 
-  return lines.join("
-");
+  return lines.join("\n");
 }
 
 
