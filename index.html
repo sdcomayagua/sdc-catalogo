@@ -636,11 +636,61 @@
 
     /* HIDE_IMG_BADGES */
     .img-badges, .img-badge, .stock-badge{display:none!important;}
+
+/* ====== Quick Actions (2026) ====== */
+.quick-actions{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:86px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  z-index:98;
+  pointer-events:none;
+}
+.quick-actions .qa{
+  pointer-events:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(20,20,20,.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color:var(--text);
+  font-weight:800;
+  font-size:12px;
+  letter-spacing:.2px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+.light .quick-actions .qa{ background:rgba(255,255,255,.78); }
+.quick-actions .qa:active{ transform: translateY(1px); }
+.qa.hide{ display:none; }
+
+.retry-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  font-weight:900;
+}
+.retry-btn:hover{ filter:brightness(1.05); }
+
 </style>
 </head>
 
 <body>
-  <header>
+  
+<div id="topNotice" style="display:none; position:sticky; top:0; z-index:99; padding:10px 12px; text-align:center; background:rgba(255,193,7,.14); color:var(--text); border-bottom:1px solid var(--border);"></div>
+<header>
     <div class="brand" id="goHome" role="button" tabindex="0" aria-label="Ir al inicio">
       <img src="logo.png" alt="SDC" onerror="this.style.display='none'">
       <div>
@@ -779,7 +829,7 @@
         <i class="fa-brands fa-tiktok"></i>
       </a>
     </div>
-    <p>© 2026 Soluciones Digitales Comayagua<br><span style="font-size:10px; opacity:0.6;">Todos los derechos reservados.</span></p>
+    <p>© 2026 Soluciones Digitales Comayagua<br><span style="font-size:10px; opacity:0.6;">Todos los derechos reservados.</span> <span id="buildInfo" style="opacity:0.55; font-size:12px; margin-left:8px;"></span></p>
   </footer>
 
   <a class="float-ws" href="https://wa.me/50432429490" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
@@ -790,7 +840,7 @@
     <i class="fa-solid fa-arrow-up"></i>
   </button>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" aria-live="polite"></div>
 
 <script>
 /* ================== CONFIG ================== */
@@ -802,6 +852,58 @@ const TESTIMONIOS_SHEET="testimonios";
 const DEFAULT_SHEETS=["ofertas","gamer","pc","movil","streaming","cobertores","power"];
 
 const BUILD_VERSION="20260111";
+
+/* ====== CACHE / FIABILIDAD (2026) ====== */
+const CACHE_KEY = "SDC_PRODUCTS_CACHE_V1";
+const CACHE_MAX_AGE_DAYS = 14;
+
+function parsePrice(v){
+  if(v===null || v===undefined) return null;
+  if(typeof v === "number" && isFinite(v)) return v;
+  let s = String(v).trim();
+  if(!s) return null;
+  s = s.replace(/[^0-9.,-]/g,"");
+  if(!s) return null;
+  if(s.includes(",") && !s.includes(".")){
+    s = s.replace(/,/g,".");
+  }else{
+    s = s.replace(/,/g,"");
+  }
+  const n = Number(s);
+  return isFinite(n) ? n : null;
+}
+
+function money(n){
+  const x = (n===null || n===undefined) ? NaN : Number(n);
+  if(!isFinite(x)) return "";
+  return x.toLocaleString("es-HN",{minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function saveCache(){
+  try{
+    const payload = { v: BUILD_VERSION, ts: Date.now(), products };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+  }catch(e){}
+}
+
+function loadCache(){
+  try{
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    const payload = JSON.parse(raw);
+    if(!payload || !Array.isArray(payload.products)) return null;
+    const ageDays = (Date.now() - (payload.ts||0)) / 86400000;
+    if(ageDays > CACHE_MAX_AGE_DAYS) return null;
+    return payload;
+  }catch(e){ return null; }
+}
+
+async function retryLoad(){
+  const loader=document.getElementById("loader");
+  if(loader) loader.style.display="flex";
+  await loadAll();
+}
+
 window.addEventListener("error",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 window.addEventListener("unhandledrejection",()=>{try{hideLoading();}catch(e){} try{showFatal("⚠️ Error cargando el catálogo. Actualiza la página o revisa tu conexión.");}catch(e){}});
 /* ================== STATE ================== */
@@ -916,9 +1018,7 @@ function dedupeProducts(list){
   return [...map.values()];
 }
 
-function money(n){
-  const x=Number(n||0);
-  return x.toLocaleString("es-HN",{maximumFractionDigits:0});
+);
 }
 function toast(msg){
   const el=document.getElementById("toast");
@@ -1554,6 +1654,7 @@ async function loadAll(){
     const results = await Promise.all(loadedSheetNames.map(n=>fetchTab(n)));
     products = results.flat();
     products = dedupeProducts(products);
+    saveCache();
 
     window.productById = new Map(products.map(p=>[p.id,p]));
 
@@ -1592,10 +1693,26 @@ async function loadAll(){
     }
   }catch(e){
     console.error("❌ Error en loadAll:", e);
-    document.getElementById("loader").style.display="none";
-    initCategoryBar(true);
-    renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
-    toast("⚠️ Error cargando catálogo");
+    try{ document.getElementById("loader").style.display="none"; }catch(_){}
+    const cached = loadCache();
+    if(cached && cached.products && cached.products.length){
+      products = cached.products;
+      window.productById = new Map(products.map(p=>[p.id,p]));
+      computeCategories();
+      initCategoryBar(false);
+      updateSubs();
+      render();
+      toast("Mostrando última versión guardada ✅");
+      const msg = document.getElementById("topNotice");
+      if(msg){
+        msg.style.display="block";
+        msg.innerHTML = `⚠️ Estás viendo una versión guardada. <button class="retry-btn" type="button" onclick="retryLoad()"><i class="fa-solid fa-rotate-right"></i> Reintentar</button>`;
+      }
+    }else{
+      initCategoryBar(true);
+      renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
+      toast("⚠️ Error cargando catálogo");
+    }
   }finally{
     const loader=document.getElementById("loader");
     if(loader) loader.style.display="none";
@@ -1826,6 +1943,10 @@ function renderFatal(msg){
         <a class="btn-ws" style="max-width:320px;" href="https://wa.me/${MY_PHONE}?text=${encodeURIComponent("Hola SDC, mi catálogo no carga. ¿Me ayudas?")}" target="_blank" rel="noopener noreferrer">
           <i class="fa-brands fa-whatsapp"></i> ESCRIBIR POR WHATSAPP
         </a>
+      
+        <button class="retry-btn" type="button" onclick="retryLoad()">
+          <i class="fa-solid fa-rotate-right"></i> REINTENTAR
+        </button>
       </div>
     </div>`;
 }
@@ -1960,19 +2081,21 @@ function render(){
     const safeName=escapeHtml(p.nombre);
     const safeDesc=escapeHtml(descText);
 
-    const showOld=Number(p.precio_anterior||0)>Number(p.precio||0) && !isPromoCard;
+    const pPrice = parsePrice(p.precio);
+    const pOld = parsePrice(p.precio_anterior);
+    const showOld = (pOld!==null && pPrice!==null && pOld>pPrice) && !isPromoCard;
     const priceHTML=`
       <div class="price-bar">
         <i class="fa-solid fa-tag price-icon"></i>
         <div class="price-stack">
           ${showOld?`<div class="old-price-row"><span style="font-weight:900;">Antes:</span><span class="old-val">Lps. ${money(p.precio_anterior)}</span></div>`:``}
-          <div class="current-price-row">Lps. ${money(p.precio||0)}</div>
+          <div class="current-price-row">Lps. ${money(pPrice)}</div>
         </div>
       </div>`;
 
     const normalMsg=(p.whatsapp && p.whatsapp.toString().trim().length>5)
       ? p.whatsapp
-      : `Hola SDC, me interesa: *${p.nombre}*\nPrecio: Lps. ${money(p.precio||0)}\nQuedo atento(a). Gracias.`;
+      : `Hola SDC, me interesa: *${p.nombre}*\nPrecio: Lps. ${money(pPrice)}\nQuedo atento(a). Gracias.`;
     const normalLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(normalMsg)}`;
 
     let promoHTML="";
@@ -2036,6 +2159,7 @@ function render(){
 
     if(isPromoCard) initPromoWidget(card,p);
   });
+  updateQuickActionsVisibility();
 }
 
 function toggleOffersFromHome(){
@@ -2255,8 +2379,53 @@ function focusProductById(pid){
   setTimeout(()=>el.classList.remove("highlight"),1800);
 }
 
+
+/* ================== QUICK ACTIONS ================== */
+function updateQuickActionsVisibility(){
+  const qa=document.getElementById("quickActions");
+  if(!qa) return;
+  const q=norm(document.getElementById("searchInput")?.value||"");
+  const isHome = (!currentCategory && !soloOfertasMode && !q && !onlyInStock);
+  qa.style.display = isHome ? "none" : "flex";
+}
+(function hookQuickActions(){
+  const b1=document.getElementById("qaStock");
+  const b2=document.getElementById("qaOffers");
+  const b3=document.getElementById("qaLocation");
+  if(b1) b1.onclick=()=>{ onlyInStock=!onlyInStock; render(); saveState(); updateQuickActionsVisibility(); };
+  if(b2) b2.onclick=()=>{ 
+    soloOfertasMode=!soloOfertasMode; 
+    if(soloOfertasMode){ currentCategory=""; currentSub=""; }
+    updateUrl(); initCategoryBar(); updateSubs(); render(); saveState(); updateQuickActionsVisibility(); 
+  };
+  if(b3) b3.onclick=()=>{ const el=document.getElementById("locationSection"); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); };
+})();
+
+/* Mostrar fecha de actualización en footer */
+(function showBuildInfo(){
+  const el=document.getElementById("buildInfo");
+  if(!el) return;
+  const v=String(BUILD_VERSION||"");
+  if(v.length===8){
+    const y=v.slice(0,4), m=v.slice(4,6), d=v.slice(6,8);
+    const dt=new Date(Number(y), Number(m)-1, Number(d));
+    const fmt=dt.toLocaleDateString("es-HN",{year:"numeric",month:"short",day:"2-digit"});
+    el.textContent = "Actualizado: "+fmt;
+  }else{
+    el.textContent = "Build: "+v;
+  }
+})();
+
 /* ================== START ================== */
 loadAll();
 </script>
+
+  <!-- Quick Actions (aparece cuando NO estás en Home) -->
+  <div class="quick-actions" id="quickActions" aria-label="Acciones rápidas">
+    <button class="qa" id="qaStock" type="button"><i class="fa-solid fa-box-open"></i> Solo en stock</button>
+    <button class="qa" id="qaOffers" type="button">🔥 Ofertas</button>
+    <button class="qa" id="qaLocation" type="button"><i class="fa-solid fa-location-dot"></i> Ubicación</button>
+  </div>
+
 </body>
 </html>
