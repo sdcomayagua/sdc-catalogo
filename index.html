@@ -408,37 +408,6 @@
     .promo-total{font-size:26px;font-weight:900;color:var(--promo-color);display:flex;gap:10px;align-items:center}
     .promo-sub{font-size:12px;font-weight:900;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
     .qty-row{display:flex;align-items:center;justify-content:center;gap:10px}
-    /* Mejor tipografía para selector - X PARES + (solo Dedales) */
-    .dedales-box .qty-pill.qty-pares{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:3px;
-      padding:10px 14px;
-      min-width:110px;
-      line-height:1;
-      letter-spacing:.2px;
-    }
-    .dedales-box .qty-pill.qty-pares .qtyVal{
-      font-size:22px;
-      font-weight:900;
-      line-height:1;
-    }
-    .dedales-box .qty-pill.qty-pares .qtyUnit{
-      font-size:11px;
-      font-weight:800;
-      letter-spacing:1.2px;
-      opacity:.75;
-      text-transform:uppercase;
-    }
-    .dedales-box .qty-btn{
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      font-size:20px;
-    }
-
     .qty-btn{
       width:44px;height:44px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);
       font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer
@@ -2283,20 +2252,20 @@ function render(){
           </div>
 
           <div class="qty-row">
-            <button class="qty-btn qtyBtn minus" type="button" aria-label="Disminuir">−</button>
-            <div class="qty-pill qtyMid qty-pares">
-              <span class="qtyVal">1</span>
-              <span class="qtyUnit">PARES</span>
+            <button class="qtyBtn minus" aria-label="menos">−</button>
+            <div class="qtyMid">
+              <div class="qtyVal">1</div>
+              <div class="qtyUnit">PARES</div>
             </div>
-            <button class="qty-btn qtyBtn plus" type="button" aria-label="Aumentar">+</button>
-          </div 
+            <button class="qtyBtn plus" aria-label="más">+</button>
+          </div>
 
           <div class="hint" style="margin-top:6px;">
             Precios por par: 1=40 • 2=38 • 3–5=35 • 6–9=33 • 10+=30
           </div>
 
           <a class="btn-ws promoBtn" data-buy="1" target="_blank" rel="noopener">
-            <i class="fa-brands fa-whatsapp"></i> PEDIR 🚀
+            <i class="fa-brands fa-whatsapp"></i> PEDIR 1 PAR 🚀
           </a>
         </div>
       `;
@@ -2520,10 +2489,18 @@ Stock: ${stock}
 ¿Me confirma disponibilidad? Gracias.`;
 
     const link=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(msg)}`;
-    const btn=box.querySelector(".promoBtn");
+    const btn = box.querySelector(".promoBtn") || box.querySelector(".btn-ws") || card.querySelector(".promoBtn");
     if(btn){
-      btn.href=link;
-      btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
+      btn.href = link;
+      // Datos para calcular envío (igual que en promo)
+      btn.dataset.buy = "1";
+      btn.dataset.pid = (p.id||"").toString();
+      btn.dataset.name = (p.nombre||"").toString();
+      btn.dataset.qty = String(qty);
+      btn.dataset.unitPrice = String(unitPrice);
+      btn.dataset.productTotal = String(total);
+
+      btn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
     }
   }
 
