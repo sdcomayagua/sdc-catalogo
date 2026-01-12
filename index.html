@@ -881,6 +881,7 @@ function money(n){
 
 function saveCache(){
   try{
+    if(!Array.isArray(products) || products.length===0) return; // no cache vacío
     const payload = { v: BUILD_VERSION, ts: Date.now(), products };
     localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
   }catch(e){}
@@ -1521,6 +1522,20 @@ function loadFromUrlOrState(){
   soloOfertasMode=false;
 }
 
+
+function sheetNameCandidates(name){
+  const s = (name ?? "").toString().trim();
+  if(!s) return [];
+  const lower = s.toLowerCase();
+  const upper = s.toUpperCase();
+  const title = lower.charAt(0).toUpperCase() + lower.slice(1);
+  const candidates = [s, lower, upper, title];
+  // quitar duplicados preservando orden
+  const uniq=[];
+  candidates.forEach(x=>{ if(x && !uniq.includes(x)) uniq.push(x); });
+  return uniq;
+}
+
 /* ================== SHEETS FETCH ================== */
 function gvizUrlBySheet(sheetName){
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -1545,178 +1560,119 @@ async function fetchConfigSheets(){
     const t = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
     const {rows}=parseGviz(t);
 
+    // Lee nombres EXACTOS (case-sensitive) desde _config para evitar fallos por mayúsculas
     const names = rows
       .map(r => r.sheet ?? r.pestana ?? r.tab ?? r.col ?? "")
       .map(s => (s ?? "").toString().trim())
       .filter(Boolean)
-      .map(norm)
-      .filter(n => n && n !== CONFIG_SHEET_NAME && n !== TESTIMONIOS_SHEET && !isDefaultSheetName(n));
+      .filter(n => norm(n) !== CONFIG_SHEET_NAME && norm(n) !== TESTIMONIOS_SHEET);
 
     if(!names.length) return DEFAULT_SHEETS.slice();
 
     const uniq=[];
-    names.forEach(n=>{ if(!uniq.includes(n)) uniq.push(n); });
-    if(uniq.includes("ofertas")){
-      return ["ofertas", ...uniq.filter(x=>x!=="ofertas")].filter(n => !isDefaultSheetName(n));
+    names.forEach(n=>{ if(n && !uniq.includes(n)) uniq.push(n); });
+
+    // si hay "ofertas" en cualquier combinación, ponerlo primero
+    const idx = uniq.findIndex(n => norm(n)==="ofertas");
+    if(idx>0){
+      const of = uniq.splice(idx,1)[0];
+      uniq.unshift(of);
     }
-    return uniq.filter(n => !isDefaultSheetName(n));
+    return uniq;
   }catch(e){
     console.warn("Config falló, usando fallback",e);
     return DEFAULT_SHEETS.slice();
   }
 }
+}
 
 async function fetchTab(sheetName){
-  try{
-    const sheetNorm = norm(sheetName);
-    const t = await fetchText(gvizUrlBySheet(sheetName));
-    const {rows}=parseGviz(t);
+  const sheetNorm = norm(sheetName);
 
-    return rows.map(o=>{
-      const obj={...o};
-      obj._sheet=sheetNorm;
-
-      const cellCat = norm(obj.categoria || "");
-      if(sheetNorm !== "ofertas"){
-        obj.categoria = cellCat || sheetNorm;
-      }else{
-        obj.categoria = cellCat || "gamer";
-      }
-
-      obj.subcategoria=(obj.subcategoria??"").toString().trim();
-      obj.nombre=(obj.nombre??"").toString().trim();
-      obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
-
-      // ✅ campos para auto-descripción (pueden ir vacíos)
-      obj.ideal_para=(obj.ideal_para??"").toString().trim();
-      obj.beneficio=(obj.beneficio??"").toString().trim();
-      obj.compatible=(obj.compatible??"").toString().trim();
-      obj.incluye=(obj.incluye??"").toString().trim();
-      obj.nota=(obj.nota??"").toString().trim();
-
-      obj.estado=norm(obj.estado||"activo");
-      obj.stock=Number(obj.stock||0);
-      obj.precio=Number(obj.precio||0);
-      obj.precio_anterior=Number(obj.precio_anterior||0);
-      obj.unidad=(obj.unidad??"").toString().trim()||"unidad";
-      obj.id=(obj.id??"").toString().trim();
-      obj.solo_ofertas=norm(obj.solo_ofertas||"");
-
-      obj._isOffer=(obj._sheet==="ofertas")||["si","sí","1","true","yes"].includes(obj.solo_ofertas);
-
-      if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
-        obj.imagen=obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
-      }
-      return obj;
-    }).filter(p=>{
-      if(!p || !p.nombre) return false;
-      if(p.estado==="inactivo" || p.estado==="0") return false;
-
-      const isSeparator =
-        (p.nombre === p.nombre.toUpperCase()) &&
-        Number(p.precio||0) <= 0 &&
-        Number(p.stock||0) <= 0 &&
-        !p.imagen && !p.galeria &&
-        !p.descripcion &&
-        !p.whatsapp && !p.tiktok && !p.youtube &&
-        !p.id;
-
-      return !isSeparator;
-    });
-  }catch(e){
-    console.warn("Tab falló:",sheetName,e);
-    return [];
+  // Intentar varias combinaciones (por si la pestaña está en MAYÚSCULAS, etc.)
+  let text=null, usedName=null;
+  const candidates = sheetNameCandidates(sheetName);
+  for(const cand of candidates){
+    try{
+      text = await fetchText(gvizUrlBySheet(cand));
+      // valida que sea parseable
+      parseGviz(text);
+      usedName=cand;
+      break;
+    }catch(e){}
   }
-}
-
-function computeCategories(){
-  const set=new Set(products.map(p=>norm(p.categoria)).filter(c=>c && !isBadCategoryName(c)));
-  set.delete("ofertas");
-
-  const pref = loadedSheetNames.map(norm).filter(n=>n && !isDefaultSheetName(n) && n!=="ofertas" && n!==CONFIG_SHEET_NAME && n!==TESTIMONIOS_SHEET);
-  const ordered = pref.filter(c=>set.has(c));
-  const rest = [...set].filter(c=>!ordered.includes(c)).sort((a,b)=>a.localeCompare(b,"es"));
-
-  categoriesOrdered = [...ordered, ...rest];
-}
-
-/* ================== LOAD ================== */
-function matchesStockFilter(p){
-  return onlyInStock ? Number(p.stock||0) > 0 : true;
-}
-
-async function loadAll(){
-  loadFromUrlOrState();
-
-  try{
-    loadedSheetNames = await fetchConfigSheets();
-
-    const results = await Promise.all(loadedSheetNames.map(n=>fetchTab(n)));
-    products = results.flat();
-    products = dedupeProducts(products);
-    saveCache();
-
-    window.productById = new Map(products.map(p=>[p.id,p]));
-
-    computeCategories();
-
-    if(currentCategory && !categoriesOrdered.includes(norm(currentCategory))){
-      currentCategory="";
-      currentSub="";
+  if(!text){
+    // último intento: si es fallback default, probar también con titlecase/mayúsculas del norm
+    const more = sheetNameCandidates(sheetNorm);
+    for(const cand of more){
+      try{
+        text = await fetchText(gvizUrlBySheet(cand));
+        parseGviz(text);
+        usedName=cand;
+        break;
+      }catch(e){}
     }
-    if(pendingPid){
-      const found = window.productById.get(pendingPid);
-      if(found){
-        currentCategory = norm(found.categoria||"");
-        soloOfertasMode = !!found._isOffer;
-        currentSub = (found.subcategoria||"").trim();
-        const si=document.getElementById("searchInput");
-        if(si) si.value="";
-      }else{
-        toast("⚠️ Producto no encontrado");
-        pendingPid="";
-      }
-    }
+  }
+  if(!text) throw new Error(`No se pudo leer la pestaña "${sheetName}" (revisa el nombre exacto y permisos)`);
 
-    document.getElementById("loader").style.display="none";
-    initCategoryBar();
-    updateSubs();
-    render();
-    await loadTestimonials();
+  const {rows}=parseGviz(text);
 
-    if(pendingPid){ setTimeout(()=>focusProductById(pendingPid),120); }
+  return rows.map(o=>{
+    const obj={...o};
+    obj._sheet=sheetNorm;
 
-    saveState();
-
-    if(!products.length){
-      toast("⚠️ No se cargó el catálogo. Revisa permisos del Google Sheets.");
-    }
-  }catch(e){
-    console.error("❌ Error en loadAll:", e);
-    try{ document.getElementById("loader").style.display="none"; }catch(_){}
-    const cached = loadCache();
-    if(cached && cached.products && cached.products.length){
-      products = cached.products;
-      window.productById = new Map(products.map(p=>[p.id,p]));
-      computeCategories();
-      initCategoryBar(false);
-      updateSubs();
-      render();
-      toast("Mostrando última versión guardada ✅");
-      const msg = document.getElementById("topNotice");
-      if(msg){
-        msg.style.display="block";
-        msg.innerHTML = `⚠️ Estás viendo una versión guardada. <button class="retry-btn" type="button" onclick="retryLoad()"><i class="fa-solid fa-rotate-right"></i> Reintentar</button>`;
-      }
+    const cellCat = norm(obj.categoria || "");
+    if(sheetNorm !== "ofertas"){
+      obj.categoria = cellCat || sheetNorm;
     }else{
-      initCategoryBar(true);
-      renderFatal("⚠️ No se pudo cargar el catálogo. Revisa que tu Google Sheets esté público (cualquiera con el link).");
-      toast("⚠️ Error cargando catálogo");
+      obj.categoria = cellCat || "gamer";
     }
-  }finally{
-    const loader=document.getElementById("loader");
-    if(loader) loader.style.display="none";
-  }
+
+    obj.subcategoria=(obj.subcategoria??"").toString().trim();
+    obj.nombre=(obj.nombre??"").toString().trim();
+    obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
+
+    // campos extra opcionales
+    obj.ideal_para=(obj.ideal_para??"").toString().trim();
+    obj.beneficio=(obj.beneficio??"").toString().trim();
+    obj.compatible=(obj.compatible??"").toString().trim();
+    obj.incluye=(obj.incluye??"").toString().trim();
+    obj.nota=(obj.nota??"").toString().trim();
+
+    obj.estado=norm(obj.estado||"activo");
+    obj.stock=parseInt(String(obj.stock??"0").toString().replace(/[^\d-]/g,""),10);
+    if(!Number.isFinite(obj.stock)) obj.stock=0;
+
+    // ✅ precios robustos (evita 0 falsos / NaN)
+    obj.precio=parsePrice(obj.precio);
+    obj.precio_anterior=parsePrice(obj.precio_anterior);
+
+    obj.unidad=(obj.unidad??"").toString().trim()||"unidad";
+    obj.id=(obj.id??"").toString().trim();
+    obj.solo_ofertas=norm(obj.solo_ofertas||"");
+
+    obj._isOffer=(obj._sheet==="ofertas")||["si","sí","1","true","yes"].includes(obj.solo_ofertas);
+
+    if(obj.imagen && obj.imagen.includes("github.com") && obj.imagen.includes("/blob/")){
+      obj.imagen=obj.imagen.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
+    }
+    return obj;
+  }).filter(p=>{
+    if(!p || !p.nombre) return false;
+    if(p.estado==="inactivo" || p.estado==="0") return false;
+
+    const isSeparator =
+      (p.nombre === p.nombre.toUpperCase()) &&
+      (parsePrice(p.precio)===null) &&
+      Number(p.stock||0) <= 0 &&
+      !p.imagen && !p.galeria &&
+      !p.descripcion &&
+      !p.whatsapp && !p.tiktok && !p.youtube &&
+      !p.id;
+
+    return !isSeparator;
+  });
+}
 }
 
 /* ================== CATEGORY UI ================== */
@@ -2089,13 +2045,13 @@ function render(){
         <i class="fa-solid fa-tag price-icon"></i>
         <div class="price-stack">
           ${showOld?`<div class="old-price-row"><span style="font-weight:900;">Antes:</span><span class="old-val">Lps. ${money(p.precio_anterior)}</span></div>`:``}
-          <div class="current-price-row">Lps. ${money(pPrice)}</div>
+          <div class="current-price-row">${pPrice!==null ? `Lps. ${money(pPrice)}` : `CONSULTAR`}</div>
         </div>
       </div>`;
 
     const normalMsg=(p.whatsapp && p.whatsapp.toString().trim().length>5)
       ? p.whatsapp
-      : `Hola SDC, me interesa: *${p.nombre}*\nPrecio: Lps. ${money(pPrice)}\nQuedo atento(a). Gracias.`;
+      : `Hola SDC, me interesa: *${p.nombre}*\nPrecio: ${pPrice!==null ? `Lps. ${money(pPrice)}` : `CONSULTAR`}\nQuedo atento(a). Gracias.`;
     const normalLink=`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(normalMsg)}`;
 
     let promoHTML="";
