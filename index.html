@@ -950,7 +950,12 @@
 
 <script>
 /* ================== CONFIG ================== */
-const SHEET_ID="1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE";
+const SHEET_URL="https://docs.google.com/spreadsheets/d/1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE/edit?usp=drivesdk";
+function getSheetIdFromUrl(u){
+  const m=String(u||"").match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  return m?m[1]:"";
+}
+const SHEET_ID=getSheetIdFromUrl(SHEET_URL)||"1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE";
 const MY_PHONE="50432429490";
 
 const CONFIG_SHEET_NAME="_config";
@@ -1706,30 +1711,45 @@ function parseGviz(text){
 
 /* Lee _config (si existe). Si no existe, usa fallback */
 async function fetchConfigSheets(){
+  // Lee lista de pestañas desde _config (si existe).
+  // IMPORTANTE: devolvemos los nombres EXACTOS (respetando mayúsculas) para que Google Sheets los encuentre.
   try{
-    const t = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME));
+    const t = await fetchText(gvizUrlBySheet(CONFIG_SHEET_NAME), 9000);
     const {rows}=parseGviz(t);
 
-    const names = rows
-      .map(r => r.sheet ?? r.pestana ?? r.tab ?? r.col ?? "")
-      .map(s => (s ?? "").toString().trim())
-      .filter(Boolean)
-      .map(norm)
-      .filter(n => n && n !== CONFIG_SHEET_NAME && n !== TESTIMONIOS_SHEET && !isDefaultSheetName(n));
+    const raw=(rows||[])
+      .map(r=>r.sheet||r.sheets||r.name||r.tab||r.hoja||"")
+      .map(s=>String(s).trim())
+      .filter(Boolean);
 
-    if(!names.length) return DEFAULT_SHEETS.slice();
+    const filtered=raw.filter(name=>{
+      const nn=norm(name);
+      if(!nn) return false;
+      if(nn==="_config" || nn==="_testimonios") return false;
+      // Evitar que el usuario meta por error los nombres base en _config (no pasa nada si los mete, igual funciona)
+      return true;
+    });
 
-    const uniq=[];
-    names.forEach(n=>{ if(!uniq.includes(n)) uniq.push(n); });
-    if(uniq.includes("ofertas")){
-      return ["ofertas", ...uniq.filter(x=>x!=="ofertas")].filter(n => !isDefaultSheetName(n));
+    // Si _config trae la lista, usamos esa lista.
+    if(filtered.length){
+      // Ofertas primero si existe.
+      const idx=filtered.findIndex(n=>norm(n)==="ofertas");
+      if(idx>0){
+        const [o]=filtered.splice(idx,1);
+        filtered.unshift(o);
+      }
+      console.log("✅ Lista de pestañas desde _config:", filtered);
+      return filtered;
     }
-    return uniq.filter(n => !isDefaultSheetName(n));
   }catch(e){
-    console.warn("Config falló, usando fallback",e);
-    return DEFAULT_SHEETS.slice();
+    console.warn("_config: no se pudo leer o está vacío, usando pestañas por defecto.", e);
   }
+
+  // Fallback (si NO hay _config): usamos las pestañas base.
+  // Nota: aquí sí depende de que tus pestañas se llamen exactamente así.
+  return DEFAULT_SHEETS.slice();
 }
+
 
 async function fetchTab(sheetName){
   try{
@@ -2294,7 +2314,7 @@ function render(){
         <div class="desc">${safeDesc}</div>
         ${galleryHTML}
         ${useDedalesBox?dedalesHTML:(isPromoCard?promoHTML:priceHTML)}
-        ${!(isPromoCard||useDedalesBox)?`<a href="${normalLink}" target="_blank" rel="noopener noreferrer" class="btn-ws ${isAgotado?\'btn-agotado\':\'\'}" data-buy="1" data-pid="${escapeHtml(p.id||"")}" data-name="${escapeHtml(p.nombre||"")}" data-qty="1" data-unit-price="${Number(p.precio||0)}" data-product-total="${Number(p.precio||0)}">
+        ${!(isPromoCard||useDedalesBox)?`<a href="${normalLink}" target="_blank" rel="noopener noreferrer" class="btn-ws ${isAgotado?'btn-agotado':''}" data-buy="1" data-pid="${escapeHtml(p.id||"")}" data-name="${escapeHtml(p.nombre||"")}" data-qty="1" data-unit-price="${Number(p.precio||0)}" data-product-total="${Number(p.precio||0)}">
           <i class="fa-brands fa-whatsapp"></i> ${btnText}
         </a>`:``}
       </div>
