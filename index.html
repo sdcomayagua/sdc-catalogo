@@ -511,6 +511,64 @@
       display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;box-shadow:0 14px 30px rgba(0,0,0,.25);
       z-index:220;text-decoration:none
     }
+
+    .float-cart{
+      position:fixed;
+      bottom:92px;
+      right:20px;
+      height:48px;
+      padding:0 14px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(15,23,42,.72);
+      border:1px solid rgba(255,255,255,.14);
+      color:#fff;
+      font-weight:900;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+      cursor:pointer;
+      box-shadow:0 14px 30px rgba(0,0,0,.22);
+      z-index:220;
+      backdrop-filter:blur(10px);
+      opacity:0;
+      pointer-events:none;
+      transform:translateY(10px);
+      transition:.18s;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .float-cart i{font-size:18px}
+    .float-cart .fc-text{font-size:12px;line-height:1}
+    .float-cart .fc-badge{
+      min-width:24px;
+      height:24px;
+      padding:0 6px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--accent);
+      color:#001018;
+      font-size:12px;
+      font-weight:1000;
+      line-height:1;
+      box-shadow:0 10px 22px rgba(56,189,248,.22);
+    }
+    .float-cart.show{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .float-cart:active{transform:scale(.98)}
+    [data-theme="light"] .float-cart{
+      background:rgba(15,23,42,.22);
+      border-color:rgba(2,6,23,.12);
+      color:#0f172a;
+    }
+    @media (max-width:420px){
+      .float-cart{right:14px;bottom:86px;height:46px;padding:0 12px;border-radius:16px}
+      .float-cart .fc-text{font-size:11px}
+    }
+
+
     .to-top{
       position:fixed;bottom:22px;left:18px;width:52px;height:52px;border-radius:16px;
       background:rgba(15,23,42,.55);border:1px solid rgba(255,255,255,.14);
@@ -1032,6 +1090,13 @@
     <p>© 2026 Soluciones Digitales Comayagua<br><span style="font-size:10px; opacity:0.6;">Todos los derechos reservados.</span></p>
   </footer>
 
+
+  <button class="float-cart" id="floatCart" type="button" aria-label="Ir al carrito" title="Ir al carrito">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span class="fc-text">IR AL CARRITO</span>
+    <span class="fc-badge" id="floatCartBadge">0</span>
+  </button>
+
   <a class="float-ws" href="https://wa.me/50432429490" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
@@ -1137,7 +1202,7 @@ async function loadShippingOptions(){
 }
 
 
-const BUILD_VERSION="20260113-cart";
+const BUILD_VERSION="20260112-fixed";
 
 /* ✅ Protecciones para evitar quedarse en "CARGANDO..." */
 let __loadedOk=false;
@@ -1171,12 +1236,26 @@ let categoriesOrdered=[];
 
 const STATE_KEY="sdc_state_v2";
 
+/* ================== CARRITO ================== */
+let cart = [];
+const CART_KEY = "sdc_cart_v1";
 
-/* ================== CART (Carrito acumulable) ================== */
-const CART_KEY="sdc_cart_v1";
-let cart=[];
+const floatCartBtn = document.getElementById("floatCart");
+const floatCartBadge = document.getElementById("floatCartBadge");
 
-function cartLoad(){
+function updateCartUI(){
+  const qty = cartQtyTotal();
+  if(!floatCartBtn) return;
+  if(qty > 0){
+    floatCartBtn.classList.add("show");
+    if(floatCartBadge) floatCartBadge.textContent = String(qty);
+  }else{
+    floatCartBtn.classList.remove("show");
+    if(floatCartBadge) floatCartBadge.textContent = "0";
+  }
+}
+
+function loadCart(){
   try{
     const raw = localStorage.getItem(CART_KEY) || "[]";
     const arr = JSON.parse(raw);
@@ -1184,47 +1263,58 @@ function cartLoad(){
   }catch(_e){
     cart = [];
   }
+  updateCartUI();
 }
-function cartSave(){
+
+function saveCart(){
   try{ localStorage.setItem(CART_KEY, JSON.stringify(cart||[])); }catch(_e){}
 }
-function cartClear(){
+
+function clearCart(){
   cart = [];
-  cartSave();
+  saveCart();
+  updateCartUI();
 }
-function cartKeyFor(item){
-  const pid = (item?.pid||"").toString().trim().toLowerCase();
-  const name = norm(item?.name||"");
-  const up = String(Number(item?.unitPrice||0));
-  return (pid ? ("pid:"+pid) : ("name:"+name)) + "|up:" + up;
-}
+
 function cartAddItem(item){
-  if(!item) return;
   const it = {
     pid: (item.pid||"").toString().trim(),
-    name: item.name || "Producto",
+    name: (item.name||"Producto").toString().trim(),
     qty: Number(item.qty||1),
     unitPrice: Number(item.unitPrice||0),
-    productTotal: Number(item.productTotal || (Number(item.qty||1)*Number(item.unitPrice||0))),
-    link: item.link || ""
+    productTotal: Number(item.productTotal||0),
+    link: (item.link||"").toString().trim()
   };
-  const k = cartKeyFor(it);
-  const ex = (cart||[]).find(x => cartKeyFor(x)===k);
+
+  if(!isFinite(it.qty) || it.qty<=0) it.qty = 1;
+  if(!isFinite(it.unitPrice) || it.unitPrice<0) it.unitPrice = 0;
+  if(!isFinite(it.productTotal) || it.productTotal<=0) it.productTotal = it.qty * it.unitPrice;
+
+  // Merge por producto + precio unitario (respeta escalas como Dedales)
+  const key = ((it.pid||it.name)||"").toLowerCase() + "|" + String(Number(it.unitPrice||0));
+  const ex = (cart||[]).find(x => (((x.pid||x.name)||"").toLowerCase()+"|"+String(Number(x.unitPrice||0))) === key);
+
   if(ex){
     ex.qty = Number(ex.qty||0) + it.qty;
     ex.productTotal = Number(ex.productTotal||0) + it.productTotal;
   }else{
     cart.push(it);
   }
-  cartSave();
+  saveCart();
+  updateCartUI();
 }
+
 function cartSubtotal(){
   return (cart||[]).reduce((s,x)=> s + Number(x.productTotal||0), 0);
 }
+
 function cartQtyTotal(){
   return (cart||[]).reduce((s,x)=> s + Number(x.qty||0), 0);
 }
+
 function buildCartCtx(){
+  const subtotal = cartSubtotal();
+  const qtyTotal = cartQtyTotal();
   const items = (cart||[]).map(x=>({
     pid: x.pid||"",
     name: x.name||"Producto",
@@ -1233,23 +1323,28 @@ function buildCartCtx(){
     productTotal: Number(x.productTotal||0),
     link: x.link||""
   }));
-  const subtotal = items.reduce((s,x)=>s+Number(x.productTotal||0),0);
-  const qtyTotal = items.reduce((s,x)=>s+Number(x.qty||0),0);
-  const link = buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
-  return { 
-    name: "Carrito de compras", 
-    qty: qtyTotal, 
-    unitPrice: 0, 
-    productTotal: subtotal, 
-    items, 
-    link
+  return {
+    isCart: true,
+    items,
+    name: `Carrito (${items.length} producto${items.length===1?"":"s"})`,
+    qty: qtyTotal,
+    unitPrice: 0,
+    productTotal: subtotal,
+    link: buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode})
   };
 }
-function cartHasItems(){
-  return Array.isArray(cart) && cart.length>0;
+
+if(floatCartBtn){
+  floatCartBtn.addEventListener("click", ()=>{
+    loadCart();
+    if(!cart || !cart.length){
+      toast("🛒 Tu carrito está vacío");
+      return;
+    }
+    openShipModal(buildCartCtx());
+  });
 }
 
-cartLoad();
 
 /* ================== HELPERS ================== */
 function norm(s){
@@ -1538,17 +1633,16 @@ const shipCourier = document.getElementById("shipCourier");
 const shipAddrFuera = document.getElementById("shipAddrFuera");
 
 
-/* ✅ Carrito: al enviar pedido, vaciar carrito para evitar duplicados */
+
+
 if(shipSend){
   shipSend.addEventListener("click", ()=>{
-    if(shipSend.classList.contains("disabled")) return;
-    // Si el cliente ya decidió pagar, limpiamos el carrito.
-    cartClear();
+    // Cuando el cliente decide "IR A PAGAR" y abre WhatsApp, vaciamos el carrito.
+    if(shipCtx && shipCtx.isCart){
+      clearCart();
+    }
   });
 }
-
-
-
 
 /* ================== HONDURAS: Departamentos y Municipios ================== */
 const HN_MUNICIPIOS = {
@@ -1628,54 +1722,38 @@ function openShipModal(ctx){
   resetShipUI();
 
   // Summary
-  let summaryHTML = "";
-  const hasItems = !!(ctx && Array.isArray(ctx.items) && ctx.items.length);
+  const subtotal = Number(ctx.productTotal||0);
 
-  if(hasItems){
-    const items = ctx.items;
-    const subtotal = Number(ctx.productTotal||0);
-    const qtyTotal = Number(ctx.qty || items.reduce((s,x)=>s+Number(x.qty||0),0));
+  if(ctx && ctx.isCart && Array.isArray(ctx.items) && ctx.items.length){
+    const itemsHTML = ctx.items.map((it,i)=>{
+      const name = escapeHtml(it.name||"Producto");
+      const qty = Number(it.qty||1);
+      const unit = Number(it.unitPrice||0);
+      const sub = Number(it.productTotal||0);
+      return `
+        <div class="ship-s-row" style="align-items:flex-start">
+          <span style="max-width:65%;line-height:1.2">${i+1}) ${name}</span>
+          <strong style="text-align:right;line-height:1.2">${qty} x Lps. ${money(unit)}<br><span style="opacity:.85;font-weight:900">Lps. ${money(sub)}</span></strong>
+        </div>
+      `;
+    }).join("");
 
-    summaryHTML += `<div class="ship-s-name">Carrito de compras</div>`;
-    summaryHTML += `<div class="ship-s-row"><span>Productos</span><strong>${items.length}</strong></div>`;
-    summaryHTML += `<div class="ship-s-row"><span>Cantidad total</span><strong>${qtyTotal}</strong></div>`;
-
-    summaryHTML += `
-      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:160px;overflow:auto;padding-right:4px;">
-        ${items.map((it,i)=>{
-          const n = escapeHtml(it.name||"Producto");
-          const q = Number(it.qty||1);
-          const up = Number(it.unitPrice||0);
-          const sub = Number(it.productTotal|| (q*up));
-          return `
-            <div style="border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;">
-              <div style="font-weight:900;font-size:12px;">${i+1}) ${n}</div>
-              <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--text-muted);margin-top:4px;">
-                <span>${q} x Lps. ${money(up)}</span>
-                <strong style="color:var(--text);">Lps. ${money(sub)}</strong>
-              </div>
-            </div>
-          `;
-        }).join("")}
-      </div>
+    shipSummaryEl.innerHTML = `
+      <div class="ship-s-name">${escapeHtml(ctx.name||"Carrito")}</div>
+      ${itemsHTML}
+      <div class="ship-s-row" style="margin-top:8px"><span>Subtotal productos</span><strong>Lps. ${money(subtotal)}</strong></div>
     `;
-
-    summaryHTML += `<div style="height:10px"></div>`;
-    summaryHTML += `<div class="ship-s-row"><span>Subtotal productos</span><strong>Lps. ${money(subtotal)}</strong></div>`;
-  } else {
+  }else{
     const qty = Number(ctx.qty||1);
     const unitPrice = Number(ctx.unitPrice||0);
-    const subtotal = Number(ctx.productTotal||0);
 
-    summaryHTML = `
+    shipSummaryEl.innerHTML = `
       <div class="ship-s-name">${escapeHtml(ctx.name||"Producto")}</div>
       <div class="ship-s-row"><span>Cantidad</span><strong>${qty}</strong></div>
       <div class="ship-s-row"><span>Precio unitario</span><strong>Lps. ${money(unitPrice)}</strong></div>
       <div class="ship-s-row"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
     `;
   }
-
-  shipSummaryEl.innerHTML = summaryHTML;
 
   shipOverlay.classList.add("show");
   shipOverlay.setAttribute("aria-hidden","false");
@@ -1842,32 +1920,29 @@ function findShipOption(){
 
 
 function buildWhatsAppMessage(ctx,opt,extra){
+  const subtotal = Number(ctx.productTotal||0);
   const ship = Number(opt.price||0);
+  const total = subtotal + ship;
+
   const zoneText = shipZone ? "Comayagua ✅" : "Fuera de Comayagua ✅";
   const pay = formatPayLabel(opt.pay||"");
 
   const lines = [];
   lines.push("Hola SDC, quiero comprar:");
 
-  const hasItems = !!(ctx && Array.isArray(ctx.items) && ctx.items.length);
-
-  let subtotal = 0;
-
-  if(hasItems){
+  if(ctx && ctx.isCart && Array.isArray(ctx.items) && ctx.items.length){
     ctx.items.forEach((it,i)=>{
+      const name = it.name || "Producto";
       const qty = Number(it.qty||1);
       const unitPrice = Number(it.unitPrice||0);
       const sub = Number(it.productTotal|| (qty*unitPrice));
-      subtotal += sub;
-      lines.push(`- ${i+1}) *${it.name||"Producto"}* x${qty} • Lps. ${money(unitPrice)} c/u • Subtotal Lps. ${money(sub)}`);
+      lines.push(`- ${i+1}) *${name}* — ${qty} x Lps. ${money(unitPrice)} = Lps. ${money(sub)}`);
     });
     lines.push("");
     lines.push(`Subtotal productos: Lps. ${money(subtotal)}`);
-  } else {
+  }else{
     const qty = Number(ctx.qty||1);
     const unitPrice = Number(ctx.unitPrice||0);
-    subtotal = Number(ctx.productTotal||0);
-
     lines.push(`- Producto: *${ctx.name||"Producto"}*`);
     lines.push(`- Cantidad: ${qty}`);
     lines.push(`- Precio unitario: Lps. ${money(unitPrice)}`);
@@ -1887,25 +1962,11 @@ function buildWhatsAppMessage(ctx,opt,extra){
     lines.push("");
   }
 
-  const total = Number(subtotal||0) + ship;
   lines.push(`TOTAL A PAGAR: Lps. ${money(total)}`);
   lines.push("");
+  if(ctx.link) lines.push(`Link: ${ctx.link}`);
 
-  // Links (opcional)
-  if(hasItems){
-    const links = [...new Set(ctx.items.map(x=>x.link).filter(Boolean))];
-    if(links.length){
-      lines.push("Links:");
-      links.slice(0,4).forEach(l=>lines.push(`- ${l}`));
-      if(links.length>4) lines.push(`- (+${links.length-4} más)`);
-    }else if(ctx.link){
-      lines.push(`Link: ${ctx.link}`);
-    }
-  } else {
-    if(ctx.link) lines.push(`Link: ${ctx.link}`);
-  }
-
-    return lines.join("\n");
+  return lines.join("\n");
 }
 
 
@@ -1977,22 +2038,15 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
   // ✅ Carrito acumulable
   cartAddItem({ pid, name, qty, unitPrice, productTotal, link });
 
-  // Pregunta (nativa) para que funcione en CELULAR sin fallar
+  // Pregunta rápida (nativo) para que siempre funcione en CELULAR
   const goPay = confirm(
-    `✅ Agregado al carrito:
-${name}
-
-¿Deseas proceder con la compra?
-
-Aceptar = Ir a pagar
-Cancelar = Seguir viendo`
+    `✅ Agregado al carrito:\n${name}\n\n¿Deseas IR AL CARRITO para pagar?\n\nAceptar = Ir al carrito\nCancelar = Seguir viendo`
   );
 
   if(goPay){
-    const ctx = buildCartCtx();
-    openShipModal(ctx);
+    openShipModal(buildCartCtx());
   }else{
-    toast("🛒 Guardado. Sigue viendo productos.");
+    toast("🛒 Carrito guardado. Toca 'IR AL CARRITO' para pagar.");
   }
 });
 
@@ -3117,6 +3171,7 @@ function focusProductById(pid){
 
 /* ================== START ================== */
 loadShippingOptions();
+loadCart();
 
 loadAll();
 </script>
