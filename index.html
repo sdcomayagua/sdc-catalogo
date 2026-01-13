@@ -1136,7 +1136,7 @@ async function loadShippingOptions(){
 }
 
 
-const BUILD_VERSION="20260111";
+const BUILD_VERSION="20260112-autodesc";
 
 /* ✅ Protecciones para evitar quedarse en "CARGANDO..." */
 let __loadedOk=false;
@@ -1310,6 +1310,24 @@ function pluralize(unidad,qty){
 }
 function cleanOneLine(s){
   return (s??"").toString().trim().replace(/\s+/g," ");
+}
+
+
+function buildAutoDescripcion(p){
+  const lines=[];
+  const ideal = cleanOneLine(p.ideal_para);
+  const bene  = cleanOneLine(p.beneficio);
+  const comp  = cleanOneLine(p.compatible);
+  const inc   = cleanOneLine(p.incluye);
+  const note  = cleanOneLine(p.nota);
+
+  if(ideal) lines.push(`- 🎯 Ideal para: ${ideal}`);
+  if(bene)  lines.push(`- ✅ Beneficio: ${bene}`);
+  if(comp)  lines.push(`- 📱 Compatible: ${comp}`);
+  if(inc)   lines.push(`- 📦 Incluye: ${inc}`);
+  if(note)  lines.push(`- 📝 Nota: ${note}`);
+
+  return lines.join("\n");
 }
 
 
@@ -1521,7 +1539,9 @@ function resetShipUI(){
   }
   if(shipAddrFuera) shipAddrFuera.value = "";
   if(shipCourier) shipCourier.value = "";
+}  if(shipCourier) shipCourier.value = "";
 }
+
 function openShipModal(ctx){
   shipCtx = ctx;
   resetShipUI();
@@ -2041,6 +2061,14 @@ async function fetchTab(sheetName){
       obj.subcategoria=(obj.subcategoria??"").toString().trim();
       obj.nombre=(obj.nombre??"").toString().trim();
       obj.descripcion=(obj.descripcion??obj.descipcion??"").toString();
+      obj.ideal_para=(obj.ideal_para??"").toString().trim();
+      obj.beneficio=(obj.beneficio??"").toString().trim();
+      obj.compatible=(obj.compatible??"").toString().trim();
+      obj.incluye=(obj.incluye??"").toString().trim();
+      obj.nota=(obj.nota??"").toString().trim();
+      if(!obj.descripcion || !obj.descripcion.trim()){
+        obj.descripcion = buildAutoDescripcion(obj);
+      }
       obj.estado=norm(obj.estado||"activo");
       obj.stock=Number(obj.stock||0);
       obj.precio=Number(obj.precio||0);
