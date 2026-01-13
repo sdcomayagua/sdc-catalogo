@@ -557,6 +557,9 @@
       background:rgba(0,0,0,.45);
       display:flex; align-items:flex-start; justify-content:center;
       padding:16px;
+      padding-bottom:calc(16px + env(safe-area-inset-bottom));
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
       opacity:0; pointer-events:none; transition:.18s;
       backdrop-filter: blur(8px);
     }
@@ -614,6 +617,10 @@
       border-radius:18px;
       box-shadow:0 18px 44px rgba(0,0,0,.28);
       overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      max-height:calc(100vh - 32px);
+      max-height:calc(100svh - 32px);
     }
     .ship-top{
       display:flex; align-items:center; justify-content:space-between;
@@ -630,7 +637,7 @@
       background:transparent;color:var(--text);cursor:pointer;
       display:flex;align-items:center;justify-content:center;
     }
-    .ship-body{ padding:12px 12px 14px; display:flex; flex-direction:column; gap:12px; }
+    .ship-body{ padding:12px 12px calc(14px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:12px; flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; }
     .ship-summary{
       border:1px solid var(--border);
       background:rgba(255,255,255,.04);
@@ -886,7 +893,18 @@
                   <option value="">Primero elige un departamento…</option>
                 </select>
               </div>
+              
               <div class="ship-field">
+                <label class="ship-label" for="shipCourier">Elige la empresa de envío</label>
+                <select id="shipCourier" class="ship-input">
+                  <option value="">Selecciona una empresa…</option>
+                  <option value="C807">C807</option>
+                  <option value="Cargo Expreso">Cargo Expreso</option>
+                  <option value="Forza">Forza</option>
+                </select>
+                <div class="ship-help">Obligatorio para envíos fuera de Comayagua ✅</div>
+              </div>
+<div class="ship-field">
                 <label class="ship-label" for="shipAddrFuera">Dirección exacta</label>
                 <textarea id="shipAddrFuera" class="ship-input" rows="3" placeholder="Barrio/colonia, calle, #casa, referencia, etc."></textarea>
                 <div class="ship-help">Tip: entre más exacta, más rápido llega ✅</div>
@@ -1059,7 +1077,7 @@ const DEFAULT_SHIPPING_OPTIONS = [
 
   // Grupo fuera de Comayagua / a nivel nacional
   {group:"fuera", key:"adelantado", label:"Envío nacional (pago adelantado) (L 110)", price:110, pay:"adelantado", note:""},
-  {group:"fuera", key:"contraentrega", label:"Envío nacional (contra entrega) (L 170)", price:170, pay:"contra_entrega", note:""}
+  {group:"fuera", key:"contraentrega", label:"Envío nacional (PAGAR AL RECIBIR) (L 170)", price:170, pay:"contra_entrega", note:""}
 ];
 
 let shippingOptions = DEFAULT_SHIPPING_OPTIONS.slice();
@@ -1265,6 +1283,15 @@ function escapeHtml(s){
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[m]));
 }
+
+function prettyPay(pay){
+  const p = String(pay ?? "").trim().toLowerCase();
+  if(!p) return "";
+  if(p === "contra_entrega" || p.includes("contra")) return "PAGAR AL RECIBIR";
+  if(p === "adelantado" || p.includes("adelant")) return "PAGO ADELANTADO";
+  return String(pay).trim();
+}
+
 function getIconForCategory(cat){
   const name=norm(cat);
   if(name.includes("gamer")) return "🎮";
@@ -1417,6 +1444,7 @@ const shipFormFuera = document.getElementById("shipFormFuera");
 const shipAddrComa = document.getElementById("shipAddrComa");
 const shipDept = document.getElementById("shipDept");
 const shipMuni = document.getElementById("shipMuni");
+const shipCourier = document.getElementById("shipCourier");
 const shipAddrFuera = document.getElementById("shipAddrFuera");
 
 
@@ -1462,6 +1490,7 @@ function initHondurasSelectors(){
   };
 
   shipMuni.onchange = ()=>updateShipTotal();
+  shipCourier && (shipCourier.onchange = ()=>updateShipTotal());
   shipAddrComa && (shipAddrComa.oninput = ()=>updateShipTotal());
   shipAddrFuera && (shipAddrFuera.oninput = ()=>updateShipTotal());
 }
@@ -1491,6 +1520,8 @@ function resetShipUI(){
     shipMuni.disabled = true;
   }
   if(shipAddrFuera) shipAddrFuera.value = "";
+  if(shipCourier) shipCourier.value = "";
+}  if(shipCourier) shipCourier.value = "";
 }
 
 function openShipModal(ctx){
@@ -1590,16 +1621,19 @@ function getShipExtraData(opt){
   if(shipZone === false){
     const dep = (shipDept?.value || "").trim();
     const muni = (shipMuni?.value || "").trim();
+    const courier = (shipCourier?.value || "").trim();
     const addr = (shipAddrFuera?.value || "").trim();
 
     if(!dep) return { ok:false, error:"Elige tu Departamento para poder enviar el pedido.", lines:[] };
     if(!muni) return { ok:false, error:"Elige tu Municipio para poder enviar el pedido.", lines:[] };
+    if(!courier) return { ok:false, error:"Elige la empresa de envío (C807, Cargo Expreso o Forza).", lines:[] };
     if(!addr) return { ok:false, error:"Escribe la dirección exacta para poder enviar el pedido.", lines:[] };
 
     const lines = [];
     lines.push("Ubicación:");
     lines.push(`- Departamento: ${dep}`);
     lines.push(`- Municipio: ${muni}`);
+    lines.push(`- Empresa de envío: ${courier}`);
     lines.push(`- Dirección exacta: ${addr}`);
     return { ok:true, error:"", lines };
   }
@@ -1628,8 +1662,8 @@ function renderShipOptions(){
     btn.className = "ship-opt" + (opt.key===shipSelectedKey ? " active" : "");
     const pay = (opt.pay||"").trim();
     const note = (opt.note||"").trim();
-    const payText = pay ? `• ${escapeHtml(pay)}` : "";
-    const noteText = note ? escapeHtml(note) : (pay ? `Pago: ${escapeHtml(pay)}` : "");
+    const payNice = pay ? prettyPay(pay) : "";
+    const noteText = note ? escapeHtml(note) : (payNice ? `Pago: ${escapeHtml(payNice)}` : "");
     btn.innerHTML = `
       <div class="ship-opt-left">
         <b>${escapeHtml(opt.label)}</b>
@@ -1677,7 +1711,7 @@ function buildWhatsAppMessage(ctx,opt,extra){
   lines.push(`- Zona: ${zoneText}`);
   lines.push(`- Método: ${opt.label}`);
   lines.push(`- Envío: Lps. ${money(ship)}`);
-  if(pay) lines.push(`- Pago: ${pay}`);
+  if(pay) lines.push(`- Pago: ${prettyPay(pay)}`);
   lines.push("");
 
   if(extra && Array.isArray(extra.lines) && extra.lines.length){
@@ -2730,6 +2764,15 @@ Stock: ${stock}
     const btn=box.querySelector(".promoBtn");
     if(btn){
       btn.href=link;
+
+      // Datos para calcular envío (modal)
+      btn.dataset.buy = "1";
+      btn.dataset.pid = (p.id||"").toString();
+      btn.dataset.name = (p.nombre||"").toString();
+      btn.dataset.qty = String(qty);
+      btn.dataset.unitPrice = String(unitPrice);
+      btn.dataset.productTotal = String(total);
+
       btn.innerHTML=`<i class="fa-brands fa-whatsapp"></i> PEDIR ${qty} ${unitLabel} 🚀`;
     }
   }
