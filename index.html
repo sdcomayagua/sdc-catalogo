@@ -253,8 +253,16 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
     .card.promo-mode{border:2px solid var(--promo-color)!important;box-shadow:0 0 22px var(--promo-glow)!important}
 
-    .card-img-container{position:relative;width:100%;aspect-ratio:1/1;background:#fff;border-bottom:1px solid var(--border);overflow:hidden}
-    .card-img{position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat}
+    .card-img-container{position:relative;width:100%;aspect-ratio:1/1;
+      /* Fondo neutro para evitar líneas laterales por el 'contain' */
+      background:linear-gradient(to bottom, rgba(255,255,255,.06), rgba(255,255,255,0) 18px, rgba(255,255,255,0) calc(100% - 18px), rgba(255,255,255,.06)), var(--bg);
+      border-bottom:1px solid var(--border);overflow:hidden}
+    [data-theme="light"] .card-img-container{
+      background:linear-gradient(to bottom, rgba(15,23,42,.06), rgba(15,23,42,0) 18px, rgba(15,23,42,0) calc(100% - 18px), rgba(15,23,42,.06)), #fff;
+    }
+    .card-img{position:absolute;inset:0;
+      /* Ajuste para que NO se vean barras/lineas a los lados: "encaja al ancho" */
+      background-size:100% auto;background-position:center;background-repeat:no-repeat}
     .card.agotado .card-img{filter:grayscale(100%);opacity:.55}
 
     .share-prod{
