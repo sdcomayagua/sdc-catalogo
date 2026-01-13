@@ -557,11 +557,11 @@
       background:rgba(0,0,0,.45);
       display:flex; align-items:flex-start; justify-content:center;
       padding:16px;
-      padding-bottom:calc(16px + env(safe-area-inset-bottom));
-      overflow-y:auto;
-      -webkit-overflow-scrolling:touch;
       opacity:0; pointer-events:none; transition:.18s;
       backdrop-filter: blur(8px);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
     }
     [data-theme="light"] .overlay{background:rgba(2,6,23,.35)}
     .overlay.show{opacity:1; pointer-events:auto}
@@ -619,8 +619,8 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      max-height:calc(100vh - 32px);
-      max-height:calc(100svh - 32px);
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
     }
     .ship-top{
       display:flex; align-items:center; justify-content:space-between;
@@ -637,7 +637,7 @@
       background:transparent;color:var(--text);cursor:pointer;
       display:flex;align-items:center;justify-content:center;
     }
-    .ship-body{ padding:12px 12px calc(14px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:12px; flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    .ship-body{ padding:12px 12px 14px; display:flex; flex-direction:column; gap:12px; flex:1 1 auto; overflow-y:auto; -webkit-overflow-scrolling:touch; }
     .ship-summary{
       border:1px solid var(--border);
       background:rgba(255,255,255,.04);
@@ -893,18 +893,19 @@
                   <option value="">Primero elige un departamento…</option>
                 </select>
               </div>
-              
+
               <div class="ship-field">
-                <label class="ship-label" for="shipCourier">Elige la empresa de envío</label>
+                <label class="ship-label" for="shipCourier">Elije empresa de envío</label>
                 <select id="shipCourier" class="ship-input">
                   <option value="">Selecciona una empresa…</option>
                   <option value="C807">C807</option>
                   <option value="Cargo Expreso">Cargo Expreso</option>
                   <option value="Forza">Forza</option>
                 </select>
-                <div class="ship-help">Obligatorio para envíos fuera de Comayagua ✅</div>
+                <div class="ship-help">Elige la empresa antes de enviar el pedido.</div>
               </div>
-<div class="ship-field">
+
+              <div class="ship-field">
                 <label class="ship-label" for="shipAddrFuera">Dirección exacta</label>
                 <textarea id="shipAddrFuera" class="ship-input" rows="3" placeholder="Barrio/colonia, calle, #casa, referencia, etc."></textarea>
                 <div class="ship-help">Tip: entre más exacta, más rápido llega ✅</div>
@@ -1077,7 +1078,7 @@ const DEFAULT_SHIPPING_OPTIONS = [
 
   // Grupo fuera de Comayagua / a nivel nacional
   {group:"fuera", key:"adelantado", label:"Envío nacional (pago adelantado) (L 110)", price:110, pay:"adelantado", note:""},
-  {group:"fuera", key:"contraentrega", label:"Envío nacional (PAGAR AL RECIBIR) (L 170)", price:170, pay:"contra_entrega", note:""}
+  {group:"fuera", key:"contraentrega", label:"Envío nacional (contra entrega) (L 170)", price:170, pay:"contra_entrega", note:""}
 ];
 
 let shippingOptions = DEFAULT_SHIPPING_OPTIONS.slice();
@@ -1136,7 +1137,7 @@ async function loadShippingOptions(){
 }
 
 
-const BUILD_VERSION="20260112-autodesc";
+const BUILD_VERSION="20260112-fixed";
 
 /* ✅ Protecciones para evitar quedarse en "CARGANDO..." */
 let __loadedOk=false;
@@ -1283,15 +1284,6 @@ function escapeHtml(s){
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
   }[m]));
 }
-
-function prettyPay(pay){
-  const p = String(pay ?? "").trim().toLowerCase();
-  if(!p) return "";
-  if(p === "contra_entrega" || p.includes("contra")) return "PAGAR AL RECIBIR";
-  if(p === "adelantado" || p.includes("adelant")) return "PAGO ADELANTADO";
-  return String(pay).trim();
-}
-
 function getIconForCategory(cat){
   const name=norm(cat);
   if(name.includes("gamer")) return "🎮";
@@ -1327,7 +1319,7 @@ function buildAutoDescripcion(p){
   if(inc)   lines.push(`- 📦 Incluye: ${inc}`);
   if(note)  lines.push(`- 📝 Nota: ${note}`);
 
-  return lines.join("\n");
+  return lines.join("\n").trim();
 }
 
 
@@ -1508,7 +1500,6 @@ function initHondurasSelectors(){
   };
 
   shipMuni.onchange = ()=>updateShipTotal();
-  shipCourier && (shipCourier.onchange = ()=>updateShipTotal());
   shipAddrComa && (shipAddrComa.oninput = ()=>updateShipTotal());
   shipAddrFuera && (shipAddrFuera.oninput = ()=>updateShipTotal());
 }
@@ -1539,7 +1530,6 @@ function resetShipUI(){
   }
   if(shipAddrFuera) shipAddrFuera.value = "";
   if(shipCourier) shipCourier.value = "";
-}  if(shipCourier) shipCourier.value = "";
 }
 
 function openShipModal(ctx){
@@ -1644,7 +1634,7 @@ function getShipExtraData(opt){
 
     if(!dep) return { ok:false, error:"Elige tu Departamento para poder enviar el pedido.", lines:[] };
     if(!muni) return { ok:false, error:"Elige tu Municipio para poder enviar el pedido.", lines:[] };
-    if(!courier) return { ok:false, error:"Elige la empresa de envío (C807, Cargo Expreso o Forza).", lines:[] };
+    if(!courier) return { ok:false, error:"Elige la empresa de envío (C807, Cargo Expreso o Forza) para poder enviar el pedido.", lines:[] };
     if(!addr) return { ok:false, error:"Escribe la dirección exacta para poder enviar el pedido.", lines:[] };
 
     const lines = [];
@@ -1657,6 +1647,20 @@ function getShipExtraData(opt){
   }
 
   return { ok:false, error:"Selecciona tu zona (Sí/No).", lines:[] };
+}
+
+
+function formatPayLabel(payRaw){
+  const pay = (payRaw||"").toString().trim();
+  const p = norm(pay);
+  if(!pay || p==="cualquiera" || p==="cualquier" || p==="any") return "";
+  if(p==="contra_entrega" || p==="contraentrega" || p==="contra entrega" || p==="pagar al recibir" || p==="al recibir"){
+    return "PAGAR AL RECIBIR";
+  }
+  if(p==="adelantado" || p==="pago adelantado" || p==="prepagado"){
+    return "PAGO ADELANTADO";
+  }
+  return pay.toUpperCase();
 }
 
 function renderShipOptions(){
@@ -1678,10 +1682,10 @@ function renderShipOptions(){
   list.forEach(opt=>{
     const btn=document.createElement("div");
     btn.className = "ship-opt" + (opt.key===shipSelectedKey ? " active" : "");
-    const pay = (opt.pay||"").trim();
+    const pay = formatPayLabel(opt.pay||"");
     const note = (opt.note||"").trim();
-    const payNice = pay ? prettyPay(pay) : "";
-    const noteText = note ? escapeHtml(note) : (payNice ? `Pago: ${escapeHtml(payNice)}` : "");
+    const payText = pay ? `• ${escapeHtml(pay)}` : "";
+    const noteText = note ? escapeHtml(note) : (pay ? `Pago: ${escapeHtml(pay)}` : "");
     btn.innerHTML = `
       <div class="ship-opt-left">
         <b>${escapeHtml(opt.label)}</b>
@@ -1716,7 +1720,7 @@ function buildWhatsAppMessage(ctx,opt,extra){
   const total = subtotal + ship;
 
   const zoneText = shipZone ? "Comayagua ✅" : "Fuera de Comayagua ✅";
-  const pay = (opt.pay||"").trim();
+  const pay = formatPayLabel(opt.pay||"");
 
   const lines = [];
   lines.push("Hola SDC, quiero comprar:");
@@ -1729,7 +1733,7 @@ function buildWhatsAppMessage(ctx,opt,extra){
   lines.push(`- Zona: ${zoneText}`);
   lines.push(`- Método: ${opt.label}`);
   lines.push(`- Envío: Lps. ${money(ship)}`);
-  if(pay) lines.push(`- Pago: ${prettyPay(pay)}`);
+  if(pay) lines.push(`- Pago: ${pay}`);
   lines.push("");
 
   if(extra && Array.isArray(extra.lines) && extra.lines.length){
@@ -2067,7 +2071,8 @@ async function fetchTab(sheetName){
       obj.incluye=(obj.incluye??"").toString().trim();
       obj.nota=(obj.nota??"").toString().trim();
       if(!obj.descripcion || !obj.descripcion.trim()){
-        obj.descripcion = buildAutoDescripcion(obj);
+        const auto = buildAutoDescripcion(obj);
+        if(auto) obj.descripcion = auto;
       }
       obj.estado=norm(obj.estado||"activo");
       obj.stock=Number(obj.stock||0);
@@ -2790,7 +2795,6 @@ Stock: ${stock}
     const btn=box.querySelector(".promoBtn");
     if(btn){
       btn.href=link;
-
       // Datos para calcular envío (modal)
       btn.dataset.buy = "1";
       btn.dataset.pid = (p.id||"").toString();
