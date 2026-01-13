@@ -1137,7 +1137,7 @@ async function loadShippingOptions(){
 }
 
 
-const BUILD_VERSION="20260112-fixed";
+const BUILD_VERSION="20260113-cart";
 
 /* ✅ Protecciones para evitar quedarse en "CARGANDO..." */
 let __loadedOk=false;
@@ -1171,11 +1171,12 @@ let categoriesOrdered=[];
 
 const STATE_KEY="sdc_state_v2";
 
-/* ================== CART ================== */
-let cart=[];
-const CART_KEY="sdc_cart_v1";
 
-function loadCart(){
+/* ================== CART (Carrito acumulable) ================== */
+const CART_KEY="sdc_cart_v1";
+let cart=[];
+
+function cartLoad(){
   try{
     const raw = localStorage.getItem(CART_KEY) || "[]";
     const arr = JSON.parse(raw);
@@ -1184,54 +1185,46 @@ function loadCart(){
     cart = [];
   }
 }
-
-function saveCart(){
+function cartSave(){
   try{ localStorage.setItem(CART_KEY, JSON.stringify(cart||[])); }catch(_e){}
 }
-
-function clearCart(){
+function cartClear(){
   cart = [];
-  saveCart();
+  cartSave();
 }
-
+function cartKeyFor(item){
+  const pid = (item?.pid||"").toString().trim().toLowerCase();
+  const name = norm(item?.name||"");
+  const up = String(Number(item?.unitPrice||0));
+  return (pid ? ("pid:"+pid) : ("name:"+name)) + "|up:" + up;
+}
 function cartAddItem(item){
+  if(!item) return;
   const it = {
     pid: (item.pid||"").toString().trim(),
-    name: (item.name||"Producto").toString().trim(),
+    name: item.name || "Producto",
     qty: Number(item.qty||1),
     unitPrice: Number(item.unitPrice||0),
-    productTotal: Number(item.productTotal||0),
-    link: (item.link||"").toString().trim()
+    productTotal: Number(item.productTotal || (Number(item.qty||1)*Number(item.unitPrice||0))),
+    link: item.link || ""
   };
-
-  if(!isFinite(it.qty) || it.qty<=0) it.qty = 1;
-  if(!isFinite(it.unitPrice) || it.unitPrice<0) it.unitPrice = 0;
-  if(!isFinite(it.productTotal) || it.productTotal<=0) it.productTotal = it.qty * it.unitPrice;
-
-  // Merge por producto + precio unitario (para respetar escalas como Dedales)
-  const key = ((it.pid||it.name)||"").toLowerCase() + "|" + String(Number(it.unitPrice||0));
-  const ex = cart.find(x => (((x.pid||x.name)||"").toLowerCase()+"|"+String(Number(x.unitPrice||0))) === key);
-
+  const k = cartKeyFor(it);
+  const ex = (cart||[]).find(x => cartKeyFor(x)===k);
   if(ex){
     ex.qty = Number(ex.qty||0) + it.qty;
     ex.productTotal = Number(ex.productTotal||0) + it.productTotal;
   }else{
     cart.push(it);
   }
-  saveCart();
+  cartSave();
 }
-
 function cartSubtotal(){
   return (cart||[]).reduce((s,x)=> s + Number(x.productTotal||0), 0);
 }
-
 function cartQtyTotal(){
   return (cart||[]).reduce((s,x)=> s + Number(x.qty||0), 0);
 }
-
 function buildCartCtx(){
-  const subtotal = cartSubtotal();
-  const qtyTotal = cartQtyTotal();
   const items = (cart||[]).map(x=>({
     pid: x.pid||"",
     name: x.name||"Producto",
@@ -1240,18 +1233,23 @@ function buildCartCtx(){
     productTotal: Number(x.productTotal||0),
     link: x.link||""
   }));
-
-  return {
-    isCart: true,
-    items,
-    name: `Carrito (${items.length} producto${items.length===1?"":"s"})`,
-    qty: qtyTotal,
-    unitPrice: 0,
-    productTotal: subtotal,
-    link: buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode})
+  const subtotal = items.reduce((s,x)=>s+Number(x.productTotal||0),0);
+  const qtyTotal = items.reduce((s,x)=>s+Number(x.qty||0),0);
+  const link = buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
+  return { 
+    name: "Carrito de compras", 
+    qty: qtyTotal, 
+    unitPrice: 0, 
+    productTotal: subtotal, 
+    items, 
+    link
   };
 }
+function cartHasItems(){
+  return Array.isArray(cart) && cart.length>0;
+}
 
+cartLoad();
 
 /* ================== HELPERS ================== */
 function norm(s){
@@ -1540,12 +1538,16 @@ const shipCourier = document.getElementById("shipCourier");
 const shipAddrFuera = document.getElementById("shipAddrFuera");
 
 
+/* ✅ Carrito: al enviar pedido, vaciar carrito para evitar duplicados */
 if(shipSend){
   shipSend.addEventListener("click", ()=>{
-    // Cuando el cliente decide "IR A PAGAR" y abre WhatsApp, vaciamos el carrito.
-    if(shipCtx && shipCtx.isCart) clearCart();
+    if(shipSend.classList.contains("disabled")) return;
+    // Si el cliente ya decidió pagar, limpiamos el carrito.
+    cartClear();
   });
 }
+
+
 
 
 /* ================== HONDURAS: Departamentos y Municipios ================== */
@@ -1626,38 +1628,54 @@ function openShipModal(ctx){
   resetShipUI();
 
   // Summary
-  const subtotal = Number(ctx.productTotal||0);
+  let summaryHTML = "";
+  const hasItems = !!(ctx && Array.isArray(ctx.items) && ctx.items.length);
 
-  if(ctx && ctx.isCart && Array.isArray(ctx.items) && ctx.items.length){
-    const itemsHTML = ctx.items.map((it,i)=>{
-      const name = escapeHtml(it.name||"Producto");
-      const qty = Number(it.qty||1);
-      const unit = Number(it.unitPrice||0);
-      const sub = Number(it.productTotal||0);
-      return `
-        <div class="ship-s-row" style="align-items:flex-start">
-          <span style="max-width:65%;line-height:1.2">${i+1}) ${name}</span>
-          <strong style="text-align:right;line-height:1.2">${qty} x Lps. ${money(unit)}<br><span style="opacity:.85;font-weight:700">Lps. ${money(sub)}</span></strong>
-        </div>
-      `;
-    }).join("");
+  if(hasItems){
+    const items = ctx.items;
+    const subtotal = Number(ctx.productTotal||0);
+    const qtyTotal = Number(ctx.qty || items.reduce((s,x)=>s+Number(x.qty||0),0));
 
-    shipSummaryEl.innerHTML = `
-      <div class="ship-s-name">${escapeHtml(ctx.name||"Carrito")}</div>
-      ${itemsHTML}
-      <div class="ship-s-row" style="margin-top:8px"><span>Subtotal productos</span><strong>Lps. ${money(subtotal)}</strong></div>
+    summaryHTML += `<div class="ship-s-name">Carrito de compras</div>`;
+    summaryHTML += `<div class="ship-s-row"><span>Productos</span><strong>${items.length}</strong></div>`;
+    summaryHTML += `<div class="ship-s-row"><span>Cantidad total</span><strong>${qtyTotal}</strong></div>`;
+
+    summaryHTML += `
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;max-height:160px;overflow:auto;padding-right:4px;">
+        ${items.map((it,i)=>{
+          const n = escapeHtml(it.name||"Producto");
+          const q = Number(it.qty||1);
+          const up = Number(it.unitPrice||0);
+          const sub = Number(it.productTotal|| (q*up));
+          return `
+            <div style="border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;">
+              <div style="font-weight:900;font-size:12px;">${i+1}) ${n}</div>
+              <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--text-muted);margin-top:4px;">
+                <span>${q} x Lps. ${money(up)}</span>
+                <strong style="color:var(--text);">Lps. ${money(sub)}</strong>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
     `;
-  }else{
+
+    summaryHTML += `<div style="height:10px"></div>`;
+    summaryHTML += `<div class="ship-s-row"><span>Subtotal productos</span><strong>Lps. ${money(subtotal)}</strong></div>`;
+  } else {
     const qty = Number(ctx.qty||1);
     const unitPrice = Number(ctx.unitPrice||0);
+    const subtotal = Number(ctx.productTotal||0);
 
-    shipSummaryEl.innerHTML = `
+    summaryHTML = `
       <div class="ship-s-name">${escapeHtml(ctx.name||"Producto")}</div>
       <div class="ship-s-row"><span>Cantidad</span><strong>${qty}</strong></div>
       <div class="ship-s-row"><span>Precio unitario</span><strong>Lps. ${money(unitPrice)}</strong></div>
       <div class="ship-s-row"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
     `;
   }
+
+  shipSummaryEl.innerHTML = summaryHTML;
 
   shipOverlay.classList.add("show");
   shipOverlay.setAttribute("aria-hidden","false");
@@ -1817,44 +1835,39 @@ function renderShipOptions(){
 }
 
 function findShipOption(){
-  if(document.getElementById("productGrid").addEventListener("click",(e)=>{
-  const a = e.target.closest("a.btn-ws");
-  if(!a) return;
+  if(!shipSelectedKey) return null;
+  const opt = (shippingOptions||[]).find(o=>o.key===shipSelectedKey);
+  return opt || null;
+}
 
-  // Si es "consultar" (agotado), dejamos el WhatsApp directo
-  if(a.classList.contains("btn-agotado")) return;
 
-  // Solo interceptamos los que marcamos como compra
-  if(a.dataset.buy !== "1") return;
+function buildWhatsAppMessage(ctx,opt,extra){
+  const ship = Number(opt.price||0);
+  const zoneText = shipZone ? "Comayagua ✅" : "Fuera de Comayagua ✅";
+  const pay = formatPayLabel(opt.pay||"");
 
-  e.preventDefault();
+  const lines = [];
+  lines.push("Hola SDC, quiero comprar:");
 
-  const name = a.dataset.name || a.getAttribute("data-name") || "Producto";
-  const qty = Number(a.dataset.qty || 1);
-  const unitPrice = Number(a.dataset.unitPrice || a.dataset.price || 0);
-  const productTotal = Number(a.dataset.productTotal || (unitPrice * qty));
-  const pid = (a.dataset.pid || "").toString().trim();
-  const link = pid ? buildProductLink(pid) : buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
+  const hasItems = !!(ctx && Array.isArray(ctx.items) && ctx.items.length);
 
-  // ✅ Nuevo: carrito acumulable
-  cartAddItem({ pid, name, qty, unitPrice, productTotal, link });
+  let subtotal = 0;
 
-  // Pregunta rápida (nativo) para que siempre funcione en CELULAR
-  const goPay = confirm(
-    `✅ Agregado al carrito:\n${name}\n\n¿Deseas IR A PAGAR ahora?\n\nAceptar = Ir a pagar\nCancelar = Seguir viendo`
-  );
-
-  if(goPay){
-    const ctx = buildCartCtx();
-    openShipModal(ctx);
-  }
-});ney(sub)}`);
+  if(hasItems){
+    ctx.items.forEach((it,i)=>{
+      const qty = Number(it.qty||1);
+      const unitPrice = Number(it.unitPrice||0);
+      const sub = Number(it.productTotal|| (qty*unitPrice));
+      subtotal += sub;
+      lines.push(`- ${i+1}) *${it.name||"Producto"}* x${qty} • Lps. ${money(unitPrice)} c/u • Subtotal Lps. ${money(sub)}`);
     });
     lines.push("");
     lines.push(`Subtotal productos: Lps. ${money(subtotal)}`);
-  }else{
+  } else {
     const qty = Number(ctx.qty||1);
     const unitPrice = Number(ctx.unitPrice||0);
+    subtotal = Number(ctx.productTotal||0);
+
     lines.push(`- Producto: *${ctx.name||"Producto"}*`);
     lines.push(`- Cantidad: ${qty}`);
     lines.push(`- Precio unitario: Lps. ${money(unitPrice)}`);
@@ -1862,7 +1875,7 @@ function findShipOption(){
   }
 
   lines.push("");
-  lines.push("Entrega y pago:");
+  lines.push("Entrega:");
   lines.push(`- Zona: ${zoneText}`);
   lines.push(`- Método: ${opt.label}`);
   lines.push(`- Envío: Lps. ${money(ship)}`);
@@ -1874,11 +1887,25 @@ function findShipOption(){
     lines.push("");
   }
 
+  const total = Number(subtotal||0) + ship;
   lines.push(`TOTAL A PAGAR: Lps. ${money(total)}`);
   lines.push("");
-  if(ctx.link) lines.push(`Link: ${ctx.link}`);
 
-  return lines.join("\n");
+  // Links (opcional)
+  if(hasItems){
+    const links = [...new Set(ctx.items.map(x=>x.link).filter(Boolean))];
+    if(links.length){
+      lines.push("Links:");
+      links.slice(0,4).forEach(l=>lines.push(`- ${l}`));
+      if(links.length>4) lines.push(`- (+${links.length-4} más)`);
+    }else if(ctx.link){
+      lines.push(`Link: ${ctx.link}`);
+    }
+  } else {
+    if(ctx.link) lines.push(`Link: ${ctx.link}`);
+  }
+
+    return lines.join("\n");
 }
 
 
@@ -1947,7 +1974,26 @@ document.getElementById("productGrid").addEventListener("click",(e)=>{
   const pid = (a.dataset.pid || "").toString().trim();
   const link = pid ? buildProductLink(pid) : buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
 
-  openShipModal({ pid, name, qty, unitPrice, productTotal, link });
+  // ✅ Carrito acumulable
+  cartAddItem({ pid, name, qty, unitPrice, productTotal, link });
+
+  // Pregunta (nativa) para que funcione en CELULAR sin fallar
+  const goPay = confirm(
+    `✅ Agregado al carrito:
+${name}
+
+¿Deseas proceder con la compra?
+
+Aceptar = Ir a pagar
+Cancelar = Seguir viendo`
+  );
+
+  if(goPay){
+    const ctx = buildCartCtx();
+    openShipModal(ctx);
+  }else{
+    toast("🛒 Guardado. Sigue viendo productos.");
+  }
 });
 
 /* ================== SHARE / COPY ================== */
@@ -3071,7 +3117,6 @@ function focusProductById(pid){
 
 /* ================== START ================== */
 loadShippingOptions();
-loadCart();
 
 loadAll();
 </script>
