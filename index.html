@@ -1171,6 +1171,88 @@ let categoriesOrdered=[];
 
 const STATE_KEY="sdc_state_v2";
 
+/* ================== CART ================== */
+let cart=[];
+const CART_KEY="sdc_cart_v1";
+
+function loadCart(){
+  try{
+    const raw = localStorage.getItem(CART_KEY) || "[]";
+    const arr = JSON.parse(raw);
+    cart = Array.isArray(arr) ? arr : [];
+  }catch(_e){
+    cart = [];
+  }
+}
+
+function saveCart(){
+  try{ localStorage.setItem(CART_KEY, JSON.stringify(cart||[])); }catch(_e){}
+}
+
+function clearCart(){
+  cart = [];
+  saveCart();
+}
+
+function cartAddItem(item){
+  const it = {
+    pid: (item.pid||"").toString().trim(),
+    name: (item.name||"Producto").toString().trim(),
+    qty: Number(item.qty||1),
+    unitPrice: Number(item.unitPrice||0),
+    productTotal: Number(item.productTotal||0),
+    link: (item.link||"").toString().trim()
+  };
+
+  if(!isFinite(it.qty) || it.qty<=0) it.qty = 1;
+  if(!isFinite(it.unitPrice) || it.unitPrice<0) it.unitPrice = 0;
+  if(!isFinite(it.productTotal) || it.productTotal<=0) it.productTotal = it.qty * it.unitPrice;
+
+  // Merge por producto + precio unitario (para respetar escalas como Dedales)
+  const key = ((it.pid||it.name)||"").toLowerCase() + "|" + String(Number(it.unitPrice||0));
+  const ex = cart.find(x => (((x.pid||x.name)||"").toLowerCase()+"|"+String(Number(x.unitPrice||0))) === key);
+
+  if(ex){
+    ex.qty = Number(ex.qty||0) + it.qty;
+    ex.productTotal = Number(ex.productTotal||0) + it.productTotal;
+  }else{
+    cart.push(it);
+  }
+  saveCart();
+}
+
+function cartSubtotal(){
+  return (cart||[]).reduce((s,x)=> s + Number(x.productTotal||0), 0);
+}
+
+function cartQtyTotal(){
+  return (cart||[]).reduce((s,x)=> s + Number(x.qty||0), 0);
+}
+
+function buildCartCtx(){
+  const subtotal = cartSubtotal();
+  const qtyTotal = cartQtyTotal();
+  const items = (cart||[]).map(x=>({
+    pid: x.pid||"",
+    name: x.name||"Producto",
+    qty: Number(x.qty||1),
+    unitPrice: Number(x.unitPrice||0),
+    productTotal: Number(x.productTotal||0),
+    link: x.link||""
+  }));
+
+  return {
+    isCart: true,
+    items,
+    name: `Carrito (${items.length} producto${items.length===1?"":"s"})`,
+    qty: qtyTotal,
+    unitPrice: 0,
+    productTotal: subtotal,
+    link: buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode})
+  };
+}
+
+
 /* ================== HELPERS ================== */
 function norm(s){
   return (s??"").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -1458,6 +1540,13 @@ const shipCourier = document.getElementById("shipCourier");
 const shipAddrFuera = document.getElementById("shipAddrFuera");
 
 
+if(shipSend){
+  shipSend.addEventListener("click", ()=>{
+    // Cuando el cliente decide "IR A PAGAR" y abre WhatsApp, vaciamos el carrito.
+    if(shipCtx && shipCtx.isCart) clearCart();
+  });
+}
+
 
 /* ================== HONDURAS: Departamentos y Municipios ================== */
 const HN_MUNICIPIOS = {
@@ -1537,16 +1626,38 @@ function openShipModal(ctx){
   resetShipUI();
 
   // Summary
-  const qty = Number(ctx.qty||1);
-  const unitPrice = Number(ctx.unitPrice||0);
   const subtotal = Number(ctx.productTotal||0);
 
-  shipSummaryEl.innerHTML = `
-    <div class="ship-s-name">${escapeHtml(ctx.name||"Producto")}</div>
-    <div class="ship-s-row"><span>Cantidad</span><strong>${qty}</strong></div>
-    <div class="ship-s-row"><span>Precio unitario</span><strong>Lps. ${money(unitPrice)}</strong></div>
-    <div class="ship-s-row"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
-  `;
+  if(ctx && ctx.isCart && Array.isArray(ctx.items) && ctx.items.length){
+    const itemsHTML = ctx.items.map((it,i)=>{
+      const name = escapeHtml(it.name||"Producto");
+      const qty = Number(it.qty||1);
+      const unit = Number(it.unitPrice||0);
+      const sub = Number(it.productTotal||0);
+      return `
+        <div class="ship-s-row" style="align-items:flex-start">
+          <span style="max-width:65%;line-height:1.2">${i+1}) ${name}</span>
+          <strong style="text-align:right;line-height:1.2">${qty} x Lps. ${money(unit)}<br><span style="opacity:.85;font-weight:700">Lps. ${money(sub)}</span></strong>
+        </div>
+      `;
+    }).join("");
+
+    shipSummaryEl.innerHTML = `
+      <div class="ship-s-name">${escapeHtml(ctx.name||"Carrito")}</div>
+      ${itemsHTML}
+      <div class="ship-s-row" style="margin-top:8px"><span>Subtotal productos</span><strong>Lps. ${money(subtotal)}</strong></div>
+    `;
+  }else{
+    const qty = Number(ctx.qty||1);
+    const unitPrice = Number(ctx.unitPrice||0);
+
+    shipSummaryEl.innerHTML = `
+      <div class="ship-s-name">${escapeHtml(ctx.name||"Producto")}</div>
+      <div class="ship-s-row"><span>Cantidad</span><strong>${qty}</strong></div>
+      <div class="ship-s-row"><span>Precio unitario</span><strong>Lps. ${money(unitPrice)}</strong></div>
+      <div class="ship-s-row"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
+    `;
+  }
 
   shipOverlay.classList.add("show");
   shipOverlay.setAttribute("aria-hidden","false");
@@ -1706,30 +1817,52 @@ function renderShipOptions(){
 }
 
 function findShipOption(){
-  if(!shipSelectedKey) return null;
-  const opt = (shippingOptions||[]).find(o=>o.key===shipSelectedKey);
-  return opt || null;
-}
+  if(document.getElementById("productGrid").addEventListener("click",(e)=>{
+  const a = e.target.closest("a.btn-ws");
+  if(!a) return;
 
+  // Si es "consultar" (agotado), dejamos el WhatsApp directo
+  if(a.classList.contains("btn-agotado")) return;
 
-function buildWhatsAppMessage(ctx,opt,extra){
-  const qty = Number(ctx.qty||1);
-  const unitPrice = Number(ctx.unitPrice||0);
-  const subtotal = Number(ctx.productTotal||0);
-  const ship = Number(opt.price||0);
-  const total = subtotal + ship;
+  // Solo interceptamos los que marcamos como compra
+  if(a.dataset.buy !== "1") return;
 
-  const zoneText = shipZone ? "Comayagua ✅" : "Fuera de Comayagua ✅";
-  const pay = formatPayLabel(opt.pay||"");
+  e.preventDefault();
 
-  const lines = [];
-  lines.push("Hola SDC, quiero comprar:");
-  lines.push(`- Producto: *${ctx.name||"Producto"}*`);
-  lines.push(`- Cantidad: ${qty}`);
-  lines.push(`- Precio unitario: Lps. ${money(unitPrice)}`);
-  lines.push(`- Subtotal producto: Lps. ${money(subtotal)}`);
+  const name = a.dataset.name || a.getAttribute("data-name") || "Producto";
+  const qty = Number(a.dataset.qty || 1);
+  const unitPrice = Number(a.dataset.unitPrice || a.dataset.price || 0);
+  const productTotal = Number(a.dataset.productTotal || (unitPrice * qty));
+  const pid = (a.dataset.pid || "").toString().trim();
+  const link = pid ? buildProductLink(pid) : buildViewLink({cat:currentCategory||"",sub:currentSub||"",offer:!!soloOfertasMode});
+
+  // ✅ Nuevo: carrito acumulable
+  cartAddItem({ pid, name, qty, unitPrice, productTotal, link });
+
+  // Pregunta rápida (nativo) para que siempre funcione en CELULAR
+  const goPay = confirm(
+    `✅ Agregado al carrito:\n${name}\n\n¿Deseas IR A PAGAR ahora?\n\nAceptar = Ir a pagar\nCancelar = Seguir viendo`
+  );
+
+  if(goPay){
+    const ctx = buildCartCtx();
+    openShipModal(ctx);
+  }
+});ney(sub)}`);
+    });
+    lines.push("");
+    lines.push(`Subtotal productos: Lps. ${money(subtotal)}`);
+  }else{
+    const qty = Number(ctx.qty||1);
+    const unitPrice = Number(ctx.unitPrice||0);
+    lines.push(`- Producto: *${ctx.name||"Producto"}*`);
+    lines.push(`- Cantidad: ${qty}`);
+    lines.push(`- Precio unitario: Lps. ${money(unitPrice)}`);
+    lines.push(`- Subtotal producto: Lps. ${money(subtotal)}`);
+  }
+
   lines.push("");
-  lines.push("Entrega:");
+  lines.push("Entrega y pago:");
   lines.push(`- Zona: ${zoneText}`);
   lines.push(`- Método: ${opt.label}`);
   lines.push(`- Envío: Lps. ${money(ship)}`);
@@ -2938,6 +3071,7 @@ function focusProductById(pid){
 
 /* ================== START ================== */
 loadShippingOptions();
+loadCart();
 
 loadAll();
 </script>
