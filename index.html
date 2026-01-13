@@ -861,6 +861,42 @@
       -webkit-tap-highlight-color: transparent;
     }
     .copy-link-btn:active{ transform: translateY(1px) scale(.99); filter: brightness(.98); }
+
+/* ================== PRIVACIDAD ================== */
+.privacy-section{max-width:1180px;margin:26px auto 0;padding:0 16px 10px}
+.privacy-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px 14px}
+.privacy-lead{margin:0 0 12px;color:rgba(255,255,255,.88);font-size:13px;line-height:1.35}
+.privacy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.privacy-grid{grid-template-columns:1fr}}
+.privacy-box{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px}
+.privacy-box h4{margin:0 0 6px;font-size:13px;letter-spacing:.2px}
+.privacy-box ul{margin:0;padding-left:18px;color:rgba(255,255,255,.82);font-size:12px;line-height:1.35}
+.privacy-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+.privacy-copy{border:none;cursor:pointer;background:rgba(255,255,255,.10);color:#fff;font-weight:900;letter-spacing:.2px;border-radius:12px;padding:10px 12px;font-size:12px;display:inline-flex;gap:8px;align-items:center}
+.privacy-copy:active{transform:translateY(1px)}
+.privacy-back{display:inline-flex;gap:8px;align-items:center;text-decoration:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#fff;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:900;letter-spacing:.2px}
+
+/* Footer enlaces */
+.footer-links{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:10px}
+.footer-link{color:rgba(255,255,255,.86);text-decoration:none;font-weight:900;font-size:12px;display:inline-flex;gap:8px;align-items:center}
+.footer-link:hover{opacity:.95;text-decoration:underline}
+.footer-copy{border:none;cursor:pointer;background:rgba(255,255,255,.08);color:#fff;font-weight:900;border-radius:12px;padding:8px 10px;font-size:12px;display:inline-flex;gap:8px;align-items:center}
+.footer-copy:active{transform:translateY(1px)}
+
+/* ================== CARRITO: CONTROLES ================== */
+.ship-cart-item{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:10px;margin:8px 0}
+.ship-cart-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.ship-cart-name{font-weight:1000;letter-spacing:.2px;font-size:13px;line-height:1.2;max-width:82%}
+.ship-cart-remove{border:none;cursor:pointer;background:rgba(255,0,0,.12);color:#ffb3b3;border:1px solid rgba(255,0,0,.25);border-radius:10px;padding:6px 9px;font-weight:1000}
+.ship-cart-remove:active{transform:translateY(1px)}
+.ship-cart-bottom{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:8px}
+.ship-qty{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ship-qtybtn{border:none;cursor:pointer;width:34px;height:30px;border-radius:10px;background:rgba(255,255,255,.10);color:#fff;font-weight:1000;font-size:16px;display:inline-flex;align-items:center;justify-content:center}
+.ship-qtybtn:active{transform:translateY(1px)}
+.ship-qtyval{min-width:28px;text-align:center;font-weight:1000}
+.ship-qtyunit{font-size:12px;color:rgba(255,255,255,.75);font-weight:900}
+.ship-itemtotal{font-weight:1000;color:rgba(255,255,255,.92);white-space:nowrap}
+
 </style>
 </head>
 
@@ -1075,7 +1111,80 @@
     </div>
   </main>
 
-  <footer>
+  
+  <!-- Política de privacidad -->
+  <section class="privacy-section" id="privacySection">
+    <div id="privacidad" class="anchor" aria-hidden="true"></div>
+    <h3 class="sec-title">🔒 Política de privacidad</h3>
+    <div class="privacy-card">
+      <p class="privacy-lead">
+        En <b>Soluciones Digitales Comayagua</b> respetamos tu privacidad. Esta política explica qué información se maneja cuando
+        visitas este catálogo y cuando realizas un pedido por WhatsApp.
+      </p>
+
+      <div class="privacy-grid">
+        <div class="privacy-box">
+          <h4>1) Información que se recopila</h4>
+          <ul>
+            <li>Datos que tú escribes al pedir: nombre, teléfono, dirección y detalles de entrega (por WhatsApp).</li>
+            <li>Preferencias del sitio: por ejemplo, el carrito (se guarda en tu navegador con <i>localStorage</i>).</li>
+          </ul>
+        </div>
+
+        <div class="privacy-box">
+          <h4>2) Para qué se usa</h4>
+          <ul>
+            <li>Procesar tu pedido, coordinar entrega/envío y darte soporte.</li>
+            <li>Mejorar la experiencia del catálogo (por ejemplo, conservar tu carrito).</li>
+          </ul>
+        </div>
+
+        <div class="privacy-box">
+          <h4>3) Con quién se comparte</h4>
+          <ul>
+            <li>No vendemos tu información.</li>
+            <li>Solo se comparte lo necesario para el envío cuando aplique (empresa de mensajería).</li>
+          </ul>
+        </div>
+
+        <div class="privacy-box">
+          <h4>4) Servicios de terceros</h4>
+          <ul>
+            <li>WhatsApp se usa para enviar el pedido y la comunicación.</li>
+            <li>Redes sociales (Facebook/Instagram/TikTok) pueden tener sus propias políticas.</li>
+          </ul>
+        </div>
+
+        <div class="privacy-box">
+          <h4>5) Tus opciones</h4>
+          <ul>
+            <li>Puedes solicitar actualización o eliminación de tu información escribiéndonos por WhatsApp.</li>
+            <li>Puedes borrar el carrito desde tu navegador (limpiando datos del sitio).</li>
+          </ul>
+        </div>
+
+        <div class="privacy-box">
+          <h4>6) Contacto</h4>
+          <ul>
+            <li>WhatsApp: <b>+504 3242-9490</b></li>
+            <li>Atención: Comayagua, Honduras</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="privacy-actions">
+        <button type="button" class="privacy-copy" id="copyPrivacyBtn">
+          <i class="fa-solid fa-link"></i> Copiar enlace de esta sección
+        </button>
+        <a class="privacy-back" href="#" aria-label="Volver arriba">
+          <i class="fa-solid fa-arrow-up"></i> Volver arriba
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+<footer>
     <div class="social-bar">
       <a href="https://www.facebook.com/sdcomayagua/" target="_blank" rel="noopener noreferrer" class="social-btn sb-fb" aria-label="Facebook">
         <i class="fa-brands fa-facebook-f"></i>
@@ -1088,6 +1197,10 @@
       </a>
     </div>
     <p>© 2026 Soluciones Digitales Comayagua<br><span style="font-size:10px; opacity:0.6;">Todos los derechos reservados.</span></p>
+    <div class="footer-links">
+      <a href="#privacidad" class="footer-link" id="privacyFooterLink"><i class="fa-solid fa-shield-halved"></i> Política de privacidad</a>
+      <button type="button" class="footer-copy" id="copyPrivacyFooter"><i class="fa-solid fa-link"></i> Copiar enlace</button>
+    </div>
   </footer>
 
 
@@ -1632,6 +1745,42 @@ const shipMuni = document.getElementById("shipMuni");
 const shipCourier = document.getElementById("shipCourier");
 const shipAddrFuera = document.getElementById("shipAddrFuera");
 
+// Controles del carrito dentro del modal ( + / - / eliminar )
+if(shipSummaryEl){
+  shipSummaryEl.addEventListener("click",(e)=>{
+    const btn = e.target.closest("[data-cart-action]");
+    if(!btn) return;
+    const action = btn.getAttribute("data-cart-action");
+    const key = btn.getAttribute("data-cart-key") || "";
+    loadCart();
+    const idx = findCartIndexByKey(key);
+    if(idx < 0) return;
+
+    if(action === "inc"){
+      cart[idx].qty = Number(cart[idx].qty||0) + 1;
+      cart[idx].productTotal = Number(cart[idx].unitPrice||0) * Number(cart[idx].qty||1);
+      saveCart(); updateCartUI(); refreshShipFromCart();
+      return;
+    }
+    if(action === "dec"){
+      const q = Number(cart[idx].qty||1);
+      if(q <= 1){
+        toast("Para quitarlo usa ✕");
+        return;
+      }
+      cart[idx].qty = q - 1;
+      cart[idx].productTotal = Number(cart[idx].unitPrice||0) * Number(cart[idx].qty||1);
+      saveCart(); updateCartUI(); refreshShipFromCart();
+      return;
+    }
+    if(action === "rm"){
+      cart.splice(idx,1);
+      saveCart(); updateCartUI(); refreshShipFromCart();
+      return;
+    }
+  });
+}
+
 
 
 
@@ -1717,29 +1866,52 @@ function resetShipUI(){
   if(shipCourier) shipCourier.value = "";
 }
 
-function openShipModal(ctx){
-  shipCtx = ctx;
-  resetShipUI();
 
-  // Summary
+function cartKeyFromObj(obj){
+  const base = ((obj?.pid || obj?.name) || "").toString().trim().toLowerCase();
+  const unit = String(Number(obj?.unitPrice || 0));
+  return base + "|" + unit;
+}
+function findCartIndexByKey(key){
+  const k = (key||"").toString();
+  return (cart||[]).findIndex(x => cartKeyFromObj(x) === k);
+}
+
+function renderShipSummary(){
+  const ctx = shipCtx || {};
   const subtotal = Number(ctx.productTotal||0);
 
   if(ctx && ctx.isCart && Array.isArray(ctx.items) && ctx.items.length){
+    const qtyTotal = Number(ctx.qty||0);
     const itemsHTML = ctx.items.map((it,i)=>{
       const name = escapeHtml(it.name||"Producto");
       const qty = Number(it.qty||1);
       const unit = Number(it.unitPrice||0);
       const sub = Number(it.productTotal||0);
+      const key = escapeHtml(cartKeyFromObj(it));
       return `
-        <div class="ship-s-row" style="align-items:flex-start">
-          <span style="max-width:65%;line-height:1.2">${i+1}) ${name}</span>
-          <strong style="text-align:right;line-height:1.2">${qty} x Lps. ${money(unit)}<br><span style="opacity:.85;font-weight:900">Lps. ${money(sub)}</span></strong>
+        <div class="ship-cart-item">
+          <div class="ship-cart-top">
+            <div class="ship-cart-name">${i+1}) ${name}</div>
+            <button type="button" class="ship-cart-remove" data-cart-action="rm" data-cart-key="${key}" aria-label="Eliminar producto">✕</button>
+          </div>
+          <div class="ship-cart-bottom">
+            <div class="ship-qty">
+              <button type="button" class="ship-qtybtn" data-cart-action="dec" data-cart-key="${key}" aria-label="Bajar cantidad">−</button>
+              <span class="ship-qtyval">${qty}</span>
+              <button type="button" class="ship-qtybtn" data-cart-action="inc" data-cart-key="${key}" aria-label="Subir cantidad">+</button>
+              <span class="ship-qtyunit">x Lps. ${money(unit)}</span>
+            </div>
+            <div class="ship-itemtotal">Lps. ${money(sub)}</div>
+          </div>
         </div>
       `;
     }).join("");
 
     shipSummaryEl.innerHTML = `
-      <div class="ship-s-name">${escapeHtml(ctx.name||"Carrito")}</div>
+      <div class="ship-s-name">CARRITO DE COMPRAS</div>
+      <div class="ship-s-row"><span>Productos</span><strong>${ctx.items.length}</strong></div>
+      <div class="ship-s-row"><span>Cantidad total</span><strong>${qtyTotal}</strong></div>
       ${itemsHTML}
       <div class="ship-s-row" style="margin-top:8px"><span>Subtotal productos</span><strong>Lps. ${money(subtotal)}</strong></div>
     `;
@@ -1751,15 +1923,34 @@ function openShipModal(ctx){
       <div class="ship-s-name">${escapeHtml(ctx.name||"Producto")}</div>
       <div class="ship-s-row"><span>Cantidad</span><strong>${qty}</strong></div>
       <div class="ship-s-row"><span>Precio unitario</span><strong>Lps. ${money(unitPrice)}</strong></div>
-      <div class="ship-s-row"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
+      <div class="ship-s-row">${(shipCtx && shipCtx.isCart)?'<span>Subtotal productos</span>':'<span>Subtotal producto</span>'}<strong>Lps. ${money(subtotal)}</strong></div>
     `;
   }
+}
+
+function refreshShipFromCart(){
+  if(!shipCtx || !shipCtx.isCart) return;
+  loadCart();
+  if(!cart || !cart.length){
+    closeShipModal();
+    toast("🛒 Tu carrito está vacío");
+    return;
+  }
+  shipCtx = buildCartCtx();
+  renderShipSummary();
+  updateShipTotal();
+}
+
+function openShipModal(ctx){
+  shipCtx = ctx;
+  resetShipUI();
+  renderShipSummary();
 
   shipOverlay.classList.add("show");
   shipOverlay.setAttribute("aria-hidden","false");
-  // focus suave
   setTimeout(()=>shipYes?.focus(), 60);
 }
+
 
 function closeShipModal(){
   shipOverlay.classList.remove("show");
@@ -1989,8 +2180,10 @@ function updateShipTotal(){
   // Validar datos extra
   const extra = getShipExtraData(opt);
 
-  const totalsHTML = `
-    <div style="display:flex;justify-content:space-between;gap:10px;"><span>Subtotal producto</span><strong>Lps. ${money(subtotal)}</strong></div>
+    const subLabel = (shipCtx && shipCtx.isCart) ? "Subtotal productos" : "Subtotal producto";
+
+const totalsHTML = `
+    <div style="display:flex;justify-content:space-between;gap:10px;"><span>${subLabel}</span><strong>Lps. ${money(subtotal)}</strong></div>
     <div style="display:flex;justify-content:space-between;gap:10px;"><span>Envío</span><strong>+ Lps. ${money(ship)}</strong></div>
     <div style="height:8px"></div>
     <div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;">
@@ -2097,6 +2290,20 @@ function copyLocationLink(){
   u.hash = "ubicacion";
   copyText(u.toString());
 }
+
+
+function copyPrivacyLink(){
+  // Link limpio (sin parámetros) directo a la sección de privacidad
+  const u = new URL(location.origin + location.pathname);
+  u.hash = "privacidad";
+  copyText(u.toString());
+}
+const copyPrivacyBtn = document.getElementById("copyPrivacyBtn");
+const copyPrivacyFooter = document.getElementById("copyPrivacyFooter");
+if(copyPrivacyBtn) copyPrivacyBtn.addEventListener("click", copyPrivacyLink);
+if(copyPrivacyFooter) copyPrivacyFooter.addEventListener("click", copyPrivacyLink);
+
+
 
 function scrollToHash(){
   const raw = (window.location.hash || "").replace("#","").trim();
