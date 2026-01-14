@@ -906,67 +906,47 @@
 .ship-itemtotal{font-weight:1000;color:rgba(255,255,255,.92);white-space:nowrap}
 
 
-/* ===== PREMIUM HERO (móvil-first) ===== */
-.hero-section{ display:none !important; } /* ocultar hero original */
-.promo-strip{ 
-  margin:10px 16px 0; padding:10px 12px; border-radius:12px;
-  border:1px dashed rgba(234,88,12,.35); background:rgba(234,88,12,.06);
-  color:var(--text); font-weight:900; font-size:12px; text-align:center; letter-spacing:.3px;
-}
-.hero-premium{ position:relative; border-bottom:1px solid var(--border); }
-.hero-premium.fullscreen{ min-height:70vh; display:flex; align-items:center; }
-.hp-inner{ width:100%; max-width:1000px; margin:0 auto; padding:24px 16px; text-align:center; }
-.hp-brand img{ height:48px; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,.18); }
-.hp-title{ margin:12px 0 8px; font-weight:1000; letter-spacing:.6px; text-transform:uppercase; }
-.hp-title .shine{ 
-  background:linear-gradient(90deg,#38bdf8,#818cf8,#f472b6,#38bdf8);
-  background-size:260% 100%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  animation:shineMove 9s ease-in-out infinite;
-}
-@keyframes shineMove{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-.hp-sub{ font-size:13px; color:var(--text-muted); line-height:1.5; max-width:680px; margin:0 auto; }
-.hp-ctas{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px; }
-.hp-btn{ padding:12px 16px; border-radius:14px; font-weight:900; text-transform:uppercase; letter-spacing:.3px;
-  display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); cursor:pointer; text-decoration:none;
-}
-.hp-btn.primary{ background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; border:none; box-shadow:0 10px 20px rgba(0,0,0,.18); }
-.hp-btn.secondary{ background:var(--card-bg); color:var(--text); }
-.hp-btn.share{ background:rgba(56,189,248,.12); border-color:rgba(56,189,248,.35); color:var(--primary); }
-.hp-btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
+/* ===== RE-DESIGN PREMIUM (Móvil-first, confianza y simple) ===== */
+/* Ocultamos el hero original para evitar duplicados */
+.hero-section{ display:none !important; }
 
-/* Variantes de fondo */
-.theme-neon{ 
-  background: radial-gradient(1000px 400px at 20% 0%, rgba(56,189,248,.20), transparent),
-              radial-gradient(800px 300px at 80% 100%, rgba(236,72,153,.18), transparent),
-              linear-gradient(135deg, #0b1120, #151e32); 
-}
-.theme-glass{ background:linear-gradient(135deg, rgba(2,6,23,.70), rgba(15,23,42,.72)), url(''); }
-.theme-glass .hp-inner{ backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border:1px solid var(--border); border-radius:18px; }
-.theme-grid{ 
-  background:
-    radial-gradient(circle at 10% 10%, rgba(56,189,248,.18), transparent 60%),
-    radial-gradient(circle at 90% 80%, rgba(45,212,191,.18), transparent 60%),
-    repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0px, rgba(255,255,255,.06) 1px, transparent 1px, transparent 8px),
-    linear-gradient(135deg, #0b1120, #151e32);
-}
-.theme-clean{ background:linear-gradient(135deg, rgba(2,6,23,.04), rgba(56,189,248,.06)); }
-.theme-ultra{ 
-  background:
-    radial-gradient(1200px 480px at 50% -20%, rgba(129,140,248,.20), transparent),
-    radial-gradient(1000px 360px at 50% 120%, rgba(45,212,191,.20), transparent),
-    linear-gradient(135deg, #0b1120, #111827);
-}
+/* Hero nuevo: pantalla completa en móviles, compacto en desktop */
+.hero-trust{ position:relative; border-bottom:1px solid var(--border); }
+.hero-trust.full{ min-height:72vh; display:flex; align-items:center; }
+.hero-trust .wrap{ width:100%; max-width:980px; margin:0 auto; padding:22px 16px; text-align:center; }
+.hero-trust .brandline{ display:flex; gap:10px; align-items:center; justify-content:center; }
+.hero-trust .brandline img{ height:46px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,.16); }
+.hero-trust .title{ margin:12px 0 8px; font-weight:1000; letter-spacing:.6px; text-transform:uppercase; font-size:24px; }
+.hero-trust .title .shine{ background:linear-gradient(90deg,#38bdf8,#818cf8,#f472b6,#38bdf8); background-size:240% 100%; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:shine 9s ease-in-out infinite; }
+@keyframes shine{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+.hero-trust .sub{ font-size:13px; color:var(--text-muted); line-height:1.5; max-width:680px; margin:0 auto; }
+.hero-trust .ctas{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:12px; }
+.hero-trust .cta{ padding:12px 16px; border-radius:14px; font-weight:900; text-transform:uppercase; letter-spacing:.3px; display:inline-flex; align-items:center; gap:8px; border:1px solid var(--border); cursor:pointer; text-decoration:none; }
+.hero-trust .cta.primary{ background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; border:none; box-shadow:0 10px 20px rgba(0,0,0,.18); }
+.hero-trust .cta.secondary{ background:var(--card-bg); color:var(--text); }
+.hero-trust .cta.share{ background:rgba(56,189,248,.12); border-color:rgba(56,189,248,.35); color:var(--primary); }
+.hero-trust .cta:hover{ transform:translateY(-1px); filter:brightness(1.03); }
+/* Fondo confiable (sin imagen pesada) */
+.hero-trust.theme{ background:
+  radial-gradient(1200px 460px at 12% 0%, rgba(56,189,248,.18), transparent),
+  radial-gradient(900px 360px at 88% 100%, rgba(45,212,191,.15), transparent),
+  linear-gradient(135deg, var(--bg), var(--card-bg)); }
 
-/* Botón flotante Ofertas */
-.float-offers{
-  position:fixed; bottom:160px; right:16px; z-index:220; height:48px; padding:0 14px; border-radius:18px;
-  background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; border:none; box-shadow:0 14px 30px rgba(0,0,0,.22);
-  font-weight:1000; letter-spacing:.2px; text-transform:uppercase; cursor:pointer;
-}
+/* Barra de confianza y urgencia */
+.notice{ margin:10px 16px 0; padding:10px 12px; border-radius:12px; border:1px dashed rgba(234,88,12,.35); background:rgba(234,88,12,.06); color:var(--text); font-weight:900; font-size:12px; text-align:center; letter-spacing:.3px; }
+
+/* Botón flotante Ir a Ofertas */
+.float-offers{ position:fixed; bottom:160px; right:16px; z-index:220; height:48px; padding:0 14px; border-radius:18px; background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; border:none; box-shadow:0 14px 30px rgba(0,0,0,.22); font-weight:1000; letter-spacing:.2px; text-transform:uppercase; cursor:pointer; }
 .float-offers:active{ transform:scale(.98); }
 @media (max-width:420px){ .float-offers{ right:12px; bottom:154px; height:46px; padding:0 12px; border-radius:16px; } }
 
-/* Lazy-load imágenes */
+/* Mejoras de tarjeta y botones (tap grande) */
+.card .btn-ws{ font-size:14px; padding:13px; border-radius:12px; }
+.card .price-bar{ padding:12px; }
+.current-price-row{ font-size:24px; }
+.card:hover{ transform:translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,.18); }
+
+/* Lazy-load imágenes (rápido en móviles) */
 .card-img.lazy { background-image:none !important; }
 .card-img.loaded{ transition:opacity .25s ease; opacity:1; }
 .card-img{ opacity:.0; }
@@ -1097,19 +1077,22 @@
   </div>
 
   
-<section class="hero-premium theme-grid ">
-  <div class="hp-inner">
-    <div class="hp-brand"><img src="logo.png" alt="SDC" onerror="this.style.display='none'"></div>
-    <h2 class="hp-title"><span class="shine">Accesorios Gamer & Tecnología</span></h2>
-    <p class="hp-sub">Envíos a toda Honduras • Atención por WhatsApp</p>
-    <div class="hp-ctas">
-      <a href="#" class="hp-btn primary" onclick="toggleOffersFromHome(); return false;">🔥 Ver Ofertas</a>
-      <a href="#" class="hp-btn secondary" onclick="document.getElementById('searchToggle').click(); return false;">🔍 Buscar Catálogo</a>
-      <a href="#" class="hp-btn share" onclick="copyCurrentView(); return false;"><i class="fa-solid fa-share-nodes"></i> Compartir Catálogo</a>
+<section class=\"hero-trust theme full\">
+  <div class=\"wrap\">
+    <div class=\"brandline\">
+      <img src=\"logo.png\" alt=\"SDC\" onerror=\"this.style.display='none'\"> 
+      <div style=\"font-weight:1000; letter-spacing:.6px;\">Soluciones <span style=\"color:var(--primary)\">Digitales</span> Comayagua</div>
+    </div>
+    <h2 class=\"title\"><span class=\"shine\">Accesorios Gamer & Tecnología</span></h2>
+    <p class=\"sub\">Envíos a toda Honduras • Atención por WhatsApp</p>
+    <div class=\"ctas\">
+      <a href=\"#\" class=\"cta primary\" onclick=\"toggleOffersFromHome(); return false;\">🔥 Ver Ofertas</a>
+      <a href=\"#\" class=\"cta secondary\" onclick=\"document.getElementById('searchToggle').click(); return false;\">🔍 Buscar Catálogo</a>
+      <a href=\"#\" class=\"cta share\" onclick=\"copyCurrentView(); return false;\"><i class=\"fa-solid fa-share-nodes\"></i> Compartir Catálogo</a>
     </div>
   </div>
 </section>
-<div class="promo-strip">🔥 Oferta limitada hoy • ¡Aprovecha antes de que se agote!</div>
+<div class=\"notice\">🔥 Oferta limitada hoy • ¡Aprovecha antes de que se agote!</div>
 
 <main class="page">
     <div class="hero-section">
@@ -3504,7 +3487,7 @@ function initLazyImages(){
       if(bg){ el.style.backgroundImage = `url('${bg}')`; el.classList.remove('lazy'); el.classList.add('loaded'); el.dataset.loaded='1'; }
       obs.unobserve(el);
     });
-  }, { rootMargin: '140px 0px' });
+  }, { rootMargin: '160px 0px' });
   imgs.forEach(el=>{
     const style = el.getAttribute('style') || '';
     const m = style.match(/background-image:url\(['"]?([^'")]+)['"]?\)/i);
@@ -3520,8 +3503,13 @@ render = function(){ __renderOriginal(); try{ initLazyImages(); }catch(e){ conso
 
 /* ===== Auto-selección de categoría si INICIO ===== */
 (function(){
-  const __loadAll = loadAll;
-  // No redefinimos loadAll; insertamos lógica tras computeCategories.
+  // Parche dentro de loadAll: después de computeCategories();
+      try{
+        const q=(document.getElementById('searchInput')?.value||'').trim();
+        const isHome=(!currentCategory && !soloOfertasMode && !q && !onlyInStock);
+        if(isHome){ currentCategory=(Array.isArray(categoriesOrdered)&&categoriesOrdered.length)?String(categoriesOrdered[0]||'gamer'):'gamer'; }
+      }catch(e){ console.warn('fallback category', e); }
+
 })();
 
 </script>
