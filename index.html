@@ -55,11 +55,12 @@
   .hero h1{font-size:clamp(28px,5vw,48px);margin:.25rem 0 0}
   .hero p{color:var(--muted);margin:.5rem 0 1rem}
   .hero__cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .glitch{position:relative;text-shadow:0 0 10px rgba(0,234,255,.6), 0 0 18px rgba(255,0,230,.35)}
-  .glitch:before,.glitch:after{content:attr(data-text);position:absolute;left:0;top:0}
-  .glitch:before{transform:translate(2px,0);clip-path:inset(0 0 40% 0);color:#0ff;opacity:.7}
-  .glitch:after{transform:translate(-2px,0);clip-path:inset(60% 0 0 0);color:#f0f;border-left:1px solid rgba(255,0,230,.5);opacity:.7}
-  .scanlines:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.02) 0 2px,transparent 2px 4px);pointer-events:none}
+    .glitch{position:relative;display:inline-block;line-height:1.08;text-shadow:0 0 10px rgba(0,234,255,.55), 0 0 18px rgba(255,0,230,.28)}
+  .glitch:before,.glitch:after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;pointer-events:none}
+  .glitch:before{transform:translate(1px,0);clip-path:inset(0 0 55% 0);color:#0ff;opacity:.45}
+  .glitch:after{transform:translate(-1px,0);clip-path:inset(55% 0 0 0);color:#f0f;opacity:.35}
+  @media (max-width: 640px){.glitch:before,.glitch:after{display:none}}
+.scanlines:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.02) 0 2px,transparent 2px 4px);pointer-events:none}
 
   /* Filters */
   .filters{padding:18px 0}
@@ -128,7 +129,14 @@
   .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);margin:6px 0}
   .toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);z-index:999;display:none}
   .toast.show{display:block}
-  </style>
+  
+  details.privacy-details{margin:18px 0;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:rgba(255,255,255,.03);padding:10px}
+  details.privacy-details>summary{cursor:pointer;list-style:none;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  details.privacy-details>summary::-webkit-details-marker{display:none}
+  details.privacy-details .privacy-body{padding:10px 4px 0;color:rgba(255,255,255,.85)}
+  .hashlink,.hash{font-weight:700;color:rgba(0,234,255,.9);text-decoration:none}
+  .hashlink:hover{text-decoration:underline}
+</style>
 </head>
 <body>
   <!-- Barra superior -->
@@ -330,7 +338,7 @@
   <footer class="footer">
     <div class="container">
       <p>© 2026 Soluciones Digitales Comayagua — Todos los derechos reservados.</p>
-      <a href="#privacidad">Política de privacidad</a>
+      <a href="#privacidad">Política de privacidad</a> <a class="hashlink" href="#privacidad">#privacidad</a>
       <div class="social">
         <a href="https://www.facebook.com/sdcomayagua/" aria-label="Facebook" target="_blank" rel="noopener">FB</a>
         <a href="https://www.instagram.com/sdcomayagua/" aria-label="Instagram" target="_blank" rel="noopener">IG</a>
@@ -339,17 +347,24 @@
     </div>
   </footer>
 
-  <section id="privacidad" class="privacy container">
-    <h3>🔒 Política de privacidad</h3>
-    <p>En SDC respetamos tu privacidad. Esta política explica qué información se maneja cuando visitas este catálogo y cuando realizas un pedido por WhatsApp.</p>
-    <ol>
-      <li><b>Información que se recopila:</b> datos que escribís al pedir (nombre, teléfono, dirección y entrega por WhatsApp); preferencias del sitio (carrito en <i>localStorage</i>).</li>
-      <li><b>Uso:</b> procesar pedido, coordinar envío y mejorar la experiencia.</li>
-      <li><b>Con quién se comparte:</b> no vendemos tus datos; solo con la empresa de mensajería cuando aplica.</li>
-      <li><b>Servicios de terceros:</b> WhatsApp y redes sociales pueden tener sus propias políticas.</li>
-      <li><b>Tus opciones:</b> podés pedir actualización/eliminación por WhatsApp; podés borrar el carrito limpiando datos del sitio.</li>
-      <li><b>Contacto:</b> WhatsApp: +504 3242-9490 — Atención en Comayagua, Honduras.</li>
-    </ol>
+  <section class="privacy container">
+    <details id="privacidad" class="privacy-details">
+      <summary>
+        <span>🔒 Política de privacidad</span>
+        <span class="hash">#privacidad</span>
+      </summary>
+      <div class="privacy-body">
+<p>En SDC respetamos tu privacidad. Esta política explica cómo se maneja la información cuando visitas este catálogo y cuando realizas un pedido por WhatsApp.</p>
+        <ol>
+          <li><b>Información que se recopila:</b> nombre, teléfono, dirección/referencias de entrega, productos y cantidades seleccionadas. Además, el sitio puede guardar preferencias (por ejemplo, tu carrito) en tu navegador (<i>localStorage</i>).</li>
+          <li><b>Uso de la información:</b> preparar tu pedido, calcular/coordinar el envío, darte soporte por WhatsApp y mejorar la experiencia del catálogo.</li>
+          <li><b>Con quién se comparte:</b> no vendemos tus datos. Solo se comparten con WhatsApp (para enviar el mensaje del pedido) y con la empresa de mensajería cuando aplica.</li>
+          <li><b>Servicios de terceros:</b> WhatsApp, redes sociales y Google/Sheets pueden tener sus propias políticas de privacidad.</li>
+          <li><b>Tus opciones:</b> podés pedir corrección o eliminación de datos escribiendo al WhatsApp de contacto. También podés borrar el carrito limpiando datos del navegador.</li>
+          <li><b>Contacto:</b> WhatsApp: +504 3242-9490 — Atención en Comayagua, Honduras.</li>
+        </ol>
+      </div>
+    </details>
   </section>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -363,7 +378,7 @@
   */
   const CONFIG = {
     // ✅ Tu SHEET_ID real (no lo cambio a menos que lo pidas)
-    SHEET_ID: "1p0PFCH-JWG9bQLeIh-6LgdMV7meHFa3KzIhNW9Xz3JE",
+    SHEET_ID: "1pp4fQRoy9hI5aqFaEGkqIpMSb2v85FP3MgBhCqrnmt4",
 
     SHEET_CONFIG: "_config",
     SHEET_SHIPPING_CANDIDATES: ["envios", "Envios", "Envíos", "ENVÍOS"],
@@ -1244,7 +1259,27 @@
   // Start
   updateCartCount();
   loadData();
-  </script>
+  
+  // Privacy accordion: open when navigating to #privacidad
+  (function(){
+    const privacy = document.getElementById("privacidad");
+    if(!privacy) return;
+
+    function openIfHash(){
+      if(location.hash === "#privacidad"){
+        privacy.open = true;
+        setTimeout(()=>privacy.scrollIntoView({behavior:"smooth", block:"start"}), 50);
+      }
+    }
+
+    window.addEventListener("hashchange", openIfHash);
+    document.querySelectorAll('a[href="#privacidad"]').forEach(a=>{
+      a.addEventListener("click", ()=>setTimeout(openIfHash, 0));
+    });
+
+    openIfHash();
+  })();
+</script>
 </body>
 
 </html>
