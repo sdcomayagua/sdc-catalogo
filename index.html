@@ -136,6 +136,38 @@
   details.privacy-details .privacy-body{padding:10px 4px 0;color:rgba(255,255,255,.85)}
   .hashlink,.hash{font-weight:700;color:rgba(0,234,255,.9);text-decoration:none}
   .hashlink:hover{text-decoration:underline}
+
+  /* ====== UI ajustes solicitados ====== */
+  .topbar .container{flex-wrap:wrap;gap:10px}
+  .top-actions{margin-left:auto;display:flex;gap:10px;align-items:center}
+  @media(max-width:520px){ .top-actions{width:100%;justify-content:flex-end} }
+
+  .filters-card{max-width:680px;margin:0 auto;border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:14px;background:linear-gradient(180deg,var(--panel),var(--panel-2))}
+  .filters-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .filters-head h3{margin:0;font-size:18px}
+  .filters-row{display:flex;gap:12px;margin-top:10px;justify-content:flex-start}
+  .field--compact{flex:0 1 320px}
+  .filters-help{margin:10px 0 0;color:var(--muted);font-size:13px}
+  .chip{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);padding:8px 10px;border-radius:999px;color:var(--text);cursor:pointer}
+  .chip:hover{filter:brightness(1.06)}
+  .pickcat{display:none;margin:16px auto 0;max-width:680px;padding:14px;border-radius:16px;border:1px dashed rgba(255,255,255,.16);color:var(--muted)}
+  .pickcat.show{display:block}
+
+  /* WhatsApp flotante */
+  .wa-float{position:fixed;right:16px;bottom:16px;z-index:200;display:flex;align-items:center;gap:10px;
+    padding:12px 14px;border-radius:999px;background:linear-gradient(90deg,#00c6ff,#00ff99);color:#041018;
+    font-weight:800;text-decoration:none;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+  .wa-float svg{width:20px;height:20px}
+  @media(max-width:520px){ .wa-float span{display:none} .wa-float{padding:12px} }
+
+  /* Drawer sin transparencias raras */
+  .overlay{background:rgba(0,0,0,.72)}
+  .drawer{background:var(--panel);padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  .drawer__body{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+  .drawer-actions{display:flex;gap:10px;margin-top:10px}
+  .radio-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
+  .radio-row > span{color:var(--muted)}
+
 </style>
 </head>
 <body>
@@ -146,15 +178,15 @@
         <span class="brand__logo" aria-hidden="true">SDC</span>
         <span class="brand__text">Soluciones Digitales <b>Comayagua</b></span>
       </a>
+      
       <nav class="top-actions" aria-label="Acciones">
-        <button class="btn btn-ghost" id="btn-search" aria-label="Buscar"><svg class="i i-search" viewBox="0 0 24 24"><path d="M10 4a6 6 0 014.472 9.972l4.278 4.278-1.414 1.414-4.278-4.278A6 6 0 1110 4z"/></svg></button>
         <button class="btn btn-ghost" id="btn-theme" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
         <button class="btn btn-ghost" id="btn-cart" aria-label="Carrito">
-          <svg class="i i-cart" viewBox="0 0 24 24"><path d="M7 4h-2l-1 2v2h2l3.6 7.59L8 19a2 2 0 104 0h4a2 2 0 104 0h-1"/></svg>
+          <svg class="i i-cart" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14h9.64c.75 0 1.4-.41 1.74-1.03l3.58-6.49A1 1 0 0021.26 5H6.21L5.27 3H2v2h2l3.6 7.59L8 19a2 2 0 104 0h4a2 2 0 104 0h-1"/></svg>
           <span class="badge" id="cart-count">0</span>
         </button>
-        <a class="btn btn-primary glow" href="https://wa.me/50432429490" target="_blank" rel="noopener">WhatsApp</a>
       </nav>
+
     </div>
   </header>
 
@@ -166,33 +198,31 @@
       <p>Envíos a toda Honduras • Ofertas reales • Productos probados • Atención por WhatsApp</p>
       <div class="hero__cta">
         <button class="btn btn-primary glow" id="btn-view-offers" type="button">🔥 Ver Ofertas</button>
-        <button class="btn btn-ghost" id="scroll-search">🔎 Buscar Catálogo</button>
+        <button class="btn btn-ghost" id="scroll-search" type="button">📦 Ver categorías</button>
       </div>
     </div>
   </section>
 
+  
   <!-- Filtros -->
   <section class="filters container" id="buscar">
-    <div class="filter-row">
-      <label class="field">
-        <span>Buscar producto</span>
-        <input id="q" type="search" placeholder="Ej.: mouse, audífonos, teclado..." inputmode="search" />
-      </label>
-      <label class="field">
-        <span>Categoría</span>
-        <select id="cat"><option value="">Todas</option></select>
-      </label>
-      <label class="field">
-        <span>Rango de precio</span>
-        <input id="priceMin" type="number" placeholder="Mín" min="0" />
-        <input id="priceMax" type="number" placeholder="Máx" min="0" />
-      </label>
-      <label class="switch">
-        <input type="checkbox" id="onlyOffers" />
-        <span>Solo ofertas</span>
-      </label>
+    <div class="filters-card">
+      <div class="filters-head">
+        <h3>Elige una categoría</h3>
+        <button class="chip" id="chip-ofertas" type="button">🔥 Ofertas</button>
+      </div>
+      <div class="filters-row">
+        <label class="field field--compact">
+          <span>Categoría</span>
+          <select id="cat">
+            <option value="">Seleccionar…</option>
+          </select>
+        </label>
+      </div>
+      <p class="filters-help">Tip: selecciona una categoría para ver los productos.</p>
     </div>
   </section>
+
 
   <!-- Catálogo -->
   <main id="catalogo" class="container">
@@ -204,70 +234,17 @@
     </div>
   </main>
 
-  <!-- Drawer Carrito -->
+    <!-- Drawer Carrito -->
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer__header">
-      <h2>Tu Carrito</h2>
+      <h2 id="drawerTitle">Tu Carrito</h2>
       <button class="btn btn-ghost" id="close-drawer" aria-label="Cerrar">✕</button>
     </div>
+
     <div class="drawer__body">
-      <ul id="cart-list" class="cart-list"></ul>
-      <div class="divider"></div>
-
-      <form id="checkout-form" class="checkout">
-        <h3>Entrega y pago</h3>
-
-        <div class="radio-row">
-          <span>¿Estás en Comayagua?</span>
-          <label><input type="radio" name="isComayagua" value="si" checked /> Sí</label>
-          <label><input type="radio" name="isComayagua" value="no" /> No</label>
-        </div>
-
-        <label class="field">
-          <span>Dirección exacta</span>
-          <input id="addr" type="text" placeholder="Barrio/colonia, calle, #casa, referencia" />
-        </label>
-
-        <label class="field">
-          <span>Empresa de envío</span>
-          <select id="shipper">
-            <option value="">Selecciona…</option>
-            <option value="Local">Reparto Local</option>
-            <option value="C807">C807</option>
-            <option value="Cargo Expreso">Cargo Expreso</option>
-            <option value="Forza">Forza</option>
-          </select>
-        </label>
-
-        <label class="field" id="field-zone" style="display:none">
-          <span>Zona (Comayagua)</span>
-          <select id="zone"></select>
-          <small style="color:var(--muted)">Tip: se detecta por colonia si tu dirección coincide.</small>
-        </label>
-
-        <label class="field">
-          <span>Departamento</span>
-          <input id="dept" type="text" placeholder="Ej.: Comayagua" />
-        </label>
-
-        <label class="field">
-          <span>Municipio</span>
-          <input id="muni" type="text" placeholder="Ej.: Comayagua" />
-        </label>
-
-        <div class="radio-row">
-          <span>Método de pago</span>
-          <label><input type="radio" name="payMode" value="Prepago" checked /> Prepago</label>
-          <label><input type="radio" name="payMode" value="PAGAR AL RECIBIR" /> Pagar al recibir</label>
-        </div>
-
-        <label class="field">
-          <span>Cupón de descuento</span>
-          <div style="display:flex;gap:6px">
-            <input id="coupon" type="text" placeholder="Ej.: SDC10" />
-            <button type="button" class="btn btn-ghost" id="btn-apply-coupon">Aplicar</button>
-          </div>
-        </label>
+      <!-- Paso 1: carrito -->
+      <section id="step-cart">
+        <ul id="cart-list" class="cart-list"></ul>
 
         <div class="summary">
           <div><span>Subtotal</span><b id="subtotal" style="float:right">L 0.00</b></div>
@@ -276,11 +253,122 @@
           <div class="total"><span>Total</span><b id="grand" style="float:right">L 0.00</b></div>
         </div>
 
-        <button type="submit" class="btn btn-primary glow" id="btn-whatsapp">Enviar pedido por WhatsApp 🚀</button>
-        <p class="help">Tip: se calcula automáticamente según zona/empresa y cupón ✅</p>
-      </form>
+        <div class="drawer-actions">
+          <button class="btn btn-primary glow" id="btn-go-checkout" type="button">Continuar</button>
+        </div>
+        <p class="help">Tu pedido se enviará por WhatsApp cuando confirmes ✅</p>
+      </section>
+
+      <!-- Paso 2: entrega y pago -->
+      <section id="step-checkout" class="hidden">
+        <form id="checkout-form">
+          <h3 style="margin:6px 0 10px">Entrega y pago</h3>
+
+          <div class="radio-row">
+            <span>¿Estás en Comayagua?</span>
+            <label><input type="radio" name="isLocal" value="si" /> Sí</label>
+            <label><input type="radio" name="isLocal" value="no" /> No</label>
+          </div>
+
+          <div id="localBlock" class="hidden">
+            <label class="field">
+              <span>Zona (Comayagua)</span>
+              <select id="zoneLocal">
+                <option value="">Seleccionar…</option>
+                <option value="Centrica">Céntrica</option>
+                <option value="Alejada">Alejada</option>
+                <option value="Orillas">Orillas</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Dirección exacta</span>
+              <input id="addr" type="text" placeholder="Barrio/colonia, calle, #casa, referencia" />
+            </label>
+
+            <label class="field">
+              <span>Método de pago</span>
+              <select id="payLocal">
+                <option value="">Seleccionar…</option>
+                <option value="DEPOSITO BANCARIO">Depósito bancario</option>
+                <option value="TIGO MONEY">Tigo Money</option>
+                <option value="PAYPAL">PayPal</option>
+                <option value="PAGAR AL RECIBIR">Pagar al recibir</option>
+              </select>
+            </label>
+
+            <label class="field hidden" id="changeWrap">
+              <span>¿Ocupás vuelto? ¿Para cuánto?</span>
+              <input id="changeFor" type="text" placeholder="Ej.: para L 500" />
+            </label>
+          </div>
+
+          <div id="nationalBlock" class="hidden">
+            <label class="field">
+              <span>Empresa de envío</span>
+              <select id="shipper">
+                <option value="">Seleccionar…</option>
+                <option value="C807">C807</option>
+                <option value="Cargo Expreso">Cargo Expreso</option>
+                <option value="Forza">Forza</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Tipo de envío</span>
+              <select id="shipMode">
+                <option value="">Seleccionar…</option>
+                <option value="Prepago">Pago adelantado</option>
+                <option value="CONTRA ENTREGA">Contra entrega</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Departamento</span>
+              <select id="dept">
+                <option value="">Seleccionar…</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Municipio</span>
+              <select id="muni" disabled>
+                <option value="">Seleccionar…</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Dirección exacta</span>
+              <input id="addr2" type="text" placeholder="Barrio/colonia, calle, referencia, etc." />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Cupón de descuento</span>
+            <div style="display:flex;gap:6px">
+              <input id="coupon" type="text" placeholder="Ej.: SDC10" />
+              <button type="button" class="btn btn-ghost" id="btn-apply-coupon">Aplicar</button>
+            </div>
+          </label>
+
+          <div class="summary">
+            <div><span>Subtotal</span><b id="subtotal2" style="float:right">L 0.00</b></div>
+            <div id="discountRow2" class="hidden"><span>Descuento</span><b id="discount2" style="float:right">- L 0.00</b></div>
+            <div><span>Envío</span><b id="shipping2" style="float:right">A calcular</b></div>
+            <div class="total"><span>Total</span><b id="grand2" style="float:right">L 0.00</b></div>
+          </div>
+
+          <div class="drawer-actions">
+            <button class="btn btn-ghost" id="btn-back-cart" type="button">← Volver</button>
+            <button type="submit" class="btn btn-primary glow" id="btn-whatsapp">Enviar pedido por WhatsApp 🚀</button>
+          </div>
+
+          <p class="help">Al enviar, WhatsApp se abre con el mensaje listo ✅</p>
+        </form>
+      </section>
     </div>
   </aside>
+
 
   <!-- Overlay -->
   <div id="overlay" class="overlay" tabindex="-1" aria-hidden="true"></div>
@@ -402,37 +490,176 @@
     couponApplied: null,
     productSheets: []
   };
+  const HN_MUNIS = {
+    "Atlántida":["La Ceiba","El Porvenir","Esparta","Jutiapa","La Masica","San Francisco","Tela","Arizona"],
+    "Choluteca":["Choluteca","Apacilagua","Concepción de María","Duyure","El Corpus","El Triunfo","Marcovia","Morolica","Namasigüe","Orocuina","Pespire","San Antonio de Flores","San Isidro","San José","San Marcos de Colón","Santa Ana de Yusguare"],
+    "Colón":["Trujillo","Balfate","Iriona","Limón","Sabá","Santa Fe","Santa Rosa de Aguán","Sonaguera","Tocoa","Bonito Oriental"],
+    "Comayagua":["Comayagua","Ajuterique","El Rosario","Esquías","Humuya","La Libertad","Lamani","La Trinidad","Lejamani","Meámbar","Minas de Oro","Ojos de Agua","San Jerónimo","San José de Comayagua","San José del Potrero","San Luis","San Sebastián","Siguatepeque","Taulabé","Villa de San Antonio","Las Lajas"],
+    "Copán":["Santa Rosa de Copán","Cabañas","Concepción","Copán Ruinas","Corquín","Cucuyagua","Dolores","Dulce Nombre","El Paraíso","Florida","La Jigua","La Unión","Nueva Arcadia","San Agustín","San Antonio","San Jerónimo","San José","San Juan de Opoa","San Nicolás","San Pedro","Santa Rita","Trinidad de Copán","Veracruz"],
+    "Cortés":["San Pedro Sula","Choloma","Omoa","Pimienta","Potrerillos","Puerto Cortés","San Antonio de Cortés","San Francisco de Yojoa","San Manuel","Santa Cruz de Yojoa","Villanueva","La Lima"],
+    "El Paraíso":["Yuscarán","Alauca","Danlí","El Paraíso","Güinope","Jacaleapa","Liure","Morocelí","Oropolí","Potrerillos","San Antonio de Flores","San Lucas","San Matías","Soledad","Teupasenti","Texiguat","Vado Ancho","Yauyupe","Trojes"],
+    "Francisco Morazán":["Tegucigalpa","Alubarén","Cedros","Curarén","El Porvenir","Guaimaca","La Libertad","La Venta","Lepaterique","Maraita","Marale","Nueva Armenia","Ojojona","Orica","Reitoca","Sabanagrande","San Antonio de Oriente","San Buenaventura","San Ignacio","San Juan de Flores","San Miguelito","Santa Ana","Santa Lucía","Talanga","Tatumbla","Valle de Ángeles","Villa de San Francisco","Vallecillo"],
+    "Gracias a Dios":["Puerto Lempira","Brus Laguna","Ahuas","Juan Francisco Bulnes","Ramón Villeda Morales","Wampusirpe"],
+    "Intibucá":["La Esperanza","Camasca","Colomoncagua","Concepción","Dolores","Intibucá","Jesús de Otoro","Magdalena","Masaguara","San Antonio","San Isidro","San Juan","San Marcos de la Sierra","San Miguel Guancapla","Santa Lucía","Yamaranguila","San Francisco de Opalaca"],
+    "Islas de la Bahía":["Roatán","Guanaja","José Santos Guardiola","Utila"],
+    "La Paz":["La Paz","Aguanqueterique","Cabañas","Cane","Chinacla","Guajiquiro","Lauterique","Marcala","Mercedes de Oriente","Opatoro","San Antonio del Norte","San José","San Juan","San Pedro de Tutule","Santa Ana","Santa Elena","Santa María","Santiago de Puringla","Yarula"],
+    "Lempira":["Gracias","Belén","Candelaria","Cololaca","Erandique","Gualcince","Guarita","La Campa","La Iguala","Las Flores","La Unión","La Virtud","Lepaera","Mapulaca","Piraera","San Andrés","San Francisco","San Juan Guarita","San Manuel Colohete","San Marcos de Caiquín","San Rafael","San Sebastián","Santa Cruz","Talgua","Tambla","Tomalá","Valladolid","Virginia"],
+    "Ocotepeque":["Ocotepeque","Belén Gualcho","Concepción","Dolores Merendón","Fraternidad","La Encarnación","La Labor","Lucerna","Mercedes","San Fernando","San Francisco del Valle","San Jorge","San Marcos","Santa Fe","Sensenti","Sinuapa"],
+    "Olancho":["Juticalpa","Campamento","Catacamas","Concordia","Dulce Nombre de Culmí","El Rosario","Esquipulas del Norte","Gualaco","Guarizama","Guata","Guayape","Jano","La Unión","Mangulile","Manto","Salamá","San Esteban","San Francisco de Becerra","San Francisco de la Paz","Santa María del Real","Silca","Yocón"],
+    "Santa Bárbara":["Santa Bárbara","Arada","Atima","Azacualpa","Ceguaca","Colinas","Concepción del Norte","Concepción del Sur","Chinda","El Níspero","Gualala","Ilama","Las Vegas","Macuelizo","Naranjito","Nuevo Celilac","Petoa","Protección","Quimistán","San Francisco de Ojuera","San José de Colinas","San Luis","San Marcos","San Nicolás","San Pedro Zacapa","Santa Rita","San Vicente Centenario","Trinidad"],
+    "Valle":["Nacaome","Alianza","Amapala","Aramecina","Caridad","Goascorán","Langue","San Francisco de Coray","San Lorenzo"],
+    "Yoro":["Yoro","Arenal","El Negrito","El Progreso","Jocón","Morazán","Olanchito","Santa Rita","Sulaco","Victoria","Yorito"]
+  };
+
+  function initDeptMuni(){
+    const depts = Object.keys(HN_MUNIS).sort((a,b)=>a.localeCompare(b,'es'));
+    els.dept.innerHTML = '<option value="">Seleccionar…</option>' + depts.map(d=>`<option value="${d}">${d}</option>`).join('');
+    els.muni.innerHTML = '<option value="">Seleccionar…</option>';
+    els.muni.disabled = true;
+
+    const refreshMuniEnable = ()=>{
+      els.muni.disabled = !(els.dept.value && els.shipper.value && els.shipMode.value);
+    };
+
+    els.dept.addEventListener('change', ()=>{
+      const d = els.dept.value;
+      const munis = (HN_MUNIS[d] || []);
+      els.muni.innerHTML = '<option value="">Seleccionar…</option>' + munis.map(m=>`<option value="${m}">${m}</option>`).join('');
+      refreshMuniEnable();
+    });
+
+    els.shipper.addEventListener('change', refreshMuniEnable);
+    els.shipMode.addEventListener('change', refreshMuniEnable);
+  }
+
+  function syncTotalsToCheckout(){
+    if(!els.subtotal2) return;
+    els.subtotal2.textContent = els.subtotal.textContent;
+    els.shipping2.textContent = els.shipping.textContent;
+    els.grand2.textContent = els.grand.textContent;
+    if(state.couponApplied){
+      els.discountRow2.classList.remove('hidden');
+      els.discount2.textContent = els.discount.textContent;
+    }else{
+      els.discountRow2.classList.add('hidden');
+    }
+  }
+
+  function setupUI(){
+    els.scrollSearch?.addEventListener('click', ()=> document.getElementById('buscar')?.scrollIntoView({behavior:'smooth'}));
+    els.scrollOffers?.addEventListener('click', ()=>{
+      els.cat.value = "ofertas";
+      applyFilters();
+      document.getElementById('grid')?.scrollIntoView({behavior:'smooth'});
+    });
+    els.chipOfertas?.addEventListener('click', ()=>{
+      els.cat.value = "ofertas";
+      applyFilters();
+      document.getElementById('grid')?.scrollIntoView({behavior:'smooth'});
+    });
+
+    els.btnCart?.addEventListener('click', openDrawer);
+    els.closeDrawer?.addEventListener('click', closeDrawer);
+    els.overlay?.addEventListener('click', closeDrawer);
+
+    els.btnGoCheckout?.addEventListener('click', ()=>{
+      if(state.cart.length===0){ toast("Tu carrito está vacío"); return; }
+      els.stepCart.classList.add('hidden');
+      els.stepCheckout.classList.remove('hidden');
+      syncTotalsToCheckout();
+      computeTotals();
+    });
+    els.btnBackCart?.addEventListener('click', ()=>{
+      els.stepCheckout.classList.add('hidden');
+      els.stepCart.classList.remove('hidden');
+      computeTotals();
+    });
+
+    document.querySelectorAll('input[name="isLocal"]').forEach(r=>{
+      r.addEventListener('change', ()=>{
+        const v = document.querySelector('input[name="isLocal"]:checked')?.value;
+        if(v==="si"){
+          els.localBlock.classList.remove('hidden');
+          els.nationalBlock.classList.add('hidden');
+        }else if(v==="no"){
+          els.nationalBlock.classList.remove('hidden');
+          els.localBlock.classList.add('hidden');
+        }else{
+          els.localBlock.classList.add('hidden');
+          els.nationalBlock.classList.add('hidden');
+        }
+        computeTotals();
+      });
+    });
+
+    els.payLocal?.addEventListener('change', ()=>{
+      if(els.payLocal.value==="PAGAR AL RECIBIR") els.changeWrap.classList.remove('hidden');
+      else els.changeWrap.classList.add('hidden');
+      computeTotals();
+    });
+
+    ['change','keyup'].forEach(ev=>{
+      els.zoneLocal?.addEventListener(ev, computeTotals);
+      els.addr?.addEventListener(ev, computeTotals);
+      els.addr2?.addEventListener(ev, computeTotals);
+      els.shipper?.addEventListener(ev, computeTotals);
+      els.shipMode?.addEventListener(ev, computeTotals);
+      els.dept?.addEventListener(ev, computeTotals);
+      els.muni?.addEventListener(ev, computeTotals);
+    });
+
+    els.cat?.addEventListener('change', applyFilters);
+
+    initDeptMuni();
+  }
+
 
   const els = {
     grid: document.getElementById("grid"),
     skeleton: document.getElementById("skeleton"),
     empty: document.getElementById("empty"),
-    q: document.getElementById("q"),
+    pickcat: document.getElementById("pickcat"),
     cat: document.getElementById("cat"),
-    priceMin: document.getElementById("priceMin"),
-    priceMax: document.getElementById("priceMax"),
-    onlyOffers: document.getElementById("onlyOffers"),
+    chipOfertas: document.getElementById("chip-ofertas"),
     cartCount: document.getElementById("cart-count"),
     drawer: document.getElementById("drawer"),
     overlay: document.getElementById("overlay"),
     subtotal: document.getElementById("subtotal"),
     shipping: document.getElementById("shipping"),
     grand: document.getElementById("grand"),
-    checkoutForm: document.getElementById("checkout-form"),
-    cartList: document.getElementById("cart-list"),
-    shipper: document.getElementById("shipper"),
-    addr: document.getElementById("addr"),
-    dept: document.getElementById("dept"),
-    muni: document.getElementById("muni"),
+    subtotal2: document.getElementById("subtotal2"),
+    shipping2: document.getElementById("shipping2"),
+    grand2: document.getElementById("grand2"),
     discountRow: document.getElementById("discountRow"),
     discount: document.getElementById("discount"),
+    discountRow2: document.getElementById("discountRow2"),
+    discount2: document.getElementById("discount2"),
+    checkoutForm: document.getElementById("checkout-form"),
+    cartList: document.getElementById("cart-list"),
+    btnGoCheckout: document.getElementById("btn-go-checkout"),
+    btnBackCart: document.getElementById("btn-back-cart"),
+    stepCart: document.getElementById("step-cart"),
+    stepCheckout: document.getElementById("step-checkout"),
+    localBlock: document.getElementById("localBlock"),
+    nationalBlock: document.getElementById("nationalBlock"),
+    zoneLocal: document.getElementById("zoneLocal"),
+    shipper: document.getElementById("shipper"),
+    shipMode: document.getElementById("shipMode"),
+    addr: document.getElementById("addr"),
+    addr2: document.getElementById("addr2"),
+    dept: document.getElementById("dept"),
+    muni: document.getElementById("muni"),
+    payLocal: document.getElementById("payLocal"),
+    changeWrap: document.getElementById("changeWrap"),
+    changeFor: document.getElementById("changeFor"),
     coupon: document.getElementById("coupon"),
     btnApplyCoupon: document.getElementById("btn-apply-coupon"),
-    zoneField: document.getElementById("field-zone"),
-    zoneSel: document.getElementById("zone"),
+    btnWhatsapp: document.getElementById("btn-whatsapp"),
+    closeDrawer: document.getElementById("close-drawer"),
+    btnCart: document.getElementById("btn-cart"),
     btnTheme: document.getElementById("btn-theme"),
-    toast: document.getElementById("toast"),
-    btnViewOffers: document.getElementById("btn-view-offers")
+    scrollOffers: document.getElementById("scroll-offers"),
+    scrollSearch: document.getElementById("scroll-search"),
   };
 
   function money(n){ return (Number(n||0)).toLocaleString(CONFIG.LOCALE,{style:"currency",currency:CONFIG.CURRENCY}); }
@@ -661,25 +888,17 @@
   }
 
   function applyFilters(){
-    const q = (els.q.value || "").toLowerCase().trim();
     const cat = els.cat.value;
-    const min = parseFloat(els.priceMin.value) || 0;
-    const max = parseFloat(els.priceMax.value) || Infinity;
-    const onlyOffers = els.onlyOffers.checked;
 
-    state.filtered = state.all.filter(p=>{
-      const text = [p.nombre,p.categoria,p.subcategoria,p.desc,p.sheet].filter(Boolean).join(" ").toLowerCase();
-      const inText = !q || text.includes(q);
-      const inCat = !cat || p.categoria === cat;
-      const priceNow = (p.promo > 0 && p.promo < p.precio) ? p.promo : p.precio;
-      const inRange = priceNow >= min && priceNow <= max;
+    if(!cat){
+      state.filtered = [];
+      els.pickcat?.classList.add("show");
+      renderGrid();
+      return;
+    }
 
-      const isOffer = (p.promo > 0 && p.promo < p.precio) || p.soloOfertas || (p.sheet && p.sheet.toLowerCase()==="ofertas");
-      const offerOk = !onlyOffers || isOffer;
-
-      return inText && inCat && inRange && offerOk;
-    });
-
+    els.pickcat?.classList.remove("show");
+    state.filtered = state.all.filter(p=>p.categoria === cat);
     renderGrid();
   }
 
@@ -860,60 +1079,108 @@
 
   function addToCart(p){
     const id = (p.sheet||"") + "::" + p.nombre;
+    const stock = Math.max(0, parseInt(p.stock ?? p.Stock ?? "0", 10) || 0);
+
+    if(stock === 0){ toast("No hay disponible ❌"); return; }
+
     const idx = state.cart.findIndex(i=>i.id===id);
     const price = (p.promo>0 && p.promo<p.precio ? p.promo : p.precio);
-    if(idx>=0) state.cart[idx].qty = clamp(state.cart[idx].qty+1,1,99);
-    else state.cart.push({ id, nombre:p.nombre, precio:price, imagen:(p.images&&p.images[0])||p.imagen, qty:1 });
+
+    if(idx>=0){
+      const next = state.cart[idx].qty + 1;
+      if(next > stock){
+        state.cart[idx].qty = stock;
+        toast(`Solo hay ${stock} disponible${stock===1?"":"s"} ✅`);
+      }else{
+        state.cart[idx].qty = next;
+        toast("Añadido al carrito ✅");
+      }
+      state.cart[idx].stock = stock;
+    }else{
+      state.cart.push({ id, nombre:p.nombre, precio:price, imagen:(p.images&&p.images[0])||p.imagen, qty:1, stock });
+      toast("Añadido al carrito ✅");
+    }
+
     saveCart();
-    openDrawer();
     renderCart();
-    toast("Añadido al carrito ✅");
+  }
   }
 
   function removeFromCart(id){ state.cart = state.cart.filter(i=>i.id!==id); saveCart(); renderCart(); }
-  function changeQty(id,delta){ const it = state.cart.find(i=>i.id===id); if(!it) return; it.qty = clamp(it.qty + delta, 1, 99); saveCart(); renderCart(); }
-
-  function renderCart(){
-    els.cartList.innerHTML = "";
-    if(state.cart.length === 0){
-      els.cartList.innerHTML = "<li style='padding:8px;color:var(--muted)'>Tu carrito está vacío.</li>";
+  function changeQty(id,delta){
+    const it = state.cart.find(i=>i.id===id);
+    if(!it) return;
+    const stock = Math.max(0, parseInt(it.stock ?? "0", 10) || 0) || 99;
+    const next = clamp(it.qty + delta, 1, 99);
+    if(stock && next > stock){
+      it.qty = stock;
+      toast(`Solo hay ${stock} disponible${stock===1?"":"s"} ✅`);
     }else{
-      state.cart.forEach(i=>{
-        const li = document.createElement("li");
-        li.className="cart-item";
-
-        const img = document.createElement("img");
-        img.src = i.imagen || "";
-        img.alt = i.nombre;
-
-        const info = document.createElement("div");
-        info.innerHTML = `<b>${escapeHtml(i.nombre)}</b><div style="color:var(--muted)">${money(i.precio)}</div>`;
-
-        const right = document.createElement("div");
-        right.innerHTML = `
-          <div class="qty">
-            <button class="btn btn-ghost" aria-label="Menos">-</button>
-            <span>${i.qty}</span>
-            <button class="btn btn-ghost" aria-label="Más">+</button>
-          </div>
-          <button class="btn btn-ghost" style="margin-top:6px">Eliminar</button>
-        `;
-        const btns = right.querySelectorAll("button");
-        const btnMinus = btns[0];
-        const btnPlus  = btns[1];
-        const btnDel   = btns[2];
-        btnMinus.onclick = ()=>changeQty(i.id,-1);
-        btnPlus.onclick = ()=>changeQty(i.id,1);
-        btnDel.onclick = ()=>removeFromCart(i.id);
-
-        li.append(img, info, right);
-        els.cartList.appendChild(li);
-      });
+      it.qty = next;
     }
-    computeTotals();
+    saveCart();
+    renderCart();
+  }
   }
 
-  /* ==== Shipping Advanced (desde hoja "envios") ==== */
+  
+  function renderCart(){
+    const byId = new Map(state.all.map(p=>[(p.sheet||"")+"::"+p.nombre, p]));
+    state.cart.forEach(it=>{
+      const p = byId.get(it.id);
+      if(p){
+        it.stock = Math.max(0, parseInt(p.stock ?? p.Stock ?? "0", 10) || 0);
+        if(it.stock === 0) it.qty = 0;
+        else if(it.qty > it.stock) it.qty = it.stock;
+        it.precio = (p.promo>0 && p.promo<p.precio ? p.promo : p.precio);
+        it.imagen = (p.images&&p.images[0])||p.imagen;
+      }
+    });
+    state.cart = state.cart.filter(it=>it.qty>0 && (it.stock ?? 0) > 0);
+
+    els.cartList.innerHTML = "";
+    if(state.cart.length === 0){
+      els.cartList.innerHTML = '<li style="color:var(--muted);padding:10px 2px">Tu carrito está vacío.</li>';
+      computeTotals();
+      updateCartBadge();
+      return;
+    }
+
+    for(const it of state.cart){
+      const li = document.createElement("li");
+      li.className = "cart-item";
+      li.innerHTML = `
+        <img src="${escapeHtml(it.imagen||'')}" alt="">
+        <div class="cart-meta">
+          <div class="cart-title">${escapeHtml(it.nombre)}</div>
+          <div class="cart-price">${CONFIG.CURRENCY} ${money(it.precio)}</div>
+          <div class="cart-stock">Stock: ${it.stock ?? "—"}</div>
+        </div>
+        <div class="cart-ctrl">
+          <button class="btn btn-ghost btn-sm" data-act="dec" aria-label="Restar">-</button>
+          <span class="qty">${it.qty}</span>
+          <button class="btn btn-ghost btn-sm" data-act="inc" aria-label="Sumar">+</button>
+          <button class="btn btn-ghost btn-sm" data-act="del">Eliminar</button>
+        </div>
+      `;
+      li.querySelector('[data-act="dec"]').addEventListener('click', ()=>changeQty(it.id,-1));
+      li.querySelector('[data-act="inc"]').addEventListener('click', ()=>changeQty(it.id, 1));
+      li.querySelector('[data-act="del"]').addEventListener('click', ()=>{ removeFromCart(it.id); saveCart(); renderCart(); });
+      els.cartList.appendChild(li);
+    }
+
+    computeTotals();
+    updateCartBadge();
+    syncTotalsToCheckout();
+  }
+
+  function updateCartBadge(){
+    const count = state.cart.reduce((a,i)=>a+i.qty,0);
+    els.cartCount.textContent = String(count);
+  }
+
+
+/* ==== Shipping Advanced (desde hoja "envios") ==== */
   function normalizeModalidad(v){
     const s = (v||"").toString().toLowerCase();
     if(s.includes("contra") || s.includes("recibir") || s.includes("entrega")) return "PAGAR AL RECIBIR";
@@ -1011,6 +1278,15 @@
     computeTotals();
   }
 
+  
+  function lookupShipping(empresa, area, zona, modalidad){
+    const e = state.shippingMap[empresa] || {};
+    const a = e[area] || {};
+    const z = a[zona] || a["__ANY__"] || {};
+    const m = z[modalidad] || z["__ANY__"] || null;
+    return (m && typeof m.tarifa === "number") ? m.tarifa : 0;
+  }
+
   function computeTotals(){
     const subtotal = state.cart.reduce((a,i)=>a + i.precio*i.qty, 0);
     let discount = 0;
@@ -1027,73 +1303,58 @@
 
     els.subtotal.textContent = money(subtotal);
     if(discount>0){
-      els.discountRow.classList.remove('hidden');
-      els.discount.textContent = '- ' + money(discount);
+      els.discountRow.classList.remove("hidden");
+      els.discount.textContent = `- ${money(discount)}`;
     }else{
-      els.discountRow.classList.add('hidden');
+      els.discountRow.classList.add("hidden");
+      els.discount.textContent = `- ${money(0)}`;
     }
-
-    const formData = new FormData(els.checkoutForm);
-    const isLocal = (formData.get("isComayagua") || "si") === "si";
-    const empresa = (isLocal ? "Local" : (els.shipper.value || ""));
-    const modalidad = normalizeModalidad(formData.get("payMode") || "Prepago");
-    const addr = els.addr.value || "";
-    const dept = els.dept.value.trim();
-    const muni = els.muni.value.trim();
 
     let shipText = "A calcular";
     let shipCost = 0;
-    let okToOrder = true;
+    let ok = true;
 
-    if(isLocal){
-      // Autodetect zona (si hay colonias configuradas), sino usa el selector
-      let zona = detectZoneFromAddress(addr) || (els.zoneSel.value || "Centrica");
+    const isLocal = document.querySelector('input[name="isLocal"]:checked')?.value || "";
 
-      const areaMap = ((state.shippingMap["Local"] || {})["Comayagua"]) || {};
-      const zoneMap = areaMap[zona] || areaMap["__ANY__"] || {};
-      const rule = zoneMap[modalidad] || zoneMap["Prepago"] || null;
+    if(els.stepCheckout && !els.stepCheckout.classList.contains("hidden")){
+      if(!isLocal){
+        ok = false;
+      }else if(isLocal === "si"){
+        const zona = els.zoneLocal.value;
+        const addr = (els.addr.value||"").trim();
+        if(!zona || !addr || !els.payLocal.value) ok = false;
 
-      if(rule){
-        shipCost = Number(rule.tarifa || 0);
-        shipText = money(shipCost);
-      }else{
-        shipText = "A calcular";
+        shipCost = lookupShipping("Local","Comayagua", zona, "Local") || lookupShipping("Local","Comayagua", zona, "Prepago") || 0;
+        shipText = shipCost ? `${money(shipCost)}` : "A calcular";
+      }else if(isLocal === "no"){
+        const empresa = els.shipper.value;
+        const modo = els.shipMode.value;
+        const dept = els.dept.value;
+        const muni = els.muni.value;
+        const addr2 = (els.addr2.value||"").trim();
+
+        if(!empresa || !modo || !dept || !muni || !addr2) ok = false;
+
+        shipCost = lookupShipping(empresa, dept, muni, modo) || lookupShipping(empresa, dept, "__ANY__", modo) || 0;
+        shipText = shipCost ? `${money(shipCost)}` : "A calcular";
       }
     }else{
-      // ✅ CORRECCIÓN: fuera de Comayagua debe escoger empresa antes de enviar
-      if(!empresa){
-        okToOrder = false;
-        shipText = "Selecciona empresa";
-      }else{
-        const empresaMap = state.shippingMap[empresa] || {};
-        const areaMap = empresaMap[dept] || empresaMap[muni] || empresaMap["Fuera de Comayagua"] || empresaMap["Honduras"] || empresaMap["HN"] || {};
-        const zoneMap = areaMap["__ANY__"] || areaMap["Orillas"] || areaMap["General"] || {};
-        const rule = zoneMap[modalidad] || zoneMap["PAGAR AL RECIBIR"] || zoneMap["Prepago"] || null;
-
-        shipCost = Number(rule?.tarifa || 0);
-
-        // Si la tarifa es 0, lo tratamos como "lo cobra la empresa" (no suma al total)
-        if(shipCost <= 0){
-          shipText = "Pagar al recibir (lo cobra la empresa)";
-          shipCost = 0;
-        }else{
-          shipText = money(shipCost);
-        }
-      }
+      ok = false; // solo se envía en paso 2
     }
+
+    const grand = Math.max(0, subAfter + shipCost);
 
     els.shipping.textContent = shipText;
-
-    const grand = subAfter + shipCost;
     els.grand.textContent = money(grand);
 
-    // Deshabilitar botón WhatsApp si falta empresa fuera de Comayagua o carrito vacío
-    const btn = document.getElementById("btn-whatsapp");
-    if(btn){
-      btn.disabled = !okToOrder || state.cart.length === 0;
-      btn.style.opacity = btn.disabled ? 0.6 : 1;
+    if(els.btnWhatsapp){
+      els.btnWhatsapp.disabled = !ok || state.cart.length===0;
+      els.btnWhatsapp.style.opacity = (els.btnWhatsapp.disabled ? .6 : 1);
     }
+
+    syncTotalsToCheckout();
   }
+
 
   function buildWhatsAppText(){
     const lines = [];
@@ -1228,16 +1489,6 @@
   els.checkoutForm.addEventListener("submit", (e)=>{ e.preventDefault(); goWhatsApp(); });
   els.btnApplyCoupon.onclick = ()=>applyCoupon(els.coupon.value);
 
-  // Ofertas CTA
-  if(els.btnViewOffers){
-    els.btnViewOffers.onclick = ()=>{
-      els.onlyOffers.checked = true;
-      applyFilters();
-      document.getElementById("catalogo").scrollIntoView({behavior:"smooth"});
-      toast("Mostrando solo ofertas 🔥");
-    };
-  }
-
   // Theme
   els.btnTheme.onclick = ()=>{
     const cur = document.documentElement.getAttribute('data-theme');
@@ -1280,6 +1531,13 @@
     openIfHash();
   })();
 </script>
+
+  <!-- WhatsApp flotante -->
+  <a class="wa-float" href="https://wa.me/50432429490" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <span>WhatsApp</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.52 3.48A11.86 11.86 0 0012.03 0C5.4 0 .02 5.37.02 12c0 2.11.55 4.17 1.6 5.99L0 24l6.2-1.62A11.93 11.93 0 0012.03 24C18.66 24 24.04 18.63 24.04 12c0-3.2-1.25-6.2-3.52-8.52zM12.03 21.9c-1.84 0-3.64-.49-5.22-1.41l-.37-.22-3.68.96.98-3.59-.24-.37A9.83 9.83 0 012.13 12C2.13 6.53 6.57 2.1 12.03 2.1c2.64 0 5.12 1.03 6.99 2.9A9.82 9.82 0 0121.93 12c0 5.47-4.44 9.9-9.9 9.9z"/></svg>
+  </a>
+
 </body>
 
 </html>
