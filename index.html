@@ -433,11 +433,16 @@
 
   /* ===== Sheets fetchers (GViz/CSV) ===== */
   async function fetchGViz(sheetName){
-    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(sheetName)}`;
     const res = await fetch(url);
     const txt = await res.text();
+
+    if(!res.ok) throw new Error(`GViz HTTP ${res.status}`);
+    if(/<html|<!doctype/i.test(txt)) throw new Error("GViz devolvió HTML (¿hoja privada o no publicada?)");
+
     const m = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\)\s*;?\s*$/);
-    if(!m) throw new Error("GViz parse error (¿hoja publicada?)");
+    if(!m) throw new Error("GViz parse error");
+
     const json = JSON.parse(m[1]);
     const cols = (json.table.cols || []).map(c => (c.label || c.id || "").toString().trim());
     const rows = (json.table.rows || []).map(r => {
@@ -448,24 +453,62 @@
     return rows;
   }
 
+  function splitCsvLine(line){
+    return String(line || "")
+      .split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
+      .map(v=>v.replace(/^"|"$/g,"").trim());
+  }
+
   async function fetchCSV(sheetName){
-    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+    const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(sheetName)}`;
     const res = await fetch(url);
     const csv = await res.text();
-    const lines = csv.trim().split(/\r?\n/);
-    const head = (lines.shift() || "");
-    const cols = head.split(",").map(h=>h.trim().replace(/^"|"$/g,""));
+
+    if(!res.ok) throw new Error(`CSV HTTP ${res.status}`);
+    if(/<html|<!doctype/i.test(csv)) throw new Error("CSV devolvió HTML (¿hoja privada o no publicada?)");
+
+    const lines = csv.trim().split(/\r?\n/).filter(Boolean);
+    const head = splitCsvLine(lines.shift() || "");
+    const cols = head;
+
     return lines.map(l=>{
-      const vals = l.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(v=>v.replace(/^"|"$/g,"").trim());
+      const vals = splitCsvLine(l);
       const o = {};
       cols.forEach((c,i)=>o[c]=vals[i]);
       return o;
     });
   }
 
+  function looksGenericCols(cols){
+    return (cols || []).length && cols.every(c => /^([A-Z]{1,3}|col\d+)$/.test(String(c||"")));
+  }
+
+  function fixHeadersIfNeeded(rows){
+    if(!rows || rows.length < 2) return rows;
+    const cols = Object.keys(rows[0] || {});
+    if(!looksGenericCols(cols)) return rows;
+
+    const first = rows[0] || {};
+    const headers = cols.map(c => String(first[c] ?? "").trim());
+    const joined = headers.join(" ").toLowerCase();
+    const hasReal = ["nombre","precio","categoria","imagen","stock","estado","subcategoria","descripcion","whatsapp"].some(k => joined.includes(k));
+    if(!hasReal) return rows;
+
+    return rows.slice(1).map(r=>{
+      const o = {};
+      cols.forEach((c,i)=>{
+        const h = headers[i] || c;
+        o[h] = r[c];
+      });
+      return o;
+    });
+  }
+
   async function fetchSheetRows(sheetName){
-    try{ return await fetchGViz(sheetName); }
-    catch(e1){ return await fetchCSV(sheetName); }
+    let rows;
+    try{ rows = await fetchGViz(sheetName); }
+    catch(e1){ rows = await fetchCSV(sheetName); }
+    return fixHeadersIfNeeded(rows);
   }
 
   /* ====== Leer lista de hojas desde _config ====== */
@@ -636,6 +679,14 @@
 
     if(state.filtered.length === 0){
       els.empty.classList.remove("hidden");
+
+      if((state.all || []).length === 0){
+        els.empty.innerHTML = `<p><b>No se pudo cargar tu catálogo desde Google Sheets.</b><br>
+        Revisá: (1) Compartir: <b>Cualquier persona con el enlace → Lector</b> (2) <b>Archivo → Publicar en la web</b> (3) Encabezados en la fila 1: <b>categoria, nombre, precio, stock, imagen</b>.<br>
+        Luego recargá la página.</p>`;
+      }else{
+        els.empty.innerHTML = `<p>No se encontraron productos con esos filtros.</p>`;
+      }
       return;
     }
     els.empty.classList.add("hidden");
