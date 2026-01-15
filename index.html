@@ -168,6 +168,37 @@
   .radio-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
   .radio-row > span{color:var(--muted)}
 
+
+  /* === UX tweaks 2026-01 === */
+  .pickcat, #products{max-width: 720px; margin-left:auto; margin-right:auto;}
+  .hero .cta{justify-content:center; flex-wrap:wrap}
+
+  @media (max-width: 520px){
+    .brand__text{display:none}
+    .top-actions{gap:8px}
+    .topbar .container{padding:10px 14px}
+  }
+  .brand__logo{
+    width:42px;height:42px;border-radius:14px;
+    display:grid;place-items:center;
+    background: linear-gradient(135deg, rgba(255,0,200,.9), rgba(0,255,255,.9));
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    font-weight:900; letter-spacing:.5px;
+  }
+  .brand__text{font-size:13px; line-height:1.05; opacity:.9}
+  .brand__text b{font-weight:800}
+
+  /* WhatsApp FAB (logo original) */
+  .wa-float{
+    width:56px;height:56px;border-radius:999px;
+    padding:0 !important;justify-content:center !important;gap:0 !important;
+    background:#25D366 !important;
+    color:#fff !important;
+    box-shadow: 0 18px 45px rgba(0,0,0,.45);
+  }
+  .wa-float span{display:none !important}
+  .wa-float svg{width:28px;height:28px}
+
 </style>
 </head>
 <body>
@@ -1491,10 +1522,11 @@
 
   // Theme
   els.btnTheme.onclick = ()=>{
-    const cur = document.documentElement.getAttribute('data-theme');
-    const next = cur==='nightcity'?'cyberpunk':'nightcity';
+    const cur = document.documentElement.getAttribute('data-theme') || 'cyberpunk';
+    const next = cur==='nightcity' ? 'cyberpunk' : 'nightcity';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('sdc_theme', next);
+    showToast(next==='nightcity' ? 'Modo noche activado' : 'Modo día activado');
   };
 
   // Restore theme
@@ -1534,8 +1566,9 @@
 
   <!-- WhatsApp flotante -->
   <a class="wa-float" href="https://wa.me/50432429490" target="_blank" rel="noopener" aria-label="WhatsApp">
-    <span>WhatsApp</span>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.52 3.48A11.86 11.86 0 0012.03 0C5.4 0 .02 5.37.02 12c0 2.11.55 4.17 1.6 5.99L0 24l6.2-1.62A11.93 11.93 0 0012.03 24C18.66 24 24.04 18.63 24.04 12c0-3.2-1.25-6.2-3.52-8.52zM12.03 21.9c-1.84 0-3.64-.49-5.22-1.41l-.37-.22-3.68.96.98-3.59-.24-.37A9.83 9.83 0 012.13 12C2.13 6.53 6.57 2.1 12.03 2.1c2.64 0 5.12 1.03 6.99 2.9A9.82 9.82 0 0121.93 12c0 5.47-4.44 9.9-9.9 9.9z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M20.52 3.48A11.86 11.86 0 0012.03 0C5.4 0 .02 5.37.02 12c0 2.11.55 4.17 1.6 5.99L0 24l6.2-1.62A11.93 11.93 0 0012.03 24C18.66 24 24.04 18.63 24.04 12c0-3.2-1.25-6.2-3.52-8.52zM12.03 21.9c-1.84 0-3.64-.49-5.22-1.41l-.37-.22-3.68.96.98-3.59-.24-.37A9.83 9.83 0 012.13 12C2.13 6.53 6.57 2.1 12.03 2.1c2.64 0 5.12 1.03 6.99 2.9A9.82 9.82 0 0121.93 12c0 5.47-4.44 9.9-9.9 9.9z"></path>
+    </svg>
   </a>
 
 </body>
