@@ -117,11 +117,8 @@
       max-width:1100px; margin:0 auto;
       padding: 14px 14px calc(120px + var(--safeBottom));
     }
-    .hero{
-      display:flex; flex-wrap:wrap; gap:10px;
-      align-items:stretch; justify-content:space-between;
-      margin: 10px 0 12px;
-    }
+    /* The old UI shows category tabs instead of the "productos/categorías" cards */
+    .hero{display:none;}
     .pill{
       flex:1 1 160px;
       background: var(--card);
@@ -186,10 +183,16 @@
       outline:none;
     }
     .chips{
-      display:flex; gap:8px; flex-wrap:wrap;
+      display:flex; gap:8px;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
       margin: 6px 0 14px;
+      padding-bottom:4px;
     }
-.chipsTop{position:sticky; top:56px; z-index:18; padding-top:10px; padding-bottom:2px; background:linear-gradient(to bottom, var(--bg), rgba(0,0,0,0));}
+    .chips::-webkit-scrollbar{display:none}
+    .chipsTop{position:sticky; top:56px; z-index:18; padding-top:10px; padding-bottom:2px; background:linear-gradient(to bottom, var(--bg), rgba(0,0,0,0));}
 
     .chip{
       border:1px solid var(--line);
@@ -198,9 +201,13 @@
       padding: 9px 10px;
       border-radius: 999px;
       font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
       cursor:pointer;
       box-shadow: 0 10px 18px rgba(15,23,42,.05);
       user-select:none;
+      text-transform: uppercase;
+      letter-spacing: .2px;
     }
     .chip.active{
       border-color: color-mix(in srgb, var(--brand) 65%, var(--line));
@@ -1307,7 +1314,10 @@ async function fetchGVizTryVariants(sheetName){
   throw lastErr || new Error('No se pudo leer la hoja');
 }
 async function fetchGViz(sheetName){
-      const u = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+      // NOTE: Some Google Sheets instances return HTTP 400 unless `tq` is present.
+      // `headers=1` forces the first row to be treated as column labels.
+      const tq = encodeURIComponent('select *');
+      const u = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&sheet=${encodeURIComponent(sheetName)}&tq=${tq}`;
       const res = await fetch(u, {cache:"no-store"});
       const txt = await res.text();
       // gviz wrapper: setResponse(...)
@@ -1342,7 +1352,7 @@ async function fetchGViz(sheetName){
       return ["ofertas","gamer","pc","movil","streaming","cobertores","power","testimonios","envios","cupones","_config"];
     }
     async function loadSheetObjects(sheetName){
-      const g = await fetchGViz(sheetName);
+      const g = await fetchGVizTryVariants(sheetName);
       return gvizToObjects(g);
     }
 
@@ -1355,15 +1365,20 @@ async function fetchGViz(sheetName){
       const desc = norm(row.descripcion ?? row.Descripción ?? row.descripcion_detalle ?? row.detalle ?? row.Detalle ?? "");
       const img = norm(row.imagen ?? row.Imagen ?? row.foto ?? row.Foto ?? "");
       const gal = norm(row.galeria ?? row.galería ?? row.Galeria ?? row.Galería ?? "");
-      const cat = norm(row.categoria ?? row.Categoria ?? sheetName);
+      // IMPORTANT: In this project, each *sheet tab* is the main category (ofertas, gamer, pc, ...).
+      // The column `categoria` is used as a *subcategoría* or section label inside each sheet.
+      const cat = norm(row.categoria ?? row.Categoria ?? "");
       const sub = norm(row.subcategoria ?? row.Subcategoria ?? row.sub ?? "");
       const estado = norm(row.estado ?? row.Estado ?? "").toUpperCase();
       const stock = Number(asNumber(row.stock ?? row.Stock ?? row.STOCK));
       const price = Number(asNumber(row.precio ?? row.Precio ?? row["precio unitario"] ?? row["precio_unitario"]));
       const old = Number(asNumber(row.precio_anterior ?? row["precio anterior"] ?? row.Precio_Anterior ?? ""));
       const whatsapp = norm(row.whatsapp ?? row.WhatsApp ?? "");
-      const categoriaFinal = cat || sheetName;
-      const baseId = slug(categoriaFinal) + "-" + slug(name || ("item-"+idx));
+      const categoriaFinal = norm(sheetName);
+      const subcategoriaFinal = (sub || cat);
+      // Skip separator / heading rows (e.g. "COOLERS", "DEDALES") that have no product name
+      if(!name) return null;
+      const baseId = slug(categoriaFinal) + "-" + slug(name);
       // ensure unique
       let id = baseId;
       let n = 2;
@@ -1380,7 +1395,7 @@ async function fetchGViz(sheetName){
       return {
         id,
         categoria: categoriaFinal,
-        subcategoria: sub,
+        subcategoria: subcategoriaFinal,
         nombre: name || "(Sin nombre)",
         descripcion: desc,
         imagen: img,
@@ -1549,7 +1564,7 @@ async function fetchGViz(sheetName){
         await sleep(i*35);
         try{
           const objs = await loadSheetObjects(sn);
-          return objs.map((r, idx)=>normalizeProduct(r, sn, idx));
+          return objs.map((r, idx)=>normalizeProduct(r, sn, idx)).filter(Boolean);
         }catch(e){
           console.warn("No se pudo leer hoja", sn, e);
           return [];
@@ -1578,9 +1593,14 @@ async function fetchGViz(sheetName){
       state.products = products;
       state.productById = new Map(products.map(p=>[p.id,p]));
 
-      // categories
-      const cats = Array.from(new Set(products.map(p=>p.categoria).filter(Boolean))).sort((a,b)=>a.localeCompare(b,"es"));
-      state.categories = cats;
+      // categories (sheet tabs). Even if a sheet is empty, keep it visible in the menu.
+      const prodSheetsNorm = Array.from(new Set(prodSheets.map(norm).filter(Boolean)));
+      const preferredOrder = ["ofertas","gamer","pc","movil","streaming","cobertores","power"]; // adjust here if you add new main categories
+      const ordered = [
+        ...preferredOrder.filter(c=>prodSheetsNorm.includes(c)),
+        ...prodSheetsNorm.filter(c=>!preferredOrder.includes(c)).sort((a,b)=>a.localeCompare(b,"es"))
+      ];
+      state.categories = ordered;
 
       // Load ENVIOS / CUPONES / TESTIMONIOS if exist
       if (special.envios){
@@ -1634,19 +1654,20 @@ async function fetchGViz(sheetName){
       const chips = $("catChips");
       chips.innerHTML = "";
 
-      // Inicio chip
-      chips.appendChild(makeChip("Inicio", "", true));
+      // Main chips row (as in the old UI): TODAS + category tabs
+      chips.appendChild(makeChip("TODAS", ""));
 
       for (const c of state.categories){
         chips.appendChild(makeChip(c, c));
       }
     }
 
-    function makeChip(label, cat, isHome=false){
+    function makeChip(label, cat){
       const b = document.createElement("button");
       b.className = "chip";
       b.type = "button";
       b.textContent = label;
+      b.dataset.cat = cat;
       let lastTap = 0;
 
       b.addEventListener("click", ()=>{
@@ -1655,7 +1676,7 @@ async function fetchGViz(sheetName){
         if (now - lastTap < 420){
           setHash({cat: cat || "", p:"", s:""});
           copyText(location.href);
-          toast("Enlace de " + (cat || "Inicio") + " copiado");
+          toast("Enlace de " + (cat || "TODAS") + " copiado");
         }else{
           setHash({cat: cat || "", p:"", s:""});
         }
@@ -1673,8 +1694,7 @@ async function fetchGViz(sheetName){
       $("catSelect").value = state.route.cat || "";
       // update chips active
       Array.from(document.querySelectorAll(".chip")).forEach(ch=>{
-        const txt = ch.textContent;
-        const target = (txt==="Inicio") ? "" : txt;
+        const target = ch.dataset.cat || "";
         ch.classList.toggle("active", target === (state.route.cat || ""));
       });
 
