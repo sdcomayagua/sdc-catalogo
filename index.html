@@ -68,7 +68,15 @@
       color:#fff; font-weight:900; letter-spacing:.5px;
       flex:0 0 auto;
     }
-    .brand h1{margin:0;font-size:18px;font-weight:800;letter-spacing:.2px;line-height:1.1;white-space:normal;overflow:visible;text-overflow:clip;word-break:break-word}
+    /* Que el titulo no se corte en movil (hasta 2 lineas) */
+    .brand h1{
+      font-size:15.5px; line-height:1.1; margin:0;
+      white-space:normal;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
     .brand .sub{
       margin-top:2px;
       font-size:12px; color:var(--muted);
@@ -80,6 +88,7 @@
       border-radius:14px;
       border:1px solid var(--line);
       background: var(--card);
+      color: var(--text);
       display:grid; place-items:center;
       box-shadow: 0 10px 18px rgba(15,23,42,.06);
       cursor:pointer;
@@ -110,6 +119,12 @@
       display:flex; flex-wrap:wrap; gap:10px;
       align-items:stretch; justify-content:space-between;
       margin: 10px 0 12px;
+    }
+
+    /* En movil, quitar la franja grande de "resumen" para que el catálogo
+       quede arriba (como en tu imagen 1). */
+    @media (max-width: 720px){
+      .hero{display:none}
     }
     .pill{
       flex:1 1 160px;
@@ -720,25 +735,7 @@
       font-size: 13px;
       display:none;
     }
-  
-
-/* Categorías estilo "pestañas" (scroll horizontal) */
-.catstrip{margin-top:14px}
-.chips.scroll{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 2px 10px}
-.chips.scroll::-webkit-scrollbar{display:none}
-.chips.scroll .chip{flex:0 0 auto;white-space:nowrap}
-.pillsRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.pill{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);background:var(--card);border-radius:999px;font-weight:700}
-.pill .dot{width:10px;height:10px;border-radius:999px;background:var(--ok);box-shadow:0 0 0 4px rgba(34,197,94,.15)}
-.pill.muted{font-weight:700;opacity:.85}
-.pill.hidden{display:none}
-@media (max-width:520px){
-  .brand h1{font-size:16px}
-  .brand small{font-size:12px}
-  .topbar{padding:10px 12px}
-}
-body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
-</style>
+  </style>
 </head>
 <body>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -772,10 +769,23 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
   </header>
 
   <main id="top">
-    <section class="catstrip" id="inicio">
-  <div class="chips scroll" id="catChips" aria-label="Categorías"></div>
-  <div class="hint" id="routeHint">Tip: toca 2 veces una categoría para copiar el enlace</div>
-</section>
+    <section class="hero" id="inicio">
+      <div class="pill">
+        <div class="k">Productos cargados</div>
+        <div class="v" id="statProducts">—</div>
+        <div class="small" id="statUpdated">Actualizado: —</div>
+      </div>
+      <div class="pill">
+        <div class="k">Categorías</div>
+        <div class="v" id="statCats">—</div>
+        <div class="small">Tip: toca 2 veces una categoría para copiar el enlace</div>
+      </div>
+      <div class="pill">
+        <div class="k">Atención</div>
+        <div class="v">WhatsApp</div>
+        <div class="small">Pedidos al <b id="statWA">—</b></div>
+      </div>
+    </section>
 
     <section class="filters" aria-label="Buscar y filtrar">
       <div class="search">
@@ -795,14 +805,13 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
         <option value="price_desc">Precio mayor → menor</option>
         <option value="stock_desc">Stock: mayor → menor</option>
       </select>
-<div class="pillsRow" id="statsRow">
-    <div class="pill"><span id="statProducts">0</span> producto(s)</div>
-    <div class="pill muted" id="statUpdated" title=""><span class="dot"></span> Actualizado ✅</div>
-    <div class="pill hidden">Categorías: <span id="statCats">0</span></div>
-    <div class="pill hidden" id="statWA">Pedidos al +50431517755</div>
-  </div>
-</section>
-<div id="grid" class="grid" aria-live="polite"></div>
+
+      <div class="hint" id="routeHint"></div>
+    </section>
+
+    <section class="chips" id="catChips" aria-label="Categorías rápidas"></section>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
     <div id="empty" class="empty">No se encontraron resultados con esos filtros.</div>
 
     <!-- TESTIMONIOS -->
@@ -1308,24 +1317,20 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
       return out;
     }
     async function listSheetNames(){
-      // Worksheets feed works for published sheets
+      // En algunos navegadores el feed puede fallar por CORS.
+      // Si falla, usamos una lista segura (hojas reales en tu archivo).
+      const fallback = [
+        "envios","cupones","ofertas","gamer","pc","movil","streaming","cobertores","power","_config","testimonios"
+      ];
       const feed = `https://spreadsheets.google.com/feeds/worksheets/${SHEET_ID}/public/full?alt=json`;
       try{
         const j = await fetchJSON(feed);
         const entries = j?.feed?.entry || [];
-        const names = entries.map(e => e.title?.$t).filter(Boolean);
-        if (names.length) return names;
-      }catch(e){}
-      // Fallback (si la hoja no está publicada como "pública")
-      return [
-        "ofertas",
-        "gamer",
-        "pc",
-        "movil",
-        "streaming",
-        "cobertores",
-        "power"
-      ];
+        const names = entries.map(e => (e.title?.$t || "").trim()).filter(Boolean);
+        return names.length ? names : fallback;
+      }catch(e){
+        return fallback;
+      }
     }
     async function loadSheetObjects(sheetName){
       const g = await fetchGViz(sheetName);
@@ -1338,17 +1343,26 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
     function normalizeProduct(row, sheetName, idx){
       // Column name variants
       const name = norm(row.nombre ?? row.Nombre ?? row.name ?? row.Producto ?? row.producto);
+      // Evitar filas "separador" (ej: COOLERS, DEDALES) sin nombre
+      if (!name) return null;
       const desc = norm(row.descripcion ?? row.Descripción ?? row.descripcion_detalle ?? row.detalle ?? row.Detalle ?? "");
       const img = norm(row.imagen ?? row.Imagen ?? row.foto ?? row.Foto ?? "");
       const gal = norm(row.galeria ?? row.galería ?? row.Galeria ?? row.Galería ?? "");
-      const cat = norm(row.categoria ?? row.Categoria ?? sheetName);
-      const sub = norm(row.subcategoria ?? row.Subcategoria ?? row.sub ?? "");
+      const sheetKey = norm(sheetName);
+      const sheetKeyLower = normKey(sheetName);
+      const isReserved = RESERVED_SHEETS.has(sheetKeyLower) || sheetKeyLower.startsWith("_");
+      const looksMaster = sheetKeyLower.includes("catalogo");
+      // En el nuevo formato: cada hoja es una categoria. La columna "categoria" se usa como subcategoria.
+      // En el formato viejo (hoja maestra "catalogo"), la columna "categoria" define la categoria.
+      const catCol = norm(row.categoria ?? row.Categoria ?? "");
+      const subCol = norm(row.subcategoria ?? row.Subcategoria ?? row.sub ?? "");
+      const categoriaFinal = (!isReserved && !looksMaster) ? sheetKey : (catCol || sheetKey || "General");
+      const sub = subCol || ((!isReserved && !looksMaster) ? catCol : "");
       const estado = norm(row.estado ?? row.Estado ?? "").toUpperCase();
       const stock = Number(asNumber(row.stock ?? row.Stock ?? row.STOCK));
       const price = Number(asNumber(row.precio ?? row.Precio ?? row["precio unitario"] ?? row["precio_unitario"]));
       const old = Number(asNumber(row.precio_anterior ?? row["precio anterior"] ?? row.Precio_Anterior ?? ""));
       const whatsapp = norm(row.whatsapp ?? row.WhatsApp ?? "");
-      const categoriaFinal = cat || sheetName;
       const baseId = slug(categoriaFinal) + "-" + slug(name || ("item-"+idx));
       // ensure unique
       let id = baseId;
@@ -1535,7 +1549,7 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
         await sleep(i*35);
         try{
           const objs = await loadSheetObjects(sn);
-          return objs.map((r, idx)=>normalizeProduct(r, sn, idx));
+          return objs.map((r, idx)=>normalizeProduct(r, sn, idx)).filter(Boolean);
         }catch(e){
           console.warn("No se pudo leer hoja", sn, e);
           return [];
@@ -1593,11 +1607,7 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
       // Update stats + UI
       $("statProducts").textContent = String(products.length);
       $("statCats").textContent = String(cats.length);
-      {
-      const dt = new Date().toLocaleString("es-HN", {dateStyle:"medium", timeStyle:"short"});
-      const su = $("statUpdated");
-      if(su){ su.innerHTML = '<span class="dot"></span> Actualizado ✅'; su.title = "Actualizado: " + dt; }
-    }
+      $("statUpdated").textContent = "Actualizado: " + new Date().toLocaleString("es-HN", {dateStyle:"medium", timeStyle:"short"});
       buildCategoryUI();
       renderTestimonials();
       applyRoute(); // applies cat/p/section route and renders
@@ -1617,7 +1627,7 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
       for (const c of state.categories){
         const o = document.createElement("option");
         o.value = c;
-        o.textContent = String(c).toUpperCase();
+        o.textContent = c;
         sel.appendChild(o);
       }
 
@@ -1625,10 +1635,10 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
       chips.innerHTML = "";
 
       // Inicio chip
-      chips.appendChild(makeChip("TODAS",""));
+      chips.appendChild(makeChip("Inicio", "", true));
 
       for (const c of state.categories){
-        chips.appendChild(makeChip(String(c).toUpperCase(), c));
+        chips.appendChild(makeChip(c, c));
       }
     }
 
@@ -1645,7 +1655,7 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
         if (now - lastTap < 420){
           setHash({cat: cat || "", p:"", s:""});
           copyText(location.href);
-          toast("Enlace de " + (cat ? cat.toUpperCase() : "TODAS") + " copiado");
+          toast("Enlace de " + (cat || "Inicio") + " copiado");
         }else{
           setHash({cat: cat || "", p:"", s:""});
         }
@@ -1893,14 +1903,19 @@ body.dark .iconbtn{background:rgba(255,255,255,.06);border-color:rgba(255,255,25
       const count = cartCount();
       $("btnCart").setAttribute("data-badge", String(count));
       const bar = $("cartBar");
+      const wa = $("waFab");
       if (count > 0){
         bar.classList.add("show");
         bar.setAttribute("aria-hidden","false");
         $("cartBarTitle").textContent = fmtLps(cartSubtotal());
         $("cartBarSub").textContent = count + " ítems";
+        // Cuando hay carrito, la barra ya lleva a WhatsApp
+        wa.style.display = "none";
       }else{
         bar.classList.remove("show");
         bar.setAttribute("aria-hidden","true");
+        // Solo mostrar WhatsApp cuando el carrito esta vacio
+        wa.style.display = "grid";
       }
 
       // cart overlay content if open
